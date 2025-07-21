@@ -1,0 +1,45 @@
+{
+  "DASHBOARD": "Tauler de control",
+  "WELCOME": "Benvingut al teu tauler",
+  "STATS": "Estadístiques",
+  "USERS": "Usuaris",
+  "SETTINGS": "Configuració",
+  "LOGOUT": "Tancar sessió",
+  "PROFILE": "Perfil",
+  "ACTIVITY": "Activitat recent",
+  "NOTIFICATIONS": "Notificacions",
+  "RESERVAS": "Reserves",
+  "CALENDARIO": "Calendari",
+  "PERFIL": "Perfil",
+  "BOOKINGS_INFO": "Gestiona les teves reserves aquí",
+  "CALENDAR_INFO": "Consulta el calendari",
+  "PROFILE_INFO": "Actualitza el teu perfil",
+
+  "FORM": {
+    "CONTACT_NAME": "Nom de contacte",
+    "EMAIL": "Correu electrònic",
+    "PIN": "PIN",
+    "TEL1": "Telèfon 1",
+    "TEL2": "Telèfon 2",
+    "PASSWORD": "Contrasenya",
+    "SUBMIT": "Enviar"
+  },
+
+  "USER_PAGE": {
+    "TITLE": "Configuració d'usuari"
+  },
+
+  "BOOKING_PAGE": {
+    "TITLE": "Reserves",
+    "HORA_INICIO": "Hora d'inici",
+    "TIPO_CAMION": "Tipus de camió 1",
+    "MATRICULA_CAMION": "Matrícula del camió 1",
+    "ID_MATERIALS": "ID de materials",
+    "MUELLE": "Moll",
+    "CANTIDAD": "Quantitat",
+    "ID_PROVEEDOR": "ID del proveïdor",
+    "PEDIDO": "Comanda",
+    "DOCUMENTOS": "Documents",
+    "ACCIONES": "Accions"
+  }
+}

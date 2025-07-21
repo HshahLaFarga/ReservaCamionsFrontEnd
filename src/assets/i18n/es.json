@@ -1,0 +1,45 @@
+{
+  "DASHBOARD": "Panel de Control",
+  "WELCOME": "Bienvenido a tu panel de control",
+  "STATS": "Estadísticas",
+  "USERS": "Usuarios",
+  "SETTINGS": "Configuración",
+  "LOGOUT": "Cerrar sesión",
+  "PROFILE": "Perfil",
+  "ACTIVITY": "Actividad reciente",
+  "NOTIFICATIONS": "Notificaciones",
+  "RESERVAS": "Reservas",
+  "CALENDARIO": "Calendario",
+  "PERFIL": "Perfil",
+  "BOOKINGS_INFO": "Gestiona tus reservas aquí",
+  "CALENDAR_INFO": "Consulta el calendario",
+  "PROFILE_INFO": "Actualiza tu perfil",
+
+  "FORM": {
+    "CONTACT_NAME": "Nombre de contacto",
+    "EMAIL": "Correo electrónico",
+    "PIN": "PIN",
+    "TEL1": "Teléfono 1",
+    "TEL2": "Teléfono 2",
+    "PASSWORD": "Contraseña",
+    "SUBMIT": "Enviar"
+  },
+
+  "USER_PAGE": {
+    "TITLE": "Configuración de usuario"
+  },
+
+  "BOOKING_PAGE": {
+    "TITLE": "Reservas",
+    "HORA_INICIO": "Hora de inicio",
+    "TIPO_CAMION": "Tipo de camión 1",
+    "MATRICULA_CAMION": "Matrícula del camión 1",
+    "ID_MATERIALS": "ID de materiales",
+    "MUELLE": "Muelle",
+    "CANTIDAD": "Cantidad",
+    "ID_PROVEEDOR": "ID del proveedor",
+    "PEDIDO": "Pedido",
+    "DOCUMENTOS": "Documentos",
+    "ACCIONES": "Acciones"
+  }
+}

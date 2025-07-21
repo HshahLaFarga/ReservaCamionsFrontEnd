@@ -1,0 +1,64 @@
+<nav class="flex justify-between items-center w-full bg-gray-900 text-white p-4">
+  <div class="text-xl font-bold">
+    <a href="#" class="hover:text-blue-500">LaFargaNet-Camions</a>
+  </div>
+
+  <!-- Botón Hamburguesa (solo visible en móviles) -->
+  <button class="lg:hidden" (click)="toggleMobileSidebar()">
+    <span class="material-icons">menu</span>
+  </button>
+
+  <ul class="hidden lg:flex space-x-6 items-center">
+    <li class="relative" (click)="toggleDropdown()" tabindex="0">
+      <a href="javascript:void(0)" class="hover:text-blue-400 flex items-center cursor-pointer">
+        <span class="material-icons">language</span>
+        <span class="ml-1 capitalize">{{ currentLang }}</span>
+        <span class="material-icons ml-1 text-sm">arrow_drop_down</span>
+      </a>
+      <ul *ngIf="dropdownOpen" class="absolute right-0 mt-2 w-32 bg-gray-800 rounded shadow-lg z-50">
+        <li *ngFor="let lang of langs" class="px-4 py-2 hover:bg-gray-700 cursor-pointer capitalize"
+            (click)="changeLanguage(lang)">
+          {{ lang }}
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a routerLink="/profile" routerLinkActive="text-blue-500" class="hover:text-blue-400">
+        <span class="material-icons">person_outline</span>
+      </a>
+    </li>
+    <li>
+      <a href="#" (click)="logout()" class="hover:text-red-500">
+        <span class="material-icons">exit_to_app</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<!-- Menú lateral móvil (off-canvas) -->
+<div
+  *ngIf="mobileSidebarOpen"
+  class="fixed inset-0 bg-black bg-opacity-50 z-40"
+  (click)="toggleMobileSidebar()"
+></div>
+
+<aside
+  *ngIf="mobileSidebarOpen"
+  class="fixed top-0 left-0 w-64 h-full bg-gray-900 text-white p-6 z-50 shadow-lg lg:hidden"
+>
+  <button (click)="toggleMobileSidebar()" class="text-white absolute top-4 right-4">
+    <span class="material-icons">close</span>
+  </button>
+  <ul class="mt-10 space-y-4">
+    <li>
+      <a routerLink="/dashboard" (click)="toggleMobileSidebar()" class="block hover:text-blue-400">
+        {{ 'DASHBOARD' | translate }}
+      </a>
+    </li>
+    <li>
+      <a routerLink="/profile" (click)="toggleMobileSidebar()" class="block hover:text-blue-400">
+        {{ 'PERFIL' | translate }}
+      </a>
+    </li>
+  </ul>
+</aside>

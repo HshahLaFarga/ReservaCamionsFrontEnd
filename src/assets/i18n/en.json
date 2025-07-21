@@ -1,0 +1,45 @@
+{
+  "DASHBOARD": "Dashboard",
+  "WELCOME": "Welcome to your dashboard",
+  "STATS": "Statistics",
+  "USERS": "Users",
+  "SETTINGS": "Settings",
+  "LOGOUT": "Log out",
+  "PROFILE": "Profile",
+  "ACTIVITY": "Recent activity",
+  "NOTIFICATIONS": "Notifications",
+  "RESERVAS": "Bookings",
+  "CALENDARIO": "Calendar",
+  "PERFIL": "Profile",
+  "BOOKINGS_INFO": "Manage your bookings here",
+  "CALENDAR_INFO": "Check the calendar",
+  "PROFILE_INFO": "Update your profile",
+
+  "FORM": {
+    "CONTACT_NAME": "Contact Name",
+    "EMAIL": "Email",
+    "PIN": "PIN",
+    "TEL1": "Phone 1",
+    "TEL2": "Phone 2",
+    "PASSWORD": "Password",
+    "SUBMIT": "Submit"
+  },
+
+  "USER_PAGE": {
+    "TITLE": "User Settings"
+  },
+
+  "BOOKING_PAGE": {
+    "TITLE": "Bookings",
+    "HORA_INICIO": "Start time",
+    "TIPO_CAMION": "Truck type 1",
+    "MATRICULA_CAMION": "Truck license plate 1",
+    "ID_MATERIALS": "Material ID",
+    "MUELLE": "Dock",
+    "CANTIDAD": "Quantity",
+    "ID_PROVEEDOR": "Supplier ID",
+    "PEDIDO": "Order",
+    "DOCUMENTOS": "Documents",
+    "ACCIONES": "Actions"
+  }
+}

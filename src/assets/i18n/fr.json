@@ -1,0 +1,45 @@
+{
+  "DASHBOARD": "Tableau de bord",
+  "WELCOME": "Bienvenue sur votre tableau de bord",
+  "STATS": "Statistiques",
+  "USERS": "Utilisateurs",
+  "SETTINGS": "Paramètres",
+  "LOGOUT": "Se déconnecter",
+  "PROFILE": "Profil",
+  "ACTIVITY": "Activité récente",
+  "NOTIFICATIONS": "Notifications",
+  "RESERVAS": "Réservations",
+  "CALENDARIO": "Calendrier",
+  "PERFIL": "Profil",
+  "BOOKINGS_INFO": "Gérez vos réservations ici",
+  "CALENDAR_INFO": "Consultez le calendrier",
+  "PROFILE_INFO": "Mettez à jour votre profil",
+
+  "FORM": {
+    "CONTACT_NAME": "Nom du contact",
+    "EMAIL": "E-mail",
+    "PIN": "Code PIN",
+    "TEL1": "Téléphone 1",
+    "TEL2": "Téléphone 2",
+    "PASSWORD": "Mot de passe",
+    "SUBMIT": "Envoyer"
+  },
+
+  "USER_PAGE": {
+    "TITLE": "Paramètres utilisateur"
+  },
+
+  "BOOKING_PAGE": {
+    "TITLE": "Réservations",
+    "HORA_INICIO": "Heure de début",
+    "TIPO_CAMION": "Type de camion 1",
+    "MATRICULA_CAMION": "Plaque du camion 1",
+    "ID_MATERIALS": "ID matériaux",
+    "MUELLE": "Quai",
+    "CANTIDAD": "Quantité",
+    "ID_PROVEEDOR": "ID fournisseur",
+    "PEDIDO": "Commande",
+    "DOCUMENTOS": "Documents",
+    "ACCIONES": "Actions"
+  }
+}

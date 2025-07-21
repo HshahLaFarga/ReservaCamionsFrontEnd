@@ -1,0 +1,90 @@
+<div class="p-4">
+  <h2 class="text-2xl font-bold mb-4">
+    {{ 'BOOKING_PAGE.TITLE' | translate }}
+  </h2>
+
+  <table mat-table [dataSource]="pagedData" class="mat-elevation-z8 w-full">
+
+    <!-- Hora inicio -->
+    <ng-container matColumnDef="hora_inicio">
+      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.HORA_INICIO' | translate }} </th>
+      <td mat-cell *matCellDef="let booking"> {{ booking.inicio1 }} </td>
+    </ng-container>
+
+    <!-- Tipo de camión 1 -->
+    <ng-container matColumnDef="tipo_camion">
+      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.TIPO_CAMION' | translate }} </th>
+      <td mat-cell *matCellDef="let booking"> {{ booking.tipo_camion_id }} </td>
+    </ng-container>
+
+    <!-- Matrícula camión 1 -->
+    <ng-container matColumnDef="matricula">
+      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.MATRICULA_CAMION' | translate }} </th>
+      <td mat-cell *matCellDef="let booking"> {{ booking.matricula_camion }} </td>
+    </ng-container>
+
+    <!-- ID materials -->
+    <ng-container matColumnDef="id_materials">
+      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.ID_MATERIALS' | translate }} </th>
+      <td mat-cell *matCellDef="let booking"> {{ booking.tipo_material1_id }} </td>
+    </ng-container>
+
+    <!-- Muelle -->
+    <ng-container matColumnDef="muelle">
+      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.MUELLE' | translate }} </th>
+      <td mat-cell *matCellDef="let booking"> {{ booking.muelle1_id }} </td>
+    </ng-container>
+
+    <!-- Cantidad -->
+    <ng-container matColumnDef="cantidad">
+      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.CANTIDAD' | translate }} </th>
+      <td mat-cell *matCellDef="let booking"> {{ booking.cantidad1 }} </td>
+    </ng-container>
+
+    <!-- ID Proveedor -->
+    <ng-container matColumnDef="id_proveedor">
+      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.ID_PROVEEDOR' | translate }} </th>
+      <td mat-cell *matCellDef="let booking"> {{ booking.proveedor_id }} </td>
+    </ng-container>
+
+    <!-- Pedido -->
+    <ng-container matColumnDef="pedido">
+      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.PEDIDO' | translate }} </th>
+      <td mat-cell *matCellDef="let booking"> {{ booking.pedido_LF }} </td>
+    </ng-container>
+
+    <!-- Documentos -->
+    <ng-container matColumnDef="documentos">
+      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.DOCUMENTOS' | translate }} </th>
+      <td mat-cell *matCellDef="let booking"> {{ booking.documentos }} </td>
+    </ng-container>
+
+    <!-- Accions -->
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef class="text-center">
+        {{ 'BOOKING_PAGE.ACCIONES' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let booking">
+        <div class="flex items-center justify-center gap-2">
+          <button mat-icon-button color="primary" (click)="onEdit(booking)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="onDelete(booking)">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button mat-icon-button (click)="onPrint(booking)">
+            <mat-icon>print</mat-icon>
+          </button>
+        </div>
+      </td>
+    </ng-container>
+
+
+    <!-- Header and Row Definitions -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [length]="data.length" [pageSize]="5" [pageSizeOptions]="[10, 20, 30]" (page)="onPageChange($event)">
+  </mat-paginator>
+</div>
