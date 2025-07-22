@@ -41,5 +41,9 @@
     "PEDIDO": "Pedido",
     "DOCUMENTOS": "Documentos",
     "ACCIONES": "Acciones"
+  },
+
+  "CALENDAR_PAGE": {
+    "MOSTRAR_FINDE": "Mostrar fin de semana"
   }
 }

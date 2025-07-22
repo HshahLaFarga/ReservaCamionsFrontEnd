@@ -1,0 +1,15 @@
+<div class="flex flex-col h-full">
+  <div class="p-2">
+    <button (click)="toggleWeekends()" class="px-4 py-2 bg-blue-600 text-white rounded">
+      {{ 'CALENDAR_PAGE.MOSTRAR_FINDE' | translate }}
+    </button>
+  </div>
+
+  <div class="flex-1 overflow-hidden">
+    <full-calendar
+      [options]="calendarOptions"
+      [events]="eventsPromise | async"
+      class="h-full"
+    ></full-calendar>
+  </div>
+</div>

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import {DashboardOption} from './dashboard-page.types'
+import { DashboardOption } from './dashboard-page.types'
 
 @Component({
   selector: 'app-dashboard',
@@ -27,7 +27,7 @@ export class DashboardPageComponent {
     {
       labelKey: 'CALENDARIO',
       icon: 'calendar_today',
-      route: '/calendario',
+      route: '/calendar',
       permission: 'calendario',
       descriptionKey: 'Consulta el calendario'
     },
@@ -39,6 +39,7 @@ export class DashboardPageComponent {
       descriptionKey: 'Actualiza tu perfil'
     },
   ];
+
   // Els que es mostraràn a la vista
   optionsToShow: DashboardOption[] = [];
 

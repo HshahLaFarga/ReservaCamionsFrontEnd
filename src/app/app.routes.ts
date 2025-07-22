@@ -3,6 +3,7 @@ import { MainLayoutComponent } from './features/auth/layouts/main-layout.compone
 import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page.component';
 import { ProfilePageComponent } from './pages/profile-page/profile-page.component';
 import { LoginComponent } from './features/auth/login/login.component';
+import { CalendarPageComponent } from './pages/calendar-page/calendar-page.component';
 // import { DemoModule } from './pages/calendar-page/calendar-page.module';
 
 export const routes: Routes = [
@@ -15,7 +16,7 @@ export const routes: Routes = [
     },
     children: [
       { path: 'dashboard', component: DashboardPageComponent },
-      // { path: 'calendar', component: DemoModule},
+      { path: 'calendar', component: CalendarPageComponent},
       { path: 'profile', component: ProfilePageComponent },
       { path: 'bookings', loadChildren: () => import('./pages/booking-page/booking-page.routes')},
       { path: 'profile', component: ProfilePageComponent },

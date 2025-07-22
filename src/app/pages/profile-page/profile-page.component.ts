@@ -35,7 +35,6 @@ export class ProfilePageComponent implements OnInit {
     // En el cas que sigui vàlid efectuem la petició
 
     if (this.form.valid) {
-      console.log('entra');
       this.user = {
         name: this.form.value.name,
         email: this.form.value.email,

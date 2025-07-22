@@ -41,5 +41,9 @@
     "PEDIDO": "Commande",
     "DOCUMENTOS": "Documents",
     "ACCIONES": "Actions"
+  },
+
+  "CALENDAR_PAGE": {
+    "MOSTRAR_FINDE": "Afficher le week-end"
   }
 }
