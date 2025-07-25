@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -8,6 +7,7 @@ import { MatTableModule } from '@angular/material/table';
 import { Booking } from './booking-page.types';
 import { MatIconModule } from '@angular/material/icon';
 import { BookingPageService } from './booking-page.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reservation-page',
@@ -20,6 +20,7 @@ export class BookingPageComponent implements OnInit {
 
   constructor(
       private _bookingService: BookingPageService,
+      private router: Router
   ) { }
 
   displayedColumns: string[] = [
@@ -79,6 +80,9 @@ export class BookingPageComponent implements OnInit {
           console.error('Error obtenint bookings', err);
         }
       });
+  }
+  onAdd() {
+    this.router.navigate(['/bookings/add']);
   }
 
   onEdit(book: Booking){

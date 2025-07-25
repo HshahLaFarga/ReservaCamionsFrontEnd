@@ -65,7 +65,7 @@ export class CalendarPageComponent implements OnInit {
   toggleWeekends() {
     this.calendarOptions.weekends = !this.calendarOptions.weekends
   }
-
+  
   getAllBookings() {
     this._calendarPageService.getAllBookings().subscribe({
       next: (response) => {

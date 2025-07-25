@@ -1,0 +1,166 @@
+<div class="p-8 max-w-5xl mx-auto bg-white rounded shadow space-y-6">
+
+  <h1 class="text-2xl font-bold text-gray-800 mb-4">Nou Pedido</h1>
+
+  <form [formGroup]="pedidoForm" (ngSubmit)="onSubmit()" class="space-y-6">
+
+    <!-- Matrícula Camión -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Matrícula Camión</label>
+      <input type="text" formControlName="matriculaCamion"
+        class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+    </div>
+
+    <!-- Número de descargas -->
+    <div class="p-4 border space-y-3">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Número de descargas</label>
+        <select formControlName="numeroDescargas"
+          class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+          <option [value]="1">1</option>
+          <option [value]="2">2</option>
+        </select>
+      </div>
+
+      <!-- Inputs dinàmics -->
+      <div *ngFor="let i of [0, 1]; let idx = index" [hidden]="idx >= pedidoForm.get('numeroDescargas')?.value">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Material {{ idx + 1 }}</label>
+            <select [formControlName]="'material' + idx"
+              class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+              <option *ngFor="let mat of materials" [value]="mat.material_id">{{ mat.nombre_material }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Cantidad {{ idx + 1 }}</label>
+            <input type="number" [formControlName]="'cantidad' + idx"
+              class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Camió Disponible -->
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700">Camió disponible</label>
+        <select formControlName="tipoCamion"
+          class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+          <option *ngFor="let camion of mollsDisponibles?.camionesDisponibles" [value]="camion.tipo_camion_id">
+            {{ camion.nombre }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Càrrega horaris -->
+    <div>
+      <div class="flex gap-2 items-center">
+        <button type="button" (click)="openCalendarModal()"
+          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+          Buscar Hora
+        </button>
+      </div>
+    </div>
+
+    <!-- Duració entrega -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Duración Entrega (min)</label>
+        <div class="mt-1 block w-full rounded border border-gray-300 bg-gray-100 px-3 py-2">
+          {{ pedidoForm.get('duracionEntrega')?.value }}
+        </div>
+      </div>
+
+      <!-- Moll -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Muelle</label>
+        <div class="mt-1 block w-full rounded border border-gray-300 bg-gray-100 px-3 py-2">
+          {{ pedidoForm.get('muelle')?.value }}
+        </div>
+      </div>
+
+      <!-- Hora Inici -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Hora Inicio</label>
+        <div class="mt-1 block w-full rounded border border-gray-300 bg-gray-100 px-3 py-2">
+          {{ pedidoForm.get('horaInicio')?.value ? formatDate(pedidoForm.get('horaInicio')?.value) : ''}}
+        </div>
+      </div>
+
+      <!-- Hora Final -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Hora Fin</label>
+        <div class="mt-1 block w-full rounded border border-gray-300 bg-gray-100 px-3 py-2">
+          {{ pedidoForm.get('horaFin')?.value ? formatDate(pedidoForm.get('horaFin')?.value) : ''}}
+        </div>
+      </div>
+
+      <!-- Status -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Status</label>
+        <select formControlName="idStatus"
+          class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+          <option *ngFor="let stat of status" [value]="stat.status_id">
+            {{ stat.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Proveidor -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Proveedor</label>
+        <mat-form-field class="w-full">
+          <input type="text" matInput [formControl]="idProveedorControl" [matAutocomplete]="autoProveedor">
+          <mat-autocomplete #autoProveedor="matAutocomplete" [displayWith]="displayFnProveedor">
+            <mat-option *ngFor="let provider of filteredProviders$ | async" [value]="provider.proveedor_id">
+              {{ provider.nombre }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+
+      <!-- Transportista -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Identificador Transportista</label>
+        <mat-form-field class="w-full">
+          <input type="text" matInput [formControl]="identificadorTransportistaControl" [matAutocomplete]="autoCarrier">
+          <mat-autocomplete #autoCarrier="matAutocomplete" [displayWith]="displayFnCarrier">
+            <mat-option *ngFor="let carrier of filteredCarriers$ | async" [value]="carrier.transporte_id">
+              {{ carrier.nombre }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <!-- Aduana -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Aduana</label>
+        <select formControlName="aduana"
+          class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+          <option value="si">Sí</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Notas -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Notas</label>
+      <textarea formControlName="notas"
+        class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
+    </div>
+
+    <!-- Archivos -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Adjuntar Archivos</label>
+      <input type="file" formControlName="archivos" multiple
+        class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+    </div>
+
+    <!-- Botó Enviar -->
+    <div class="text-right pt-4">
+      <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+        Enviar Pedido
+      </button>
+    </div>
+  </form>
+</div>

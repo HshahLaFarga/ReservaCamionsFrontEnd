@@ -40,7 +40,8 @@
     "ID_PROVEEDOR": "ID fournisseur",
     "PEDIDO": "Commande",
     "DOCUMENTOS": "Documents",
-    "ACCIONES": "Actions"
+    "ACCIONES": "Actions",
+    "ANADIR": "Ajouter une réservation"
   },
 
   "CALENDAR_PAGE": {

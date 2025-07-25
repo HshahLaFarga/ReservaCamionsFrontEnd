@@ -40,7 +40,9 @@
     "ID_PROVEEDOR": "Supplier ID",
     "PEDIDO": "Order",
     "DOCUMENTOS": "Documents",
-    "ACCIONES": "Actions"
+    "ACCIONES": "Actions",
+    "ANADIR": "Add booking"
+
   },
 
   "CALENDAR_PAGE": {

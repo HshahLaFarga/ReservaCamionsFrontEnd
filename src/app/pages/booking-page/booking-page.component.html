@@ -1,7 +1,15 @@
 <div class="p-4">
-  <h2 class="text-2xl font-bold mb-4">
-    {{ 'BOOKING_PAGE.TITLE' | translate }}
-  </h2>
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold">
+      {{ 'BOOKING_PAGE.TITLE' | translate }}
+    </h2>
+
+    <button (click)="onAdd()"
+      class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200">
+      <mat-icon>add</mat-icon>
+      {{ 'BOOKING_PAGE.ANADIR' | translate }}
+    </button>
+  </div>
 
   <table mat-table [dataSource]="pagedData" class="mat-elevation-z8 w-full">
 

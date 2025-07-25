@@ -40,7 +40,9 @@
     "ID_PROVEEDOR": "ID del proveedor",
     "PEDIDO": "Pedido",
     "DOCUMENTOS": "Documentos",
-    "ACCIONES": "Acciones"
+    "ACCIONES": "Acciones",
+    "ANADIR": "Añadir reserva"
+
   },
 
   "CALENDAR_PAGE": {

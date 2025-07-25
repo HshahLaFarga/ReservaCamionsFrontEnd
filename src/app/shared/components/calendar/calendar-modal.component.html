@@ -1,0 +1,21 @@
+<div class="w-full max-w-4xl mx-auto p-6 flex flex-col">
+  <h2 class="text-xl sm:text-2xl font-semibold mb-4 text-gray-800 text-center">Selecciona una data</h2>
+
+  <div class="flex-grow overflow-auto">
+    <full-calendar [options]="calendarOptions"></full-calendar>
+  </div>
+  <div class="flex flex-grow gap-4 justify-end">
+    <div class="mt-6 text-center sm:text-right">
+      <button (click)="close()"
+        class="inline-block px-4 py-2 bg-gray-300 text-sm sm:text-base rounded hover:bg-gray-400 transition">
+        Tancar
+      </button>
+    </div>
+    <div class="mt-6 text-center sm:text-right">
+      <button (click)="save()"
+        class="inline-block px-4 py-2 bg-blue-500 text-sm sm:text-base rounded hover:bg-blue-400 transition">
+        Guardar
+      </button>
+    </div>
+  </div>
+</div>
