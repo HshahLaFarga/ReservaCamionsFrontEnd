@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { DashboardOption } from './dashboard-page.types'
+import { DashboardOption } from '../../core/models/dashboard.model';
+
 
 @Component({
   selector: 'app-dashboard',

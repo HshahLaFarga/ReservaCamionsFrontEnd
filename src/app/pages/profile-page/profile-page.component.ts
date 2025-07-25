@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Profile } from './profile-page.types';
 import { ProfilePageService } from './profile-page.service';
+import { Profile } from '../../core/models/profile.module';
 
 @Component({
   selector: 'app-profile-page',

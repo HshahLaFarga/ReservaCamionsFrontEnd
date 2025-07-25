@@ -1,20 +1,25 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BookingAddService } from './booking-add.service';
-import { Carrier, Material, Muelle, Provider, Status, Trucks } from './booking-add.types';
 import { CalendarModalComponent } from '../../../shared/components/calendar/calendar-modal.component';
 import { MatDialog } from '@angular/material/dialog';
-import { CalendarReservation } from '../../../shared/components/calendar/calendar-modal.types';
 import { formatDate, formatDateToMySQL } from '../../../shared/utils/date.utils';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { map, Observable, startWith } from 'rxjs';
-import { Booking } from '../booking-page.types';
 import { Router } from '@angular/router';
+import { Trucks } from '../../../core/models/truck.module';
+import { Muelle } from '../../../core/models/muelle.module';
+import { Material } from '../../../core/models/material.module';
+import { Status } from '../../../core/models/status.module';
+import { Provider } from '../../../core/models/provider.module';
+import { Carrier } from '../../../core/models/carrier.module';
+import { CalendarReservation } from '../../../core/models/calendar.module';
+import { Booking } from '../../../core/models/booking.module';
 
 
 @Component({
@@ -63,26 +68,27 @@ export class BookingAddComponent implements OnInit {
 
   ngOnInit() {
     // Fòrmulari inicial
-    this.pedidoForm = this.fb.group({
-      matriculaCamion: [''],
-      tipoCamion: [''],
-      numeroDescargas: [1],
-      material0: [''],
-      cantidad0: [0],
-      material1: [''],
-      cantidad1: [0],
-      hora: [''],
-      duracionEntrega: [''],
-      muelle: [''],
-      horaInicio: [''],
-      horaFin: [''],
-      idStatus: [''],
-      idProveedor: new FormControl<Provider | null>(null),
-      identificadorTransportista: new FormControl<Carrier | null>(null),
-      notas: [''],
-      archivos: [null],
-      aduana: ['no'],
-    });
+  this.pedidoForm = this.fb.group({
+    matriculaCamion: ['', Validators.required],
+    tipoCamion: ['', Validators.required],
+    numeroDescargas: [1, [Validators.required, Validators.min(1)]],
+    material0: ['', Validators.required],
+    cantidad0: [0, [Validators.required, Validators.min(200), Validators.max(30000)]],
+    material1: [''],
+    cantidad1: [0],
+    hora: [''],
+    duracionEntrega: ['', Validators.required],
+    muelle: ['', Validators.required],
+    horaInicio: ['', Validators.required],
+    horaFin: ['', Validators.required],
+    idStatus: ['', Validators.required],
+    idProveedor: [null, Validators.required],
+    identificadorTransportista: [null, Validators.required],
+    notas: [''],
+    archivos: [null],
+    aduana: ['no'],
+  });
+
 
     this.idProveedorControl = this.pedidoForm.get('idProveedor') as FormControl<Provider | null>;
     this.identificadorTransportistaControl = this.pedidoForm.get('identificadorTransportista') as FormControl<Carrier | null>;

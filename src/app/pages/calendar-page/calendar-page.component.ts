@@ -7,7 +7,7 @@ import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { TranslateModule } from '@ngx-translate/core';
 import { CalendarPageService } from './calendar-page.service';
-import { Booking } from '../booking-page/booking-page.types';
+import { Booking } from '../../core/models/booking.module';
 
 @Component({
   selector: 'app-calendar-page',
@@ -65,7 +65,7 @@ export class CalendarPageComponent implements OnInit {
   toggleWeekends() {
     this.calendarOptions.weekends = !this.calendarOptions.weekends
   }
-  
+
   getAllBookings() {
     this._calendarPageService.getAllBookings().subscribe({
       next: (response) => {

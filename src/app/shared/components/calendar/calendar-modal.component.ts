@@ -3,12 +3,12 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import interactionPlugin from '@fullcalendar/interaction';
-import { Muelle } from '../../../pages/booking-page/booking-add/booking-add.types';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
-import { CalendarReservation } from './calendar-modal.types';
 import { CalendarModalService } from './calendar-modal.service';
-import { Booking } from '../../../pages/booking-page/booking-page.types';
 import { CommonModule } from '@angular/common';
+import { CalendarReservation } from '../../../core/models/calendar.module';
+import { Booking } from '../../../core/models/booking.module';
+import { Muelle } from '../../../core/models/muelle.module';
 
 
 @Component({

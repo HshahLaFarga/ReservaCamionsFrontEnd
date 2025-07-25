@@ -4,10 +4,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
-import { Booking } from './booking-page.types';
 import { MatIconModule } from '@angular/material/icon';
 import { BookingPageService } from './booking-page.service';
 import { Router } from '@angular/router';
+import { Booking } from '../../core/models/booking.module';
 
 @Component({
   selector: 'app-reservation-page',

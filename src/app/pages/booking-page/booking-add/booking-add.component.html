@@ -106,31 +106,26 @@
         </select>
       </div>
 
-      <!-- Proveidor -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Proveedor</label>
-        <mat-form-field class="w-full">
-          <input type="text" matInput [formControl]="idProveedorControl" [matAutocomplete]="autoProveedor">
-          <mat-autocomplete #autoProveedor="matAutocomplete" [displayWith]="displayFnProveedor">
-            <mat-option *ngFor="let provider of filteredProviders$ | async" [value]="provider.proveedor_id">
-              {{ provider.nombre }}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-      </div>
+      <!-- Proveedor -->
+      <mat-form-field class="w-full">
+        <input matInput formControlName="idProveedor" [matAutocomplete]="autoProveedor">
+        <mat-autocomplete #autoProveedor="matAutocomplete" [displayWith]="displayFnProveedor">
+          <mat-option *ngFor="let provider of filteredProviders$ | async" [value]="provider.proveedor_id">
+            {{ provider.nombre }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
 
       <!-- Transportista -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Identificador Transportista</label>
-        <mat-form-field class="w-full">
-          <input type="text" matInput [formControl]="identificadorTransportistaControl" [matAutocomplete]="autoCarrier">
-          <mat-autocomplete #autoCarrier="matAutocomplete" [displayWith]="displayFnCarrier">
-            <mat-option *ngFor="let carrier of filteredCarriers$ | async" [value]="carrier.transporte_id">
-              {{ carrier.nombre }}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-      </div>
+      <mat-form-field class="w-full">
+        <input matInput formControlName="identificadorTransportista" [matAutocomplete]="autoCarrier">
+        <mat-autocomplete #autoCarrier="matAutocomplete" [displayWith]="displayFnCarrier">
+          <mat-option *ngFor="let carrier of filteredCarriers$ | async" [value]="carrier.transporte_id">
+            {{ carrier.nombre }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
       <!-- Aduana -->
       <div>
         <label class="block text-sm font-medium text-gray-700">Aduana</label>
@@ -158,7 +153,10 @@
 
     <!-- Botó Enviar -->
     <div class="text-right pt-4">
-      <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+      <button type="submit" [disabled]="pedidoForm.invalid" [ngClass]="{
+    'bg-green-600 hover:bg-green-700': pedidoForm.valid,
+    'bg-green-800 opacity-65 cursor-not-allowed': pedidoForm.invalid
+  }" class="px-6 py-2 text-white rounded transition">
         Enviar Pedido
       </button>
     </div>
