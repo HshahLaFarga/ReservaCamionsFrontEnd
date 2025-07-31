@@ -27,7 +27,7 @@ export class ProviderPageComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    setTimeout(() =>this.loadDefaultData(),1500);
+    this.loadDefaultData();
   }
 
   loadDefaultData(){
@@ -38,7 +38,6 @@ export class ProviderPageComponent implements OnInit {
     this._providerPageService.getProviders().subscribe({
     next: (providers) => {
       this.providers = providers;
-      console.log(providers);
     },
     error: err => {
       console.error('Error getting providers ' + err);

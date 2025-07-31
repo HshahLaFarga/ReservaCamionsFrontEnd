@@ -22,6 +22,11 @@ export interface Booking {
   "tel1"?: string,
   "duracion1": number,
   "duracion2"?: string,
-  // NO consta a l'interfície, però és necessàri per poder carregar els arxius
-  "archivos"?: File[]
+  "documentos"?: BookingDocument[]
+}
+
+export interface BookingDocument {
+  reserva_id?: number,
+  url?: string,
+  name: string
 }

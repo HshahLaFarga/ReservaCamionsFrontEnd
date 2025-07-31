@@ -20,7 +20,7 @@ import { formatDate } from '../../shared/utils/date.utils';
 })
 export class BookingPageComponent implements OnInit {
   bookings: Booking[] = [];
-
+  bookingsFormated: any[] = [];
   constructor(
       private _bookingService: BookingPageService,
       private router: Router,
@@ -51,12 +51,12 @@ export class BookingPageComponent implements OnInit {
   // Paginació
   onPageChange(event: PageEvent) {
     this.updatePagedData(event.pageIndex, event.pageSize);
-
   }
+
   updatePagedData(pageIndex: number, pageSize: number) {
     const startIndex = pageIndex * pageSize;
     const endIndex = startIndex + pageSize;
-    this.pagedData = this.bookings.slice(startIndex, endIndex);
+    this.pagedData = this.bookingsFormated.slice(startIndex, endIndex);
   }
 
   // Obtenir totes les reserves
@@ -64,6 +64,11 @@ export class BookingPageComponent implements OnInit {
     this._bookingService.getAllBookings().subscribe({
         next: (response) => {
           this.bookings = response;
+
+
+          // Filtrem els noms perquè quedin més centrats
+          this.bookingsFormated = this.bookings.map((booking) => booking.documentos?.map((document) => document.name));
+          console.log(this.bookingsFormated);
           this.updatePagedData(0, 10);
         },
         error: (err) => {
