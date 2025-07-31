@@ -19,7 +19,7 @@ import { Booking } from '../../core/models/booking.module';
 export class CalendarPageComponent implements OnInit {
   events: any[] = [];
   bookings: Booking[] = [];
-
+  isLoading: boolean = false;
   ngOnInit(): void {
     this.getAllBookings();
   }
@@ -32,6 +32,9 @@ export class CalendarPageComponent implements OnInit {
     initialView: 'timeGridWeek',
     plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
     dateClick: (arg) => this.handleDateClick(arg),
+    
+    // Perquè surti la linea en vermell
+    nowIndicator: true,
 
     firstDay: 1,
     weekends: true,
@@ -67,6 +70,7 @@ export class CalendarPageComponent implements OnInit {
   }
 
   getAllBookings() {
+    this.isLoading = true;
     this._calendarPageService.getAllBookings().subscribe({
       next: (response) => {
         this.bookings = response;
@@ -85,9 +89,11 @@ export class CalendarPageComponent implements OnInit {
           ...this.calendarOptions,
           events: this.events
         };
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error obtenint bookings', err);
+        this.isLoading = false;
       }
     });
   }

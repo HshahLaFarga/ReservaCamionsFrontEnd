@@ -39,7 +39,7 @@ export class CalendarModalComponent implements OnInit {
   events: any[] = [];
 
   eventsPromise!: Promise<EventInput[]>;
-
+  isLoading: boolean = false;
 
   calendarOptions: CalendarOptions = {
     schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
@@ -68,28 +68,30 @@ export class CalendarModalComponent implements OnInit {
   }
 
   getAllBookings() {
+    this.isLoading = true;
     this._calendarModalService.getAllBookings().subscribe({
       next: (response) => {
         this.bookings = response;
-        console.log(this.data.muelles.map((data: Muelle) => ({ id: data.numero, title: data.nombre_muelle })));
         this.bookings = this.bookings.filter(({muelle1_id}) => this.data.muelles.map((data: Muelle) => (data.numero)).includes(muelle1_id));
-        this.events = this.bookings.map(({ reserva_id, inicio1, fin1 }) => {
-
+        this.events = this.bookings.map(({ muelle1_id, inicio1, fin1 }) => {
           return {
-            resourceId: reserva_id,
+            resourceId: muelle1_id,
             title: 'Ocupado',
-            start: inicio1,
-            end: fin1,
+            start: new Date(inicio1),
+            end: new Date(fin1),
           };
         });
-        console.log(this.bookings);
+
         this.calendarOptions = {
           ...this.calendarOptions,
           events: this.events
         };
+
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error obtenint bookings', err);
+        this.isLoading = false;
       }
     });
   }

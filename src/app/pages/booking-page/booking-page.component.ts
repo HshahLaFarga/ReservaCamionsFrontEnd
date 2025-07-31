@@ -8,6 +8,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { BookingPageService } from './booking-page.service';
 import { Router } from '@angular/router';
 import { Booking } from '../../core/models/booking.module';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmData, ConfirmModalComponent } from '../../shared/components/confirm-modal/confirm-modal.component';
+import { formatDate } from '../../shared/utils/date.utils';
 
 @Component({
   selector: 'app-reservation-page',
@@ -20,7 +23,8 @@ export class BookingPageComponent implements OnInit {
 
   constructor(
       private _bookingService: BookingPageService,
-      private router: Router
+      private router: Router,
+      private dialog: MatDialog
   ) { }
 
   displayedColumns: string[] = [
@@ -36,44 +40,30 @@ export class BookingPageComponent implements OnInit {
     'acciones'
   ];
 
-  data = [
-    {
-      hora_inicio: '08:00',
-      tipo_camion: 'Gran tonelatge',
-      matricula: '1234 ABC',
-      id_materials: 'MAT001',
-      muelle: 'A1',
-      cantidad: 50,
-      id_proveedor: 'PROV123',
-      pedido: 'PED001',
-      documentos: 'DOC001'
-    },
-  ];
-
   pagedData: any[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit() {
     this.getAllBookings();
-
   }
 
+  // Paginació
   onPageChange(event: PageEvent) {
     this.updatePagedData(event.pageIndex, event.pageSize);
-  }
 
+  }
   updatePagedData(pageIndex: number, pageSize: number) {
     const startIndex = pageIndex * pageSize;
     const endIndex = startIndex + pageSize;
     this.pagedData = this.bookings.slice(startIndex, endIndex);
   }
 
+  // Obtenir totes les reserves
   getAllBookings() {
     this._bookingService.getAllBookings().subscribe({
         next: (response) => {
           this.bookings = response;
-          console.log(this.bookings);
           this.updatePagedData(0, 10);
         },
         error: (err) => {
@@ -81,18 +71,49 @@ export class BookingPageComponent implements OnInit {
         }
       });
   }
+
+  // Quan selecciona nova reserva
   onAdd() {
     this.router.navigate(['/bookings/add']);
   }
 
-  onEdit(book: Booking){
-
+  // Quan seleccionar editar reserva
+  onEdit(book: Booking) {
+    this.router.navigate(['/bookings/edit'], {
+      state: {
+        book: { ...book },
+        method: 'update'
+      }
+    });
   }
 
-  onDelete(book: Booking){
+  // Quan seleeciona eliminar reserva
+  onDelete(booking: Booking){
+    // Construim objecte per passar al modal de confimració
+    const modalInformation: ConfirmData = {
+      title: 'Eliminación de Reserva',
+      message: `¿Está seguro de que desea eliminar la reserva desde el <strong>${formatDate(booking.inicio1)}</strong> hasta el <strong>${formatDate(booking.fin1)}</strong>?`
+    };
 
+    const dialogRef = this.dialog.open(ConfirmModalComponent, {
+      maxWidth: '95vw',
+      width: '65%',
+      maxHeight: '90vh',
+      data: modalInformation,
+      panelClass: 'app-confirm-modal',
+    });
+
+    dialogRef.afterClosed().subscribe((result: Boolean) => {
+      if (result === true) {
+      // Usuari ha acceptat, crida servei per eliminar
+      this._bookingService.deleteBooking(booking).subscribe(() => {
+        this.getAllBookings();
+      });
+    }
+    });
   }
 
+  // Quan selecciona imprimir reserva
   onPrint(book: Booking){
 
   }

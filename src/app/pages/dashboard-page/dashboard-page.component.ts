@@ -14,7 +14,7 @@ import { DashboardOption } from '../../core/models/dashboard.model';
 
 export class DashboardPageComponent {
   // Simula permisos del usuario
-  userPermissions = ['reservas', 'perfil','calendario'];
+  userPermissions = ['reservas', 'perfil','calendario','material'];
 
   // Array amb totes les opcions possibles
   private allOptions: DashboardOption[] = [
@@ -38,6 +38,13 @@ export class DashboardPageComponent {
       route: '/profile',
       permission: 'perfil',
       descriptionKey: 'Actualiza tu perfil'
+    },
+    {
+      labelKey: 'BLOQUEO MATERIALES',
+      icon: 'material',
+      route: '/materials/lock',
+      permission: 'material',
+      descriptionKey: 'Listado materiales bloqueados'
     },
   ];
 

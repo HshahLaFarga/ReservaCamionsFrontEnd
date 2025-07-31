@@ -1,0 +1,96 @@
+<div class="p-8 max-w-5xl mx-auto bg-white rounded shadow space-y-6">
+
+  <h1 class="text-2xl font-bold text-gray-800 mb-4">
+    {{ method === 'update' ? 'Modificar Pedido' : 'Nou Pedido' }}
+  </h1>
+
+  <form [formGroup]="pedidoForm" (ngSubmit)="onSubmit()" class="space-y-6">
+
+    <!-- Tipo Proveedor -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Tipo Proveedor</label>
+      <select formControlName="tipo_proveedor_id"
+        class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+        <option *ngFor="let provider_type of providers_type" [value]="provider_type.tipo_proveedor_id">
+          {{ provider_type.nombre }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Cantidad Total -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Cantidad Total</label>
+      <input type="number" formControlName="cantidad_total"
+        class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+        min="1" />
+    </div>
+
+
+    <!-- Cantidad Disponible -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Cantidad Disponible</label>
+      <p class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+        {{ pedidoForm.get('cantidad_disponible')?.value}}
+      </p>
+    </div>
+
+    <!-- Fecha Desde -->
+    <div>
+      <label class="block font-medium text-gray-700">Fecha Desde</label>
+      <input type="date" formControlName="fecha_desde"
+        class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+    </div>
+
+    <!-- Fecha Hasta -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Fecha Hasta</label>
+      <input type="date" formControlName="fecha_hasta"
+        class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+    </div>
+
+    <!-- Materiales -->
+    <mat-form-field class="w-full" appearance="fill">
+      <mat-label>Afegeix un material al grup</mat-label>
+      <input type="text" matInput [formControl]="materialControl" [matAutocomplete]="auto"
+        [ngModel]="materialControl.value?.nombre_material || materialControl.value" />
+
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onMaterialSelected($event.option.value)">
+        <mat-option *ngFor="let material of filteredMaterials" [value]="material">
+          {{ material.nombre_material }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <!-- Materials seleccionats -->
+    <div *ngIf="selectedMaterials.length > 0" class="mt-4">
+      <p class="font-semibold text-gray-700">Materials del grup:</p>
+      <div class="flex flex-wrap gap-2 border p-4 rounded bg-gray-50">
+        <div *ngFor="let material of selectedMaterials; let i = index"
+          class="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+          {{ material.nombre_material }}
+          <button (click)="deleteMaterialFromArray(i)" class="ml-2 text-red-500 hover:text-red-700 focus:outline-none"
+            title="Eliminar material">
+            ✖
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botó Enviar -->
+    <div class="text-right pt-4">
+      <button type="submit" [disabled]="pedidoForm.invalid" [ngClass]="{
+        'bg-green-600 hover:bg-green-700': pedidoForm.valid,
+        'bg-green-800 opacity-65 cursor-not-allowed': pedidoForm.invalid
+      }" class="px-6 py-2 text-white rounded transition">
+        {{ method === 'update' ? 'Modificar Pedido' : 'Enviar Pedido' }}
+      </button>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="isLoading" class="absolute inset-0 bg-white/60 flex items-center justify-center z-20">
+  <div class="flex text-center items-center gap-3">
+    <div class="loader animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mb-2"></div>
+    <p class="text-gray-700">Carregant...</p>
+  </div>
+</div>

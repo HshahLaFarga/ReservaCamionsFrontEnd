@@ -1,0 +1,40 @@
+<form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6 max-w-xl mx-auto p-6 bg-white rounded shadow">
+  <div *ngFor="let col of columns" class="mb-4">
+    <ng-container *ngIf="col.Field !== 'id' && !col.Extra.includes('auto_increment')">
+
+      <label class="block mb-1 text-gray-700 font-medium" [for]="col.Field">{{ col.Field }}</label>
+
+      <!-- Si és camp de tipus select -->
+      <ng-container *ngIf="selectFields[col.Field]; else normalInput">
+        <select
+          [formControlName]="col.Field"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          [id]="col.Field"
+        >
+          <option value="">-- Selecciona {{ col.Field }} --</option>
+          <option *ngFor="let opt of selectOptions[col.Field]" [value]="opt[selectFields[col.Field].valueField]">
+            {{ opt[selectFields[col.Field].labelField] }}
+          </option>
+        </select>
+      </ng-container>
+
+      <!-- Input normal -->
+      <ng-template #normalInput>
+        <input
+          [type]="getInputType(col.Type)"
+          [formControlName]="col.Field"
+          [id]="col.Field"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </ng-template>
+    </ng-container>
+  </div>
+
+  <button
+    type="submit"
+    [disabled]="form.invalid"
+    class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+  >
+    Guardar
+  </button>
+</form>

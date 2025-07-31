@@ -19,3 +19,10 @@ export const formatDateToMySQL = (dateStr: string): string => {
   const ss = String(date.getSeconds()).padStart(2, '0');
   return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
 }
+// true -> passa el formulari   false -> error al formulari
+export function dateRangeValidator(initialDate: string, endDate: string): Boolean {
+    if (new Date(initialDate) > new Date(endDate)) {
+      return false;
+    }
+    return true;
+}

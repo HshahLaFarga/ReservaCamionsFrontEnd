@@ -1,0 +1,16 @@
+<div class="flex items-center justify-start mb-4 gap-6">
+  <h1 class="text-2xl font-bold">Bloqueo Grupo Materiales</h1>
+  <button
+    (click)="onAdd()"
+    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+  >
+    Añadir Bloqueo Material
+  </button>
+</div>
+
+<app-generic-list
+  [items]="lockedMaterials"
+  [columns]="columns"
+  (edit)="onEdit($event.object)"
+  (delete)="onDelete($event.object)">
+</app-generic-list>

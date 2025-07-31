@@ -12,3 +12,8 @@ export interface Provider {
   tel2: string,
   tipo_proveedor_id: number,
 }
+
+export interface ProviderType {
+  tipo_proveedor_id: number,
+  nombre: string,
+}

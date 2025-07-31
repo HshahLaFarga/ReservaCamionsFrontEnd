@@ -21,5 +21,7 @@ export interface Booking {
   "notas": string,
   "tel1"?: string,
   "duracion1": number,
-  "duracion2"?: string
+  "duracion2"?: string,
+  // NO consta a l'interfície, però és necessàri per poder carregar els arxius
+  "archivos"?: File[]
 }

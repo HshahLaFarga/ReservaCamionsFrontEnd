@@ -1,0 +1,8 @@
+<h1 class="text-2xl font-bold mb-4">Llistat de Proveïdors</h1>
+
+<app-generic-list
+  [items]="providers"
+  [columns]="columns"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)">
+</app-generic-list>

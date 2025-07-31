@@ -1,0 +1,72 @@
+import { Component, OnInit } from '@angular/core';
+import { GenericListComponent } from '../../shared/components/generic-list/generic-list.component';
+import { MaterialLockPageService } from './material-lock-page.service';
+import { MaterialLock } from '../../core/models/material-lock.module';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-material-lock-page',
+  standalone: true,
+  templateUrl: './material-lock-page.component.html',
+  imports: [GenericListComponent],
+})
+
+export class MaterialLockPageComponent implements OnInit {
+  lockedMaterials: any[] = [];
+
+  columns = [
+    { key: 'nombre', label: 'Nombre Proveedor' },
+    { key: 'materiales', label: 'Nombre Materiales' },
+    { key: 'cantidad', label: 'Cantidad Total' },
+    { key: 'cantidadDisponible', label: 'Cantidad Disponible' },
+    { key: 'inicio', label: 'Data Inicio' },
+    { key: 'fin', label: 'Data Fin' },
+  ];
+
+  constructor(
+    private _materialLockPageService: MaterialLockPageService,
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+    this.loadDefaultData();
+  }
+
+  loadDefaultData(){
+    this.getMaterials();
+  }
+
+  getMaterials(){
+    this._materialLockPageService.getMaterialLocks().subscribe({
+    next: (lockedMaterials: MaterialLock[]) => {
+      console.log(lockedMaterials);
+      this.lockedMaterials = lockedMaterials.map((materialLock) => {
+        return {
+          nombre: materialLock.proveedor.nombre,
+          materiales: materialLock.detalles.length === 0? 'No hi han materials assignats' : materialLock.detalles.map(({material}) => `${material.nombre_material}`).join('<br>'),
+          cantidad: materialLock.cantidad_total,
+          cantidadDisponible: materialLock.cantidad_disponible,
+          inicio: materialLock.fecha_desde,
+          fin: materialLock.fecha_hasta,
+          object: materialLock
+        }
+      });
+    },
+    error: err => {
+      console.error('Error getting providers ' + err);
+    }
+    })
+  }
+
+  onAdd() {
+    this.router.navigate(['/materials/lock/add'])
+  }
+
+  onEdit(item: MaterialLock) {
+    console.log('Editar', item);
+  }
+
+  onDelete(item: MaterialLock) {
+    console.log('Esborrar', item);
+  }
+}

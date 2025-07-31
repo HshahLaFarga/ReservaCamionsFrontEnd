@@ -7,7 +7,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, SidebarComponent, NavbarComponent, TranslateModule],  // <--- importante
+  imports: [RouterOutlet, SidebarComponent, NavbarComponent, TranslateModule], 
   templateUrl: 'main-layout.component.html',
   styles: []
 })

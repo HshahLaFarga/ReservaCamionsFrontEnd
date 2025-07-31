@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../core/envoirment/envoirment';
+import { Booking } from '../../core/models/booking.module';
 // import { Profile } from './reservation-page.types';
 
 @Injectable({
@@ -14,5 +15,9 @@ export class BookingPageService {
 
   getAllBookings(): Observable<any> {
     return this.http.get(`${environment.apiBaseUrl}/reserva`, { withCredentials: true});
+  }
+
+  deleteBooking(booking: Booking): Observable<any>{
+    return this.http.delete(`${environment.apiBaseUrl}/reserva/${booking.reserva_id}`, { withCredentials: true});
   }
 }
