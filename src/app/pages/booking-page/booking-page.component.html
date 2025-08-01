@@ -64,7 +64,7 @@
     <!-- Documentos -->
     <ng-container matColumnDef="documentos">
       <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.DOCUMENTOS' | translate }} </th>
-      <td mat-cell *matCellDef="let booking"> {{ booking.documentos }} </td>
+      <td mat-cell *matCellDef="let booking" [innerHtml]="booking.docNames">  </td>
     </ng-container>
 
     <!-- Accions -->

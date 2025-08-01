@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { switchMap, tap } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { environment } from '../../../core/envoirment/envoirment';
@@ -15,11 +15,16 @@ export class LoginService {
     private http: HttpClient
   ) { }
 
-  // auth.service.ts o similar
   login(email: string, password: string): Observable<any> {
-    return this.http.get('http://localhost/sanctum/csrf-cookie', { withCredentials: true }).pipe(
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Referer': environment.refererHeader
+    });
+
+    return this.http.get('http://localhost/sanctum/csrf-cookie', { withCredentials: true}).pipe(
       switchMap(() => {
         return this.http.post('http://localhost/api/login', { email, password }, {
+          headers,
           withCredentials: true
         }).pipe(
           tap(() => this._isLoggedIn.next(true))

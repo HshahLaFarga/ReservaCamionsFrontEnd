@@ -57,6 +57,7 @@ export class BookingPageComponent implements OnInit {
     const startIndex = pageIndex * pageSize;
     const endIndex = startIndex + pageSize;
     this.pagedData = this.bookingsFormated.slice(startIndex, endIndex);
+    console.log(this.pagedData);
   }
 
   // Obtenir totes les reserves
@@ -64,11 +65,13 @@ export class BookingPageComponent implements OnInit {
     this._bookingService.getAllBookings().subscribe({
         next: (response) => {
           this.bookings = response;
-
-
           // Filtrem els noms perquè quedin més centrats
-          this.bookingsFormated = this.bookings.map((booking) => booking.documentos?.map((document) => document.name));
-          console.log(this.bookingsFormated);
+          this.bookingsFormated = this.bookings.map((booking) => {
+            return  {
+              ...booking,
+              docNames: booking.documentos?.map((document) => document.name).join('<br>')
+            }
+          });
           this.updatePagedData(0, 10);
         },
         error: (err) => {
