@@ -12,6 +12,6 @@ export class DashboardService {
   ) {}
 
   getUsers(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/users`, { withCredentials: true});
+    return this.http.get(`${environment.apiBaseUrl}/users`);
   }
 }

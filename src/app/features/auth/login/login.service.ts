@@ -13,7 +13,7 @@ export class LoginService {
 
   constructor(
     private http: HttpClient
-  ) { } 
+  ) { }
   // auth.service.ts o similar
   // Función para obtener el valor limpio de la cookie XSRF-TOKEN
 getCSRFToken(): string | null {
@@ -29,7 +29,7 @@ getCSRFToken(): string | null {
 }
 
 login(email: string, password: string): Observable<any> {
-  return this.http.get('http://localhost/sanctum/csrf-cookie', { withCredentials: true }).pipe(
+  return this.http.get('http://localhost/sanctum/csrf-cookie').pipe(
     switchMap(() => {
       const token = this.getCSRFToken();
 
@@ -39,7 +39,6 @@ login(email: string, password: string): Observable<any> {
       });
 
       return this.http.post('http://localhost/api/login', { email, password }, {
-        withCredentials: true,
         headers,
       }).pipe(
         tap(() => this._isLoggedIn.next(true))

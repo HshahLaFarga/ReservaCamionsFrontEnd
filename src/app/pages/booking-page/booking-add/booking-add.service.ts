@@ -13,30 +13,30 @@ export class BookingAddService {
   ) {}
 
   getAllTrucks(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/tipo_camion`, { withCredentials: true});
+    return this.http.get(`${environment.apiBaseUrl}/tipo_camion`);
   }
 
   getAllMaterials(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/materiales`, { withCredentials: true});
+    return this.http.get(`${environment.apiBaseUrl}/materiales`);
   }
 
   getAvailableTrucks(materiales: number[]): Observable<any>{
-    return this.http.post(`${environment.apiBaseUrl}/controlCamion`,{ materiales }, { withCredentials: true});
+    return this.http.post(`${environment.apiBaseUrl}/controlCamion`,{ materiales });
   }
 
   getStatus(): Observable<any>{
-    return this.http.get(`${environment.apiBaseUrl}/status`, { withCredentials: true});
+    return this.http.get(`${environment.apiBaseUrl}/status`);
   }
 
   getProvider(): Observable<any>{
-    return this.http.get(`${environment.apiBaseUrl}/proveedores`, { withCredentials: true});
+    return this.http.get(`${environment.apiBaseUrl}/proveedores`);
   }
 
   getCarriers(): Observable<any>{
-    return this.http.get(`${environment.apiBaseUrl}/transportistas`, { withCredentials: true});
+    return this.http.get(`${environment.apiBaseUrl}/transportistas`);
   }
 
   createReservation(booking: Booking): Observable<any> {
-    return this.http.post(`${environment.apiBaseUrl}/reserva`,booking, { withCredentials: true});
+    return this.http.post(`${environment.apiBaseUrl}/reserva`,booking);
   }
 }

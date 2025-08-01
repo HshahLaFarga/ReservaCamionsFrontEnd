@@ -13,6 +13,6 @@ export class ProfilePageService {
   ) {}
 
   updateProfile(user: Profile): Observable<any> {
-    return this.http.put(`${environment.apiBaseUrl}/users/${'4'}`,user, { withCredentials: true});
+    return this.http.put(`${environment.apiBaseUrl}/users/${'4'}`,user);
   }
 }

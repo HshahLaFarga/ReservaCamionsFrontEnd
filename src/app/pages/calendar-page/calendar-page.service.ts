@@ -12,6 +12,6 @@ export class CalendarPageService {
   ) {}
 
   getAllBookings(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/reserva`, { withCredentials: true});
+    return this.http.get(`${environment.apiBaseUrl}/reserva`);
   }
 }
