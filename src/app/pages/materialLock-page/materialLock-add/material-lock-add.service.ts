@@ -12,14 +12,14 @@ export class MaterialLockAddService {
   ) { }
 
   getTypeProviders(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/tipo_proveedores`, { withCredentials: true });
+    return this.http.get(`${environment.apiBaseUrl}/tipoproveedores`);
   }
 
   getMaterials(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/materiales`, { withCredentials: true });
+    return this.http.get(`${environment.apiBaseUrl}/materiales`);
   }
 
   storeMaterial(materialLock: any): Observable<any> {
-    return this.http.post(`${environment.apiBaseUrl}/bloqueo_grupos`, materialLock , { withCredentials: true });
+    return this.http.post(`${environment.apiBaseUrl}/bloqueo/grupos`, materialLock );
   }
 }

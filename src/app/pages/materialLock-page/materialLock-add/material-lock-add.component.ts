@@ -105,7 +105,7 @@ export class MaterialLockAddComponent implements OnInit {
   onSubmit() {
     if (!this.pedidoForm.invalid) {
       const materialLock = {
-        tipo_proveedor: this.pedidoForm.get('tipo_proveedor_id')?.value,
+        tipo_proveedor_id: parseInt(this.pedidoForm.get('tipo_proveedor_id')?.value),
         cantidad_total: this.pedidoForm.get('cantidad_total')?.value,
         cantidad_disponible: this.pedidoForm.get('cantidad_disponible')?.value,
         fecha_desde: this.pedidoForm.get('fecha_desde')?.value,
@@ -130,6 +130,7 @@ export class MaterialLockAddComponent implements OnInit {
 
       this._materialLockAddService.storeMaterial(materialLock).subscribe({
         next: (value) => {
+          console.log('entra?');
           this.router.navigate(['/materials/lock']);
         },
         error: (err) => {

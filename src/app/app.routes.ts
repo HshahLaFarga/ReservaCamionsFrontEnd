@@ -7,16 +7,15 @@ import { CalendarPageComponent } from './pages/calendar-page/calendar-page.compo
 import { ProviderPageComponent } from './pages/provider-page/provider-page.component';
 import { MaterialLockPageComponent } from './pages/materialLock-page/material-lock-page.component';
 import { MaterialLockAddComponent } from './pages/materialLock-page/materialLock-add/material-lock-add.component';
-// import { DemoModule } from './pages/calendar-page/calendar-page.module';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   {
     path: '',
     component: MainLayoutComponent,
-    data: {
-        layout: 'empty'
-    },
+    canActivate: [authGuard],
+    
     children: [
       { path: 'dashboard', component: DashboardPageComponent },
       { path: 'calendar', component: CalendarPageComponent},

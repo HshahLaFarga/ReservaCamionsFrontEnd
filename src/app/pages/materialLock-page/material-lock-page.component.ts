@@ -39,7 +39,6 @@ export class MaterialLockPageComponent implements OnInit {
   getMaterials(){
     this._materialLockPageService.getMaterialLocks().subscribe({
     next: (lockedMaterials: MaterialLock[]) => {
-      console.log(lockedMaterials);
       this.lockedMaterials = lockedMaterials.map((materialLock) => {
         return {
           nombre: materialLock.proveedor.nombre,
@@ -67,6 +66,13 @@ export class MaterialLockPageComponent implements OnInit {
   }
 
   onDelete(item: MaterialLock) {
-    console.log('Esborrar', item);
+    this._materialLockPageService.deleteMateialLocks(item).subscribe({
+      next: (value) => {
+        this.loadDefaultData();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    })
   }
 }

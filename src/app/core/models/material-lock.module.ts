@@ -3,7 +3,7 @@ import { MaterialLockDetail } from "./material-lock-detail.module"
 import { Provider } from "./provider.module"
 
 export interface MaterialLock {
-  bloqueo_material_id: number,
+  bloqueo_grupo_id: number,
   tipo_proveedor: number,
   cantidad_total: number,
   cantidad_disponible: number,

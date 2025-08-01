@@ -9,15 +9,23 @@ import { MaterialLock } from '../../core/models/material-lock.module';
 })
 
 export class MaterialLockPageService {
-    constructor(
+  constructor(
     private http: HttpClient
-  ) {}
+  ) { }
 
   getMaterialLocks(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/bloqueo/grupos`, { withCredentials: true});
+    return this.http.get(`${environment.apiBaseUrl}/bloqueo/grupos`);
   }
 
   storeMaterialLocks(materialLock: MaterialLock): Observable<any> {
-    return this.http.post(`${environment.apiBaseUrl}/bloqueo/grupos`,materialLock, { withCredentials: true});
+    return this.http.post(`${environment.apiBaseUrl}/bloqueo/grupos`, materialLock);
+  }
+
+  deleteMateialLocks(materialLock: MaterialLock): Observable<any> {
+    return this.http.delete(`${environment.apiBaseUrl}/bloqueo/grupos/${materialLock.bloqueo_grupo_id}`);
+  }
+
+  updateMaterialLocks(materialLock: MaterialLock): Observable<any> {
+    return this.http.put(`${environment.apiBaseUrl}/bloqueo/grupos/${materialLock.bloqueo_grupo_id}`, materialLock);
   }
 }

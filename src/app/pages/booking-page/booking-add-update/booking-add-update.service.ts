@@ -13,37 +13,34 @@ export class BookingAddService {
   ) {}
 
   getAllTrucks(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/tipo_camion`, { withCredentials: true});
+    return this.http.get(`${environment.apiBaseUrl}/tipocamiones`);
   }
 
   getAllMaterials(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/materiales`, { withCredentials: true});
+    return this.http.get(`${environment.apiBaseUrl}/materiales`);
   }
 
-  getAvailableTrucks(materiales: number[], restrictions: boolean): Observable<any>{
-    // Apliquem aquest filtre per evitar que a l'hora de carregar el filtre de l'update, es passi 0 com a material 2
-    const materialsFiltrats = materiales.filter(material => material !== 0);
-    return this.http.post(`${environment.apiBaseUrl}/controlCamion`,{ materiales: materialsFiltrats, restricciones: restrictions}, { withCredentials: true});
+  getAvailableTrucks(materiales: number[], requirements: boolean): Observable<any>{
+    return this.http.post(`${environment.apiBaseUrl}/controlCamion`,{ materiales, restricciones:requirements });
   }
 
   getStatus(): Observable<any>{
-    return this.http.get(`${environment.apiBaseUrl}/status`, { withCredentials: true});
+    return this.http.get(`${environment.apiBaseUrl}/status`);
   }
 
   getProvider(): Observable<any>{
-    return this.http.get(`${environment.apiBaseUrl}/proveedores`, { withCredentials: true});
+    return this.http.get(`${environment.apiBaseUrl}/proveedores`);
   }
 
   getCarriers(): Observable<any>{
-    return this.http.get(`${environment.apiBaseUrl}/transportistas`, { withCredentials: true});
+    return this.http.get(`${environment.apiBaseUrl}/transportistas`);
   }
 
   createReservation(booking: any): Observable<any> {
-    console.log('creat ' + booking);
-    return this.http.post(`${environment.apiBaseUrl}/reserva`,booking, { withCredentials: true});
+    return this.http.post(`${environment.apiBaseUrl}/reserva`,booking);
   }
   updateReservation(booking: any): Observable<any> {
     console.log(booking);
-    return this.http.put(`${environment.apiBaseUrl}/reserva/${booking.reserva_id}`,booking, { withCredentials: true});
+    return this.http.put(`${environment.apiBaseUrl}/reserva/${booking.reserva_id}`,booking);
   }
 }

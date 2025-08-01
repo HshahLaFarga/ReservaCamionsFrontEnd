@@ -12,7 +12,7 @@ import { ProviderPageService } from './provider-page.service';
 
 export class ProviderPageComponent implements OnInit {
   providers: Provider[] = [];
-    // { key: 'id', label: 'ID' },
+  
   columns = [
     { key: 'nombre', label: 'Nombre Proveedor' },
     { key: 'NIF', label: 'NIF' },
