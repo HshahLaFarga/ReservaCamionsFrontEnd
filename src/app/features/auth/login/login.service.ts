@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpHeaders } from '@angular/common/http';
 import { switchMap, tap } from 'rxjs/operators';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { environment } from '../../../core/envoirment/envoirment';
@@ -14,24 +14,39 @@ export class LoginService {
   constructor(
     private http: HttpClient
   ) { }
-
-  login(email: string, password: string): Observable<any> {
-    const headers = new HttpHeaders({
-      'Accept': 'application/json',
-      'Referer': environment.refererHeader
-    });
-
-    return this.http.get('http://localhost/sanctum/csrf-cookie', { withCredentials: true}).pipe(
-      switchMap(() => {
-        return this.http.post('http://localhost/api/login', { email, password }, {
-          headers,
-          withCredentials: true
-        }).pipe(
-          tap(() => this._isLoggedIn.next(true))
-        );
-      })
-    );
+  // auth.service.ts o similar
+  // Función para obtener el valor limpio de la cookie XSRF-TOKEN
+getCSRFToken(): string | null {
+  const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+  if (match && match[1]) {
+    try {
+      return decodeURIComponent(match[1]);
+    } catch {
+      return match[1];
+    }
   }
+  return null;
+}
+
+login(email: string, password: string): Observable<any> {
+  return this.http.get('http://localhost/sanctum/csrf-cookie', { withCredentials: true }).pipe(
+    switchMap(() => {
+      const token = this.getCSRFToken();
+
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        ...(token ? { 'X-XSRF-TOKEN': token } : {})
+      });
+
+      return this.http.post('http://localhost/api/login', { email, password }, {
+        withCredentials: true,
+        headers,
+      }).pipe(
+        tap(() => this._isLoggedIn.next(true))
+      );
+    })
+  );
+}
 
 
 
