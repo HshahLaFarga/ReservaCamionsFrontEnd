@@ -93,7 +93,7 @@ export class MaterialLockAddComponent implements OnInit {
       this.selectedMaterials.push(selected);
       this.pedidoForm.get('materiales')?.setValue(this.selectedMaterials);
     }
-    this.materialControl.setValue(''); // Neteja l’input
+    this.materialControl.setValue('');
   }
 
   deleteMaterialFromArray(index: number): void {

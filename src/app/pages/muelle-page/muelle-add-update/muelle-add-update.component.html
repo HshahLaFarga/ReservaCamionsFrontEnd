@@ -1,0 +1,20 @@
+<app-generic-form *ngIf="method === 'update'"
+  formTitle="Editar Muelles"
+  tableName="muelles"
+  [selectFields]="{
+    empresa_id: { api: 'empresas', labelField: 'nombre', valueField: 'empresa_id', label: 'Empresa' }
+  }"
+  [excludedFields]="['created_at','updated_at']"
+  [initialData]="initialMuelleData"
+  (submitForm)="onSubmit($event)">
+</app-generic-form>
+
+<app-generic-form *ngIf="method === 'post'"
+  formTitle="Añadir Muelles"
+  tableName="muelles"
+  [selectFields]="{
+    empresa_id: { api: 'empresas', labelField: 'nombre', valueField: 'empresa_id', label: 'Empresa' }
+  }"
+  [excludedFields]="['created_at','updated_at']"
+  (submitForm)="onSubmit($event)">
+</app-generic-form>

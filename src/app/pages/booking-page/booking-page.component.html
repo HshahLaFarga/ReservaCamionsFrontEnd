@@ -22,7 +22,7 @@
     <!-- Tipo de camión 1 -->
     <ng-container matColumnDef="tipo_camion">
       <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.TIPO_CAMION' | translate }} </th>
-      <td mat-cell *matCellDef="let booking"> {{ booking.tipo_camion_id }} </td>
+      <td mat-cell *matCellDef="let booking"> {{ booking.tipo_camion.nombre }} </td>
     </ng-container>
 
     <!-- Matrícula camión 1 -->
@@ -33,8 +33,12 @@
 
     <!-- ID materials -->
     <ng-container matColumnDef="id_materials">
-      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.ID_MATERIALS' | translate }} </th>
-      <td mat-cell *matCellDef="let booking"> {{ booking.tipo_material1_id }} </td>
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'BOOKING_PAGE.ID_MATERIALS' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let booking">
+        {{ booking.material1 ? booking.material.nombre_material + ' - ' + booking.material1.nombre_material : booking.material?.nombre_material }}
+      </td>
     </ng-container>
 
     <!-- Muelle -->
@@ -52,7 +56,7 @@
     <!-- ID Proveedor -->
     <ng-container matColumnDef="id_proveedor">
       <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.ID_PROVEEDOR' | translate }} </th>
-      <td mat-cell *matCellDef="let booking"> {{ booking.proveedor_id }} </td>
+      <td mat-cell *matCellDef="let booking"> {{ booking.proveedor.nombre }} </td>
     </ng-container>
 
     <!-- Pedido -->
@@ -64,8 +68,15 @@
     <!-- Documentos -->
     <ng-container matColumnDef="documentos">
       <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.DOCUMENTOS' | translate }} </th>
-      <td mat-cell *matCellDef="let booking" [innerHtml]="booking.docNames">  </td>
+      <td mat-cell *matCellDef="let booking">
+        <div *ngFor="let doc of booking.documentos">
+          <button (click)="getFile(doc.url)" class="text-blue-600 underline hover:text-blue-800">
+            {{ doc.name }}
+          </button>
+        </div>
+      </td>
     </ng-container>
+
 
     <!-- Accions -->
     <ng-container matColumnDef="acciones">

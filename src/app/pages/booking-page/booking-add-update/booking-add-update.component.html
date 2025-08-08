@@ -180,6 +180,15 @@
         {{method === 'update'? 'Modificar Pedido' : 'Enviar Pedido'}}
       </button>
     </div>
+    <div *ngIf="method === 'update'">
+      <h2 class="text-lg font-semibold text-gray-800 mb-4">Archivos existentes en esta reserva</h2>
+      <div *ngFor="let file of existingFiles" class="flex items-center gap-2">
+        <span>{{ file.name }}</span>
+        <button type="button" (click)="deleteFile(file)" class="text-red-600 hover:text-red-800">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
   </form>
 </div>
 <div *ngIf="isLoading" class="absolute inset-0 bg-white/60 flex items-center justify-center z-20">

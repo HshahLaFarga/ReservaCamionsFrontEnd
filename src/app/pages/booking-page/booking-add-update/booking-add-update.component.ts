@@ -13,14 +13,17 @@ import { MatOptionModule } from '@angular/material/core';
 import { forkJoin, Observable, map, startWith } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { Trucks } from '../../../core/models/truck.module';
+import { Truck } from '../../../core/models/truck.module';
 import { Muelle } from '../../../core/models/muelle.module';
 import { Material } from '../../../core/models/material.module';
 import { Status } from '../../../core/models/status.module';
 import { Provider } from '../../../core/models/provider.module';
 import { Carrier } from '../../../core/models/carrier.module';
 import { CalendarReservation } from '../../../core/models/calendar.module';
-import { Booking } from '../../../core/models/booking.module';
+import { Booking, BookingDocument } from '../../../core/models/booking.module';
+import { MatIconModule } from '@angular/material/icon';
+import { ConfirmData, ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-booking-add',
@@ -33,14 +36,18 @@ import { Booking } from '../../../core/models/booking.module';
     MatInputModule,
     MatAutocompleteModule,
     MatOptionModule,
+    MatIconModule,
   ],
 })
 export class BookingAddComponent implements OnInit {
   pedidoForm!: FormGroup;
   formatDate = formatDate;
 
-  trucks: Trucks[] = [];
-  mollsDisponibles: { camionesDisponibles: Trucks[]; muellesDisponibles: Muelle[] } = {
+  // Fitxers ja existents
+  existingFiles: BookingDocument[] = [];
+
+  trucks: Truck[] = [];
+  mollsDisponibles: { camionesDisponibles: Truck[]; muellesDisponibles: Muelle[] } = {
     camionesDisponibles: [],
     muellesDisponibles: [],
   };
@@ -73,9 +80,10 @@ export class BookingAddComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private bookingService: BookingAddService,
+    private _bookingService: BookingAddService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -156,10 +164,10 @@ export class BookingAddComponent implements OnInit {
     // Fem el fork join per poder fer totes les peticions
     // i un cop tinguem la info de totes entre dins del subscribe
     forkJoin({
-      materials: this.bookingService.getAllMaterials(),
-      status: this.bookingService.getStatus(),
-      providers: this.bookingService.getProvider(),
-      carriers: this.bookingService.getCarriers(),
+      materials: this._bookingService.getAllMaterials(),
+      status: this._bookingService.getStatus(),
+      providers: this._bookingService.getProvider(),
+      carriers: this._bookingService.getCarriers(),
     }).subscribe(({ materials, status, providers, carriers }) => {
       this.materials = materials;
       this.status = status;
@@ -175,6 +183,7 @@ export class BookingAddComponent implements OnInit {
         this.booking = state.book!;
         this.changeToUpdateForm();
         this.disableCleanMaterials = true;
+        this.existingFiles = this.booking.documentos || [];
       }
       this.isLoading = false;
     });
@@ -199,7 +208,7 @@ export class BookingAddComponent implements OnInit {
       return;
     }
     // Consultem els trucks disponibles amb les restriccions
-    this.bookingService.getAvailableTrucks(materiales, true).subscribe(data => {
+    this._bookingService.getAvailableTrucks(materiales, true).subscribe(data => {
       this.mollsDisponibles = data;
       // Validació que es faci un update el primer autocompletat,
       // no s'assigni la info per defecte a tipo_camion
@@ -245,83 +254,117 @@ export class BookingAddComponent implements OnInit {
       }
     });
   }
-  
+
   // Validacions modal
   isCalendarValid(): boolean {
     const cantidad0 = this.pedidoForm.get('cantidad0')?.value;
 
-    if (!this.pedidoForm.get('tipoCamion')?.value || !this.pedidoForm.get('material0')?.value) return false;
-    if (cantidad0 < 200 || cantidad0 > 30000) return false;
+    if (!this.pedidoForm.get('tipoCamion')?.value || !this.pedidoForm.get('material0')?.value) {
+      this.toastr.error(
+        'Debe seleccionar un tipo de camión y al menos un material antes de continuar.',
+        'Error en el formulario'
+      );
+      return false;
+    }
+
+    if (cantidad0 < 200 || cantidad0 > 30000) {
+      this.toastr.error(
+        'La cantidad del primer material debe estar entre 200 y 30.000 kg.',
+        'Cantidad inválida'
+      );
+      return false;
+    }
+
     if (this.pedidoForm.get('numeroDescargas')?.value === '2') {
-      if (this.pedidoForm.get('material0')?.value == this.pedidoForm.get('material1')?.value) return false;
+      if (this.pedidoForm.get('material0')?.value === this.pedidoForm.get('material1')?.value) {
+        this.toastr.error(
+          'Se han indicado dos descargas, pero el material es el mismo. Por favor, seleccione un segundo material distinto.',
+          'Error en materiales'
+        );
+        return false;
+      }
+
       const cantidad1 = this.pedidoForm.get('cantidad1')?.value;
-      if (!this.pedidoForm.get('material1')?.value || cantidad1 < 200 || cantidad1 > 30000) return false;
+      if (!this.pedidoForm.get('material1')?.value || cantidad1 < 200 || cantidad1 > 30000) {
+        this.toastr.error(
+          'La cantidad del segundo material debe estar entre 200 y 30.000 kg.',
+          'Cantidad inválida'
+        );
+        return false;
+      }
     }
     return true;
   }
 
   // Botó reservar
-onSubmit(): void {
-  if (this.pedidoForm.invalid) return;
-  this.isLoading = true;
+  onSubmit(): void {
+    if (this.pedidoForm.invalid) {
+      this.toastr.success('Campos pendientes a rellenar', 'Error Formulario')
+      return;
+    };
+    this.isLoading = true;
 
-  const form = this.pedidoForm;
-  const formData = new FormData();
+    const form = this.pedidoForm;
+    const formData = new FormData();
 
-  // Afegeix els camps normals al FormData
-  formData.append('tipo_camion_id', form.get('tipoCamion')?.value);
-  formData.append('tipo_material1_id', form.get('material0')?.value);
-  formData.append('tipo_material2_id', form.get('material1')?.value || '');
-  formData.append('proveedor_id', form.get('idProveedor')?.value);
-  formData.append('transporte_id', form.get('identificadorTransportista')?.value);
-  formData.append('muelle1_id', form.get('muelle')?.value);
-  formData.append('status_id', form.get('idStatus')?.value);
-  formData.append('empresa_id', '1');
-  formData.append('cantidad1', form.get('cantidad0')?.value);
-  formData.append('cantidad2', form.get('cantidad1')?.value || '0');
+    formData.append('tipo_camion_id', form.get('tipoCamion')?.value);
+    formData.append('tipo_material1_id', form.get('material0')?.value);
+    formData.append('tipo_material2_id', form.get('material1')?.value || '');
+    formData.append('proveedor_id', form.get('idProveedor')?.value);
+    formData.append('transporte_id', form.get('identificadorTransportista')?.value);
+    formData.append('muelle1_id', form.get('muelle')?.value);
+    formData.append('status_id', form.get('idStatus')?.value);
+    formData.append('empresa_id', '1'); // Fixa si cal canviar
+    formData.append('cantidad1', form.get('cantidad0')?.value);
+    formData.append('cantidad2', form.get('cantidad1')?.value || '0');
 
-  const pedidoLF = form.get('pedido_LF_1')?.value
-    ? `${form.get('pedido_LF_0')?.value} | ${form.get('pedido_LF_1')?.value}`
-    : form.get('pedido_LF_0')?.value || '';
-  formData.append('pedido_LF', pedidoLF);
+    const pedidoLF = form.get('pedido_LF_1')?.value
+      ? `${form.get('pedido_LF_0')?.value} | ${form.get('pedido_LF_1')?.value}`
+      : form.get('pedido_LF_0')?.value || '';
+    formData.append('pedido_LF', pedidoLF);
 
-  formData.append('matricula_camion', form.get('matriculaCamion')?.value);
-  formData.append('inicio1', formatDateToMySQL(form.get('horaInicio')?.value));
-  formData.append('fin1', formatDateToMySQL(form.get('horaFin')?.value));
-  formData.append('es_aduana', form.get('aduana')?.value === 'si' ? '1' : '0');
-  formData.append('notas', form.get('notas')?.value || '');
-  formData.append('duracion1', form.get('duracionEntrega')?.value);
-  formData.append('tel1', '655454412');
+    formData.append('matricula_camion', form.get('matriculaCamion')?.value);
+    formData.append('inicio1', formatDateToMySQL(form.get('horaInicio')?.value));
+    formData.append('fin1', formatDateToMySQL(form.get('horaFin')?.value));
+    formData.append('es_aduana', form.get('aduana')?.value === 'si' ? '1' : '0');
+    formData.append('notas', form.get('notas')?.value || '');
+    formData.append('duracion1', form.get('duracionEntrega')?.value);
+    formData.append('tel1', '655454412'); // NO TINC CLAR QUIN TELÈFON S'HI HA DE POSAR, SI EL DEL PROVEÏDOR O QUE PER TANT DEIXO EL TEL FIXE TEMPORALMENT
 
-  // Afegeix els fitxers
-  if (this.selectedFiles.length > 0) {
-    this.selectedFiles.forEach(file => {
-      formData.append('archivos[]', file, file.name);
+    if (this.selectedFiles.length > 0) {
+      this.selectedFiles.forEach((file, index) => {
+        formData.append(`archivos[${index}]`, file, file.name);
+      });
+    }
+
+    let request: Observable<any>;
+
+    if (this.method === 'update' && this.booking?.reserva_id != null) {
+      formData.append('_method', 'PUT');
+      formData.append('reserva_id', this.booking.reserva_id.toString());
+
+      request = this._bookingService.updateReservation(formData);
+    } else {
+      request = this._bookingService.createReservation(formData);
+    }
+
+
+    request.subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.method === 'update' ? this.toastr.success('Reserva actualizada correctamente', 'Reserva Añadida') : this.toastr.success('Reserva creada correctamente', 'Reserva Modificada');
+        this.router.navigate(['/bookings']);
+      },
+      error: err => {
+        this.isLoading = false;
+        if (err.error.id === 1) {
+          this.toastr.error(err.error.message, `Error Reserva material ${err.error.material}`);
+        } else {
+          console.error('Error saving booking:', err);
+        }
+      }
     });
   }
-
-  // Si és update, afegeix la reserva_id
-  if (this.method === 'update' && this.booking?.reserva_id != null) {
-    formData.append('reserva_id', this.booking.reserva_id.toString());
-  }
-
-  // Crida al servei amb FormData
-  const request = this.method === 'update'
-    ? this.bookingService.updateReservation(formData)
-    : this.bookingService.createReservation(formData);
-
-  request.subscribe({
-    next: () => {
-      this.isLoading = false;
-      this.router.navigate(['/bookings']);
-    },
-    error: err => {
-      this.isLoading = false;
-      console.error('Error saving booking:', err);
-    }
-  });
-}
-
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -359,9 +402,8 @@ onSubmit(): void {
     // Obtenim els valors dels pedido_LF, ja que arriben XXX|YYY
     const [lf0, lf1] = (this.booking.pedido_LF?.split('|').map(p => p.trim()) ?? [this.booking.pedido_LF || '', '']);
     const hasSecondMaterial = !!this.booking.tipo_material2_id && this.booking.tipo_material2_id !== 0;
-
     // Obtenim tota la info dels camion molls etc...
-    this.bookingService.getAvailableTrucks([
+    this._bookingService.getAvailableTrucks([
       this.booking.tipo_material1_id,
       this.booking.tipo_material2_id || 0,
     ], false).subscribe(data => {
@@ -395,6 +437,7 @@ onSubmit(): void {
     });
   }
 
+  // Netejar bookings
   private getEmptyBooking(): Booking {
     return {
       tipo_camion_id: 0,
@@ -415,5 +458,34 @@ onSubmit(): void {
       notas: '',
       duracion1: 0,
     };
+  }
+
+  // Eliminar fitxers
+  deleteFile(file: BookingDocument) {
+    const modalInformation: ConfirmData = {
+      title: 'Eliminación de Documento',
+      message: `¿Está seguro de que desea eliminar el documento ${file.name}?, una vez eliminado no se podrá recuperar`,
+    };
+
+    const dialogRef = this.dialog.open(ConfirmModalComponent, {
+      maxWidth: '95vw',
+      width: '65%',
+      maxHeight: '90vh',
+      data: modalInformation,
+      panelClass: 'app-confirm-modal',
+    });
+
+    dialogRef.afterClosed().subscribe((result: Boolean) => {
+      if (result === true && file.documento_reserva_id) {
+        this._bookingService.deleteFile(file.documento_reserva_id).subscribe({
+          next: () => {
+            this.router.navigate(['bookings']);
+          },
+          error: (error) => {
+            console.error('Error deleteing file:', error)
+          }
+        });
+      }
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule, NgClass } from '@angular/common';
@@ -10,21 +10,25 @@ import { GenericFormService } from './generic-from.service';
   templateUrl: './generic-form.component.html',
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    NgClass
+    ReactiveFormsModule
   ],
 })
 export class GenericFormComponent implements OnInit {
   // Camps d'entrada
+  @Input() formTitle!: string;
   @Input() tableName!: string;
   @Input() selectFields: {
     [key: string]: {
       api: string;
       labelField: string;
       valueField: string;
-    };
+      label?: string; // ← Nou camp opcional per mostrar com a label
+    }
   } = {};
+  @Input() fieldLabels: { [key: string]: string } = {};
   @Input() excludedFields: string[] = [];
+  @Input() initialData: any | null = null;
+
 
   // Camp de sortida
   @Output() submitForm = new EventEmitter<any>();
@@ -34,11 +38,17 @@ export class GenericFormComponent implements OnInit {
   form!: FormGroup;
   selectOptions: { [key: string]: any[] } = {};
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private _genericFormService: GenericFormService) {}
+  constructor(private fb: FormBuilder, private http: HttpClient, private _genericFormService: GenericFormService) { }
 
   // Càrrega inicial columnes
   ngOnInit(): void {
     this.loadColumns();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['initialData'] && this.form) {
+      this.form.patchValue(this.initialData);
+    }
   }
 
   loadColumns() {
@@ -64,7 +74,8 @@ export class GenericFormComponent implements OnInit {
   buildForm() {
     const group: any = {};
     this.columns.forEach((col) => {
-      group[col.Field] = [''];
+      const initialValue = this.initialData ? this.initialData[col.Field] : '';
+      group[col.Field] = [initialValue];
     });
     this.form = this.fb.group(group);
   }
@@ -83,13 +94,20 @@ export class GenericFormComponent implements OnInit {
       });
     }
   }
+
   // Entendre el tipus
   getInputType(columnType: string): string {
+    if (/^tinyint\(1\)/.test(columnType)) return 'checkbox';
     if (columnType.includes('int')) return 'number';
     if (columnType.includes('varchar') || columnType.includes('text')) return 'text';
     if (columnType.includes('date')) return 'date';
-    if (columnType.includes('tinyint(1)')) return 'checkbox';
     return 'text';
+  }
+
+
+  // Formateix de cada label per tal que sigui més llegible a la vista
+  getLabel(field: string): string {
+    return this.selectFields[field]?.label ?? this.fieldLabels[field] ?? field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   }
 
   onSubmit() {
@@ -103,7 +121,6 @@ export class GenericFormComponent implements OnInit {
         obj[key] = this.form.value[key];
         return obj;
       }, {});
-
     // Emetem les dades filtrades al component pare
     this.submitForm.emit(filteredValue);
   }

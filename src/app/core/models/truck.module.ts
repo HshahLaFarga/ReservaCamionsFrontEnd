@@ -1,4 +1,4 @@
-export interface Trucks {
+export interface Truck {
   bloqueo_muelles: number,
   descripcion: string,
   estado: number,

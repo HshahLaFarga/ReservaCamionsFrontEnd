@@ -20,6 +20,7 @@ export class CalendarPageComponent implements OnInit {
   events: any[] = [];
   bookings: Booking[] = [];
   isLoading: boolean = false;
+  
   ngOnInit(): void {
     this.getAllBookings();
   }
@@ -32,7 +33,7 @@ export class CalendarPageComponent implements OnInit {
     initialView: 'timeGridWeek',
     plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
     dateClick: (arg) => this.handleDateClick(arg),
-    
+
     // Perquè surti la linea en vermell
     nowIndicator: true,
 

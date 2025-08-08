@@ -1,6 +1,6 @@
 
 import { MaterialLockDetail } from "./material-lock-detail.module"
-import { Provider } from "./provider.module"
+import { ProviderType } from "./provider.module"
 
 export interface MaterialLock {
   bloqueo_grupo_id: number,
@@ -12,5 +12,7 @@ export interface MaterialLock {
   usuario_id: number,
   activo: boolean,
   detalles: MaterialLockDetail[],
-  proveedor: Provider
+  tipoproveedor: ProviderType
 }
+
+

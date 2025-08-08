@@ -1,0 +1,88 @@
+<form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()"
+  class="space-y-6 max-w-5xl mx-auto p-6 bg-white rounded shadow">
+  <h2 *ngIf="formTitle" class="text-2xl font-semibold text-gray-800 mb-4">{{ formTitle }}</h2>
+
+  <!-- Nombre -->
+  <div class="mb-4">
+    <label for="nombre" class="block mb-1 text-gray-700 font-medium">Nom Material</label>
+    <input type="text" formControlName="nombre" id="nombre"
+      class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="Introdueix nom del material" />
+  </div>
+
+  <!-- Código SAP -->
+  <div class="mb-4">
+    <label for="codigo_sap" class="block mb-1 text-gray-700 font-medium">Codi SAP</label>
+    <input type="text" formControlName="codigo_sap" id="codigo_sap"
+      class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="Introdueix codi SAP" />
+  </div>
+
+  <!-- Estado (checkbox) -->
+  <div class="mb-4 flex items-center space-x-2">
+    <input type="checkbox" formControlName="estado" id="estado"
+      class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
+    <label for="estado" class="text-gray-700 font-medium select-none">Actiu</label>
+  </div>
+
+  <mat-form-field class="w-full" appearance="fill">
+    <mat-label>Añade un tipo de camión al grupo</mat-label>
+    <input type="text" matInput [formControl]="truckControl" [matAutocomplete]="truckAuto"
+      [ngModel]="truckControl.value?.nombre || truckControl.value" />
+
+
+    <mat-autocomplete #truckAuto="matAutocomplete" (optionSelected)="onSelected($event.option.value)">
+      <mat-option *ngFor="let truck of filteredTrucks" [value]="truck">
+        {{ truck.nombre }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <!-- Materials seleccionats -->
+  <div *ngIf="selectedTrucks.length > 0" class="mt-4">
+    <p class="font-semibold text-gray-700">Tipos de camión assignados:</p>
+    <div class="flex flex-wrap gap-2 border p-4 rounded bg-gray-50">
+      <div *ngFor="let truck of selectedTrucks; let i = index"
+        class="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+        {{ truck.nombre }}
+        <button (click)="deleteTrucksFromArray(i)" class="ml-2 text-red-500 hover:text-red-700 focus:outline-none"
+          title="Eliminar material">
+          ✖
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Muelles (molls) select multiple -->
+  <mat-form-field class="w-full" appearance="fill">
+    <mat-label>Añade un muelle al grupo</mat-label>
+    <input type="text" matInput [formControl]="muelleControl" [matAutocomplete]="muelleAuto"
+      [ngModel]="muelleControl.value?.nombre_muelle || muelleControl.value" />
+
+    <mat-autocomplete #muelleAuto="matAutocomplete" (optionSelected)="onSelected($event.option.value)">
+      <mat-option *ngFor="let muelle of filteredMuelles" [value]="muelle">
+        {{ muelle.nombre_muelle }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <!-- Materials seleccionats -->
+  <div *ngIf="selectedMuelles.length > 0" class="mt-4">
+    <p class="font-semibold text-gray-700">Muelles assignados:</p>
+    <div class="flex flex-wrap gap-2 border p-4 rounded bg-gray-50">
+      <div *ngFor="let muelle of selectedMuelles; let i = index"
+        class="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+        {{ muelle.nombre_muelle }}
+        <button (click)="deleteMuellesFromArray(i)" class="ml-2 text-red-500 hover:text-red-700 focus:outline-none"
+          title="Eliminar material">
+          ✖
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" [disabled]="form.invalid"
+    class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition">
+    Guardar
+  </button>
+</form>

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { observable, Observable } from 'rxjs';
 import { environment } from '../../../core/envoirment/envoirment';
-import { Booking } from '../../../core/models/booking.module';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +20,7 @@ export class BookingAddService {
   }
 
   getAvailableTrucks(materiales: number[], requirements: boolean): Observable<any>{
+    materiales = materiales.filter(m => m !== 0);
     return this.http.post(`${environment.apiBaseUrl}/controlCamion`,{ materiales, restricciones:requirements });
   }
 
@@ -39,8 +39,12 @@ export class BookingAddService {
   createReservation(booking: any): Observable<any> {
     return this.http.post(`${environment.apiBaseUrl}/reserva`,booking);
   }
-  updateReservation(booking: any): Observable<any> {
-    console.log(booking);
-    return this.http.put(`${environment.apiBaseUrl}/reserva/${booking.reserva_id}`,booking);
+
+  updateReservation(formData: FormData): Observable<any> {
+    return this.http.post(`${environment.apiBaseUrl}/reserva/${formData.get('reserva_id')}`, formData);
+  }
+
+  deleteFile(document_booking_id: number): Observable<any> {
+    return this.http.delete(`${environment.apiBaseUrl}/file/name/${document_booking_id}`);
   }
 }

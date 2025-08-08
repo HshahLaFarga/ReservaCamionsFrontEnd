@@ -1,0 +1,20 @@
+<app-generic-form *ngIf="method === 'update'"
+  formTitle="Editar Proveedor"
+  tableName="proveedores"
+  [selectFields]="{
+    tipo_proveedor_id: { api: 'tipoproveedores', labelField: 'nombre', valueField: 'tipo_proveedor_id', label: 'Tipo de proveedor' }
+  }"
+  [excludedFields]="['created_at','updated_at']"
+  [initialData]="initialProviderData"
+  (submitForm)="onSubmit($event)">
+</app-generic-form>
+
+<app-generic-form *ngIf="method === 'post'"
+  formTitle="Añadir Proveedor"
+  tableName="proveedores"
+  [selectFields]="{
+    tipo_proveedor_id: { api: 'tipoproveedores', labelField: 'nombre', valueField: 'tipo_proveedor_id', label: 'Tipo de proveedor' }
+  }"
+  [excludedFields]="['created_at','updated_at']"
+  (submitForm)="onSubmit($event)">
+</app-generic-form>

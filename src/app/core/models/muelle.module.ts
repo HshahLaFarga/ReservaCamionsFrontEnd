@@ -1,3 +1,5 @@
+import { Carrier } from "./carrier.module";
+
 export interface Muelle {
   abierto_festivos: number,
   cantidat_acceptada: number,
@@ -9,4 +11,11 @@ export interface Muelle {
   nombre_muelle: string,
   numero: number,
   zona: string,
+
+  // Relacion
+  empresa: Carrier,
+
+  // Formato visual
+  abierto_festivosFormated: string,
+  estadoFormated: string
 }

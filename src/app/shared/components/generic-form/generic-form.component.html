@@ -1,33 +1,57 @@
-<form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6 max-w-xl mx-auto p-6 bg-white rounded shadow">
-  <div *ngFor="let col of columns" class="mb-4">
+<form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6 max-w-5xl mx-auto p-6 bg-white rounded shadow">
+  <h2 *ngIf="formTitle" class="text-2xl font-semibold text-gray-800 mb-4">{{ formTitle }}</h2>
+
+  <div *ngFor="let col of columns" class="mb-4" >
+
     <ng-container *ngIf="col.Field !== 'id' && !col.Extra.includes('auto_increment')">
 
-      <label class="block mb-1 text-gray-700 font-medium" [for]="col.Field">{{ col.Field }}</label>
-
-      <!-- Si és camp de tipus select -->
-      <ng-container *ngIf="selectFields[col.Field]; else normalInput">
-        <select
-          [formControlName]="col.Field"
-          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          [id]="col.Field"
-        >
-          <option value="">-- Selecciona {{ col.Field }} --</option>
-          <option *ngFor="let opt of selectOptions[col.Field]" [value]="opt[selectFields[col.Field].valueField]">
-            {{ opt[selectFields[col.Field].labelField] }}
-          </option>
-        </select>
+      <!-- Cas checkbox: input i label alineats en horitzontal -->
+      <ng-container *ngIf="getInputType(col.Type) === 'checkbox'; else otherInputs">
+        <div class="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            [formControlName]="col.Field"
+            [id]="col.Field"
+            class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+          />
+          <label
+            class="text-gray-700 font-medium select-none"
+            [for]="col.Field"
+          >
+            {{ getLabel(col.Field) }}
+          </label>
+        </div>
       </ng-container>
 
-      <!-- Input normal -->
-      <ng-template #normalInput>
-        <input
-          [type]="getInputType(col.Type)"
-          [formControlName]="col.Field"
-          [id]="col.Field"
-          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+      <!-- Altres inputs (text, select, etc.) -->
+      <ng-template #otherInputs>
+        <label class="block mb-1 text-gray-700 font-medium" [for]="col.Field">{{ getLabel(col.Field) }}</label>
+
+        <ng-container *ngIf="selectFields[col.Field]; else normalInput">
+          <select
+            [formControlName]="col.Field"
+            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            [id]="col.Field"
+          >
+            <option value="">-- Selecciona {{ getLabel(col.Field) }} --</option>
+            <option *ngFor="let opt of selectOptions[col.Field]" [value]="opt[selectFields[col.Field].valueField]">
+              {{ opt[selectFields[col.Field].labelField] }}
+            </option>
+          </select>
+        </ng-container>
+
+        <ng-template #normalInput>
+          <input
+            [type]="getInputType(col.Type)"
+            [formControlName]="col.Field"
+            [id]="col.Field"
+            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </ng-template>
       </ng-template>
+
     </ng-container>
+
   </div>
 
   <button

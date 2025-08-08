@@ -41,7 +41,7 @@ export class MaterialLockPageComponent implements OnInit {
     next: (lockedMaterials: MaterialLock[]) => {
       this.lockedMaterials = lockedMaterials.map((materialLock) => {
         return {
-          nombre: materialLock.proveedor.nombre,
+          nombre: materialLock.tipoproveedor.nombre,
           materiales: materialLock.detalles.length === 0? 'No hi han materials assignats' : materialLock.detalles.map(({material}) => `${material.nombre_material}`).join('<br>'),
           cantidad: materialLock.cantidad_total,
           cantidadDisponible: materialLock.cantidad_disponible,
