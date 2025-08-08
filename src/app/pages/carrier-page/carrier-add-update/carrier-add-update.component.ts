@@ -20,6 +20,8 @@ export class CarrierAddUpdateComponent implements OnInit {
   initialCarrierData: Carrier | null = null;
   method: 'post' | 'update' = 'post';
 
+  isLoading: boolean = false;
+
   constructor(
     private _carrierAddUpdateService: CarrierAddUpdateService,
     private router: Router,
@@ -52,6 +54,7 @@ export class CarrierAddUpdateComponent implements OnInit {
   }
 
   onSubmit(carrier: Carrier) {
+    this.isLoading = true;
     if (this.checkData(carrier)) {
 
       let request: Observable<any>;
@@ -64,9 +67,10 @@ export class CarrierAddUpdateComponent implements OnInit {
       }
 
       request.subscribe({
-        next: (response) => {
+        next: () => {
           this.router.navigate(['carrier']);
           this.method === 'update' ? this.toastr.success('Transportista añadido correctamente', 'Éxito') : this.toastr.success('Transportista modificado correctamente', 'Éxito');
+          this.isLoading = false;
         },
         error: (err) => {
           if (err.error.message.includes('email')) {
@@ -78,6 +82,7 @@ export class CarrierAddUpdateComponent implements OnInit {
           } else {
             console.error('Error al añadir o modificar transportista', err);
           }
+          this.isLoading = false;
         }
       })
     }

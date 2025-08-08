@@ -14,4 +14,8 @@ export class CalendarPageService {
   getAllBookings(): Observable<any> {
     return this.http.get(`${environment.apiBaseUrl}/reserva`);
   }
+
+  getMuelles(): Observable<any>{
+    return this.http.get(`${environment.apiBaseUrl}/muelles`);
+  }
 }

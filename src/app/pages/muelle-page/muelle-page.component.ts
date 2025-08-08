@@ -10,10 +10,13 @@ import { CommonModule } from '@angular/common';
   selector: 'app-muelle-page',
   standalone: true,
   templateUrl: './muelle-page.component.html',
-  imports: [GenericListComponent]
+  imports: [GenericListComponent, CommonModule]
 })
 export class MuellePageComponent implements OnInit {
+
   muelles: Muelle[] = [];
+
+  isLoading: boolean = false;
 
   columns = [
     { key: 'nombre_muelle', label: 'Nombre Muelle' },
@@ -38,6 +41,7 @@ export class MuellePageComponent implements OnInit {
   }
 
   loadDefaultData(){
+    this.isLoading = true;
     this.getMuelles();
   }
 
@@ -49,9 +53,11 @@ export class MuellePageComponent implements OnInit {
         muelle.estadoFormated = muelle.estado === 1? 'Activo' : 'Inactivo';
         return muelle;
       });
+      this.isLoading = false;
     },
     error: err => {
       console.error('Error getting muelle ' + err);
+      this.isLoading = false;
     }
     })
   }
@@ -70,10 +76,12 @@ export class MuellePageComponent implements OnInit {
   }
 
   onDelete(muelle: Muelle) {
+    this.isLoading = true;
     this._muellePageService.deleteMuelles(muelle).subscribe({
       next: () => {
         this.loadDefaultData();
         this.toastr.success('Proveedor eliminado correctamente', 'Éxito');
+        this.isLoading = false;
       },
       error: err => {
         if (err.error.id === 1) {
@@ -81,6 +89,7 @@ export class MuellePageComponent implements OnInit {
         } else  {
           console.error('Error getting muelle ', err);
         }
+        this.isLoading = false;
       }
     });
   }

@@ -14,7 +14,7 @@ import { Profile } from '../../core/models/profile.module';
 })
 export class ProfilePageComponent implements OnInit {
   form!: FormGroup;
-  user: Profile | undefined;
+  user: Profile | null = null;
   constructor(
     private fb: FormBuilder,
     private _profilePageService: ProfilePageService,
@@ -33,13 +33,14 @@ export class ProfilePageComponent implements OnInit {
 
   updateUser() {
     // En el cas que sigui vàlid efectuem la petició
-
     if (this.form.valid) {
       this.user = {
         name: this.form.value.name,
+        username: 'prova',
+        apellidos:'asa',
         email: this.form.value.email,
         password: this.form.value.password,
-        pin: this.form.value.pin,
+        PIN: this.form.value.pin,
         tel1: this.form.value.tel1
       }
 

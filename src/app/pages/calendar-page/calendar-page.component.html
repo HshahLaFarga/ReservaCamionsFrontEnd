@@ -1,21 +1,37 @@
 <div class="relative flex flex-col h-full">
-  <!-- Botó -->
-  <div class="p-2 z-10">
+  <!-- Botón + Lista de muelles -->
+  <div class="p-2 z-10 flex items-center justify-between">
+    <!-- Botón a la izquierda -->
     <button (click)="toggleWeekends()" class="px-4 py-2 bg-blue-600 text-white rounded">
       {{ 'CALENDAR_PAGE.MOSTRAR_FINDE' | translate }}
     </button>
+
+    <!-- Contenedor para centrar la lista de muelles -->
+    <div class="flex-1 flex justify-center overflow-x-auto max-w-full">
+      <div class="flex space-x-2">
+        <button
+          *ngFor="let muelle of muelles"
+          (click)="toggleMuelleSelection(muelle.muelle_id)"
+          [class.bg-blue-600]="isMuelleSelected(muelle.muelle_id)"
+          [class.text-white]="isMuelleSelected(muelle.muelle_id)"
+          [class.bg-gray-200]="!isMuelleSelected(muelle.muelle_id)"
+          class="px-3 py-1 rounded cursor-pointer whitespace-nowrap border border-gray-300"
+        >
+          {{ muelle.nombre_muelle }}
+        </button>
+      </div>
+    </div>
   </div>
 
-  <!-- Calendari -->
+  <!-- Calendario -->
   <div class="flex-1 overflow-hidden z-10">
     <full-calendar
       [options]="calendarOptions"
-      [events]="eventsPromise | async"
       class="h-full"
     ></full-calendar>
   </div>
 
-  <!-- Overlay de bloqueig -->
+  <!-- Overlay loading -->
   <div
     *ngIf="isLoading"
     class="absolute inset-0 bg-white/60 flex items-center justify-center z-20"

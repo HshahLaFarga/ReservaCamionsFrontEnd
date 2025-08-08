@@ -3,16 +3,19 @@ import { GenericListComponent } from '../../shared/components/generic-list/gener
 import { MaterialLockPageService } from './material-lock-page.service';
 import { MaterialLock } from '../../core/models/material-lock.module';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-material-lock-page',
   standalone: true,
   templateUrl: './material-lock-page.component.html',
-  imports: [GenericListComponent],
+  imports: [GenericListComponent, CommonModule],
 })
 
 export class MaterialLockPageComponent implements OnInit {
   lockedMaterials: any[] = [];
+
+  isLoading: boolean = false;
 
   columns = [
     { key: 'nombre', label: 'Nombre Proveedor' },
@@ -33,6 +36,7 @@ export class MaterialLockPageComponent implements OnInit {
   }
 
   loadDefaultData(){
+    this.isLoading = true;
     this.getMaterials();
   }
 
@@ -50,9 +54,11 @@ export class MaterialLockPageComponent implements OnInit {
           object: materialLock
         }
       });
+      this.isLoading = false;
     },
     error: err => {
       console.error('Error getting providers ' + err);
+      this.isLoading = false;
     }
     })
   }
@@ -66,12 +72,14 @@ export class MaterialLockPageComponent implements OnInit {
   }
 
   onDelete(item: MaterialLock) {
+    this.isLoading = false;
     this._materialLockPageService.deleteMateialLocks(item).subscribe({
-      next: (value) => {
+      next: () => {
         this.loadDefaultData();
       },
       error: (err) => {
         console.error(err);
+        this.isLoading = false;
       }
     })
   }

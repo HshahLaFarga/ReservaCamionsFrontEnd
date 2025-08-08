@@ -22,8 +22,10 @@ import { ToastrService } from 'ngx-toastr';
   imports: [CommonModule, TranslateModule, ReactiveFormsModule, MatTableModule, MatPaginatorModule, MatIconModule]
 })
 export class BookingPageComponent implements OnInit {
+
   bookings: Booking[] = [];
   bookingsFormated: any[] = [];
+
   constructor(
     private _bookingService: BookingPageService,
     private router: Router,
@@ -155,24 +157,7 @@ export class BookingPageComponent implements OnInit {
           });
 
           dialogRef.afterClosed().subscribe((result: boolean) => {
-            // True només es veu, false es veu i es pot descarregar
-            if (result === true) {
-              window.open(fileURL, '_blank');
-            } else {
-              this._bookingService.getFileName(url).subscribe({
-                next: (file) => {
-                  const a = document.createElement('a');
-                  a.href = fileURL;
-                  a.download = file.name;
-                  document.body.appendChild(a);
-                  a.click();
-                  a.remove();
-                },
-                error: (err) => {
-                  console.error('Error getting NAME', err);
-                },
-              });
-            }
+            if (result) console.log('Holaa');
           });
 
         } else {

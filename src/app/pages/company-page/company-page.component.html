@@ -1,15 +1,15 @@
 <div class="flex items-center justify-start mb-4 gap-6">
-  <h1 class="text-2xl font-bold mb-4">Listado Materiales</h1>
+  <h1 class="text-2xl font-bold mb-4">Listado Empresas</h1>
   <button
     (click)="onAdd()"
     class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
   >
-    Añadir Material
+    Añadir Empresa
   </button>
 </div>
 
 <app-generic-list
-  [items]="materials"
+  [items]="companys"
   [columns]="columns"
   (edit)="onEdit($event)"
   (delete)="onDelete($event)">

@@ -19,6 +19,8 @@ export class MuelleAddUpdateComponent implements OnInit {
   method: 'post' | 'update' = 'post';
   initialMuelleData: Muelle | null = null;
 
+  isLoading: boolean = false;
+
   constructor(
     private __muelleAddUpdateService: MuelleAddUpdateService,
     private toastr: ToastrService,
@@ -35,6 +37,8 @@ export class MuelleAddUpdateComponent implements OnInit {
 
   onSubmit(muelle: Muelle) {
 
+      this.isLoading = true;
+
       let request: Observable<any>;
 
       if (this.method === 'post') {
@@ -48,6 +52,7 @@ export class MuelleAddUpdateComponent implements OnInit {
         next: () => {
           this.router.navigate(['muelles']);
           this.method === 'update' ? this.toastr.success('Muelle añadido correctamente', 'Éxito') : this.toastr.success('Muelle modificado correctamente', 'Éxito');
+          this.isLoading = false;
         },
         error: (err) => {
           if (err.error.message.includes('numero')) {
@@ -57,6 +62,7 @@ export class MuelleAddUpdateComponent implements OnInit {
           } else {
             console.error('Error al añadir o modificar muelle', err);
           }
+          this.isLoading = false;
         }
       })
   }

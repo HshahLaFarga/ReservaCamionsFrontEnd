@@ -15,10 +15,13 @@ import { Material, MaterialMuelleControl } from '../../core/models/material.modu
 export class MaterialPageComponent implements OnInit {
 
   materials: Material[] = [];
+
+  isLoading: boolean = false;
+
   columns = [
     { key: 'codigo_sap', label: 'Codi Sap' },
     { key: 'nombre_material', label: 'Nombre Material' },
-    { key: 'estadoFormated', label: 'Estat' },
+    { key: 'estadoFormated', label: 'Estado' },
     { key: 'conjuntoCamiones', label: 'Camiones Permitidos'},
     { key: 'conjuntoMuelles', label: 'Muelles Permitidos'}
   ];
@@ -30,6 +33,7 @@ export class MaterialPageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.isLoading = true;
     this.loadDefaultData();
   }
 
@@ -66,9 +70,11 @@ export class MaterialPageComponent implements OnInit {
 
           return material;
         });
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error getting materials', err);
+        this.isLoading = true;
       }
     })
   }
@@ -87,10 +93,16 @@ export class MaterialPageComponent implements OnInit {
   }
 
   onDelete(material: Material) {
+    this.isLoading = true;
     this._materialPageService.deleteProvider(material).subscribe({
       next: () => {
         this.loadDefaultData();
         this.toastr.success('Material eliminado correctamente', 'Éxito');
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error deleting material',  err);
+        this.isLoading = false;
       }
     });
   }

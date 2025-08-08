@@ -1,3 +1,5 @@
+import { Muelle } from "./muelle.module"
+
 export interface Booking {
   "reserva_id"?: number,
   "tipo_camion_id": number,
@@ -22,7 +24,8 @@ export interface Booking {
   "tel1"?: string,
   "duracion1": number,
   "duracion2"?: string,
-  "documentos"?: BookingDocument[]
+  "documentos"?: BookingDocument[],
+  "muelle1"?: Muelle
 }
 
 export interface BookingDocument {

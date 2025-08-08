@@ -43,6 +43,7 @@ export class MaterialLockAddComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.isLoading = true;
     this.pedidoForm = this.buildForm();
     this.loadDefaultData();
   }
@@ -50,11 +51,14 @@ export class MaterialLockAddComponent implements OnInit {
   loadDefaultData() {
     this._materialLockAddService.getTypeProviders().subscribe((providers_type) => {
       this.providers_type = providers_type;
+      this.isLoading = false;
     });
     this._materialLockAddService.getMaterials().subscribe((materials) => {
       this.materials = materials;
       this.filteredMaterials = this.materials.slice();
+      this.isLoading = false;
     });
+
     // Filtrat reactiu
     this.materialControl.valueChanges.pipe(
       startWith(''),
@@ -103,6 +107,7 @@ export class MaterialLockAddComponent implements OnInit {
 
 
   onSubmit() {
+    this.isLoading = true;
     if (!this.pedidoForm.invalid) {
       const materialLock = {
         tipo_proveedor_id: parseInt(this.pedidoForm.get('tipo_proveedor_id')?.value),
@@ -129,12 +134,14 @@ export class MaterialLockAddComponent implements OnInit {
       }
 
       this._materialLockAddService.storeMaterial(materialLock).subscribe({
-        next: (value) => {
+        next: () => {
           console.log('entra?');
           this.router.navigate(['/materials/lock']);
+          this.isLoading = false;
         },
         error: (err) => {
           console.error('Error creating materialLock ' + err);
+          this.isLoading = false;
         },
       });
     }

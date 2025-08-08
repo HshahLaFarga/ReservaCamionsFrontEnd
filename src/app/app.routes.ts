@@ -15,6 +15,10 @@ import { MaterialPageComponent } from './pages/material-page/material-page.compo
 import { MaterialAddUpdateComponent } from './pages/material-page/material-add-update/material-add-update.component';
 import { MuellePageComponent } from './pages/muelle-page/muelle-page.component';
 import { MuelleAddUpdateComponent } from './pages/muelle-page/muelle-add-update/muelle-add-update.component';
+import { CompanyPageComponent } from './pages/company-page/company-page.component';
+import { CompanyAddUpdateComponent } from './pages/company-page/company-add-update/company-add-update.component';
+import { UserPageComponent } from './pages/user-page/user-page.component';
+import { UserAddUdpateComponent } from './pages/user-page/user-add-udpate/user-add-udpate.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -48,6 +52,13 @@ export const routes: Routes = [
       { path: 'muelles/add', component: MuelleAddUpdateComponent},
       { path: 'muelles/edit', component: MuelleAddUpdateComponent},
 
+      { path: 'companys', component: CompanyPageComponent},
+      { path: 'companys/add', component: CompanyAddUpdateComponent},
+      { path: 'companys/edit', component: CompanyAddUpdateComponent},
+
+      { path: 'users', component: UserPageComponent},
+      { path: 'users/add', component: UserAddUdpateComponent},
+      { path: 'users/edit', component: UserAddUdpateComponent},
 
       { path: 'bookings', loadChildren: () => import('./pages/booking-page/booking-page.routes')},
 

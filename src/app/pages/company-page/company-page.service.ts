@@ -1,0 +1,23 @@
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../core/envoirment/envoirment';
+import { Injectable } from '@angular/core';
+import { Company } from '../../core/models/company.module';
+
+@Injectable({
+  providedIn: 'root'
+})
+
+export class CompanyPageService {
+    constructor(
+    private http: HttpClient
+  ) {}
+
+  getCompanys(): Observable<any> {
+    return this.http.get(`${environment.apiBaseUrl}/empresas`);
+  }
+
+  deleteCompany(company: Company): Observable<any> {
+    return this.http.delete(`${environment.apiBaseUrl}/empresas/${company.empresa_id}`);
+  }
+}

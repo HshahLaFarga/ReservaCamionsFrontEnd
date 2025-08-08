@@ -21,6 +21,8 @@ export class ProviderAddUpdateComponent implements OnInit {
   method: 'post' | 'update' = 'post';
   initialProviderData: Provider | null = null;
 
+  isLoading: boolean = false;
+
   constructor(
     private _providerAddService: ProviderAddService,
     private toastr: ToastrService,
@@ -57,6 +59,7 @@ export class ProviderAddUpdateComponent implements OnInit {
   }
 
   onSubmit(provider: Provider) {
+    this.isLoading = true;
     if (this.checkData(provider)) {
 
       let request: Observable<any>;
@@ -69,9 +72,10 @@ export class ProviderAddUpdateComponent implements OnInit {
       }
 
       request.subscribe({
-        next: (response) => {
+        next: () => {
           this.router.navigate(['provider']);
           this.method === 'update'? this.toastr.success('Proveedor añadido correctamente', 'Éxito') : this.toastr.success('Proveedor modificado correctamente', 'Éxito');
+          this.isLoading = false;
         },
         error: (err) => {
           if (err.error.message.includes('email')) {
@@ -83,6 +87,7 @@ export class ProviderAddUpdateComponent implements OnInit {
           } else {
             console.error('Error al añadir o modificar proveedor', err);
           }
+          this.isLoading = false;
         }
       })
     }

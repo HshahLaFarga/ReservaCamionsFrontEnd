@@ -32,6 +32,8 @@ export class MaterialAddUpdateComponent implements OnInit {
   formTitle = 'Afegir / Modificar Material';
   method: 'post' | 'update' = 'post';
 
+  isLoading: boolean = false;
+
   truckControl: FormControl<any> = new FormControl('');
   filteredTrucks: Truck[] = [];
   selectedTrucks: Truck[] = [];
@@ -52,6 +54,7 @@ export class MaterialAddUpdateComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.isLoading = true;
     this.loadDefaultData();
 
     // Filtratges a temps real
@@ -89,6 +92,7 @@ export class MaterialAddUpdateComponent implements OnInit {
       } else {
         this.buildForm();
       }
+      this.isLoading = false;
     });
   }
 
@@ -176,6 +180,7 @@ export class MaterialAddUpdateComponent implements OnInit {
   }
 
   onSubmit() {
+    this.isLoading = true;
     if (this.form.invalid) {
       this.toastr.error('Revisa los campos del formulario');
       return;
@@ -194,9 +199,11 @@ export class MaterialAddUpdateComponent implements OnInit {
       next: () => {
         this.method === 'post' ? this.toastr.success('Reserva añadida correctamente', 'Éxito') : this.toastr.success('Reserva actualizada correctamente', 'Éxito');
         this.router.navigate(['materials']);
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error storing or updating material ', err);
+        this.isLoading = false;
       }
     });
   }

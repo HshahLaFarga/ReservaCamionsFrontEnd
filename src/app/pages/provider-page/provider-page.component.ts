@@ -4,16 +4,20 @@ import { Provider } from '../../core/models/provider.module';
 import { ProviderPageService } from './provider-page.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-provider-page',
   standalone: true,
   templateUrl: './provider-page.component.html',
-  imports: [GenericListComponent],
+  imports: [GenericListComponent, CommonModule],
 })
 
 export class ProviderPageComponent implements OnInit {
+
   providers: Provider[] = [];
+
+  isLoading: boolean = false;
 
   columns = [
     { key: 'nombre', label: 'Nombre Proveedor' },
@@ -35,6 +39,7 @@ export class ProviderPageComponent implements OnInit {
   }
 
   loadDefaultData(){
+    this.isLoading = true;
     this.getProviders();
   }
 
@@ -42,9 +47,11 @@ export class ProviderPageComponent implements OnInit {
     this._providerPageService.getProviders().subscribe({
     next: (providers) => {
       this.providers = providers;
+      this.isLoading = false;
     },
     error: err => {
       console.error('Error getting providers ' + err);
+      this.isLoading = false;
     }
     })
   }
@@ -63,10 +70,12 @@ export class ProviderPageComponent implements OnInit {
   }
 
   onDelete(provider: Provider) {
+    this.isLoading = true;
     this._providerPageService.deleteProvider(provider).subscribe({
       next: () => {
         this.loadDefaultData();
         this.toastr.success('Proveedor eliminado correctamente', 'Éxito');
+        this.isLoading = false;
       },
       error: err => {
         if (err.error.id === 1) {
@@ -74,6 +83,7 @@ export class ProviderPageComponent implements OnInit {
         } else  {
           console.error('Error getting providers ', err);
         }
+        this.isLoading = false;
       }
     });
   }

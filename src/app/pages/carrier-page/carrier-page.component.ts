@@ -4,17 +4,20 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Carrier } from '../../core/models/carrier.module';
 import { CarrierPageService } from './carrier-page.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-carrier-page',
   standalone: true,
   templateUrl: './carrier-page.component.html',
-  imports: [GenericListComponent],
+  imports: [GenericListComponent, CommonModule],
 })
 
 export class CarrierPageComponent implements OnInit {
 
   carriers: Carrier[] = [];
+
+  isLoading: boolean = false;
 
   columns = [
     { key: 'nombre', label: 'Nombre Transportista' },
@@ -31,6 +34,7 @@ export class CarrierPageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.isLoading = true;
     this.loadDefaultData();
   }
 
@@ -38,9 +42,11 @@ export class CarrierPageComponent implements OnInit {
     this._carrierPageService.getCarriers().subscribe({
       next: (carriers) => {
         this.carriers = carriers;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error(err);
+        this.isLoading = false;
       }
     });
   }
@@ -59,10 +65,12 @@ export class CarrierPageComponent implements OnInit {
   }
 
   onDelete(carrier: Carrier) {
+    this.isLoading = true;
     this._carrierPageService.deleteCarrier(carrier).subscribe({
       next: () => {
         this.loadDefaultData();
         this.toastr.success('Transportista eliminado correctamente', 'Éxito');
+        this.isLoading = false;
       },
       error: (err) => {
         if (err.error.id === 1) {
@@ -70,6 +78,7 @@ export class CarrierPageComponent implements OnInit {
         } else  {
           console.error('Error getting providers ', err);
         }
+        this.isLoading = false;
       }
     });
   }
