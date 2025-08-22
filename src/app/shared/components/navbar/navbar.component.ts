@@ -1,7 +1,9 @@
-import { Component, ElementRef, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import { SidebarItem } from '../../../core/models/sidebar.module';
+import { SidebarService } from '../sidebar/sidebar.service';
 
 @Component({
   selector: 'app-navbar',
@@ -10,14 +12,24 @@ import { TranslateService, TranslateModule } from '@ngx-translate/core';
   imports: [RouterModule, CommonModule, TranslateModule],
   styles: []
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   dropdownOpen = false;
   currentLang: string;
+  
   // Idiomes actuals
   langs: string[] = ['ca','es','en','fr'];
 
-  constructor(private translate: TranslateService, private elRef: ElementRef) {
+  sidebarItems: SidebarItem[] = [];
+
+  constructor(
+    private translate: TranslateService,
+    private elRef: ElementRef,
+    private _sidebarService:  SidebarService
+  ) {
     this.currentLang = this.translate.currentLang || this.translate.getDefaultLang() || 'en';
+  }
+  ngOnInit(): void {
+    this.sidebarItems = this._sidebarService.getSidebarItems();
   }
 
   // #### CONFIGURACIÓ IDIOMES ####

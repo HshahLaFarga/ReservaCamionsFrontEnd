@@ -26,8 +26,7 @@ export class MuellePageComponent implements OnInit {
     { key: 'abierto_festivosFormated', label: 'Abierto Festivos' },
     { key: 'color', label: 'Color Calendario' },
     { key: 'estadoFormated', label: 'Estado' },
-    { key: 'empresa.nombre', label: 'Empresa' },
-    { key: 'cantidad_acceptada', label: 'Cant. Acceptada' },
+    { key: 'empresa.nombre', label: 'Empresa' }
   ];
 
   constructor(

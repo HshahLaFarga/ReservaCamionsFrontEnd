@@ -1,0 +1,30 @@
+<app-generic-form *ngIf="method === 'update'"
+  formTitle="Editar Bloqueo Muelles"
+  tableName="reservas"
+  [selectFields]="{
+    muelle1_id: { api: 'muelles', labelField: 'nombre_muelle', valueField: 'muelle_id', label: 'Muelle' }
+  }"
+  [excludedFields]="['tipo_camion_id','tipo_material1_id','tipo_material2_id', 'proveedor_id', 'transporte_id', 'muelle2_id', 'status_id', 'empresa_id', 'cantidad1', 'cantidad2', 'pedido_LF', 'matricula_camion', 'inicio2', 'fin2', 'es_aduana', 'tel1', 'duracion1', 'duracion2', 'created_at', 'updated_at']"
+  [initialData]="initialLockMuelleData"
+  (submitForm)="onSubmit($event)">
+</app-generic-form>
+
+<app-generic-form *ngIf="method === 'post'"
+  formTitle="Añadir Bloqueo Muelles"
+  tableName="reservas"
+  [selectFields]="{
+    muelle1_id: { api: 'muelles', labelField: 'nombre_muelle', valueField: 'muelle_id', label: 'Muelle' }
+  }"
+  [excludedFields]="['tipo_camion_id','tipo_material1_id','tipo_material2_id', 'proveedor_id', 'transporte_id', 'muelle2_id', 'status_id', 'empresa_id', 'cantidad1', 'cantidad2', 'pedido_LF', 'matricula_camion', 'inicio2', 'fin2', 'es_aduana', 'tel1', 'duracion1', 'duracion2', 'created_at', 'updated_at']"
+  (submitForm)="onSubmit($event)">
+</app-generic-form>
+
+<div
+  *ngIf="isLoading"
+  class="absolute inset-0 bg-white/60 flex items-center justify-center z-20"
+>
+  <div class="flex text-center items-center gap-3">
+    <div class="loader animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mb-2"></div>
+    <p class="text-gray-700">Carregant...</p>
+  </div>
+</div>

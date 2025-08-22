@@ -1,8 +1,9 @@
 import { Component, Input, OnInit, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule, NgClass } from '@angular/common';
 import { GenericFormService } from './generic-from.service';
+import { mysqlToDateInput } from '../../utils/date.utils';
 
 @Component({
   selector: 'app-generic-form',
@@ -22,7 +23,7 @@ export class GenericFormComponent implements OnInit {
       api: string;
       labelField: string;
       valueField: string;
-      label?: string; // ← Nou camp opcional per mostrar com a label
+      label?: string; // Nou camp opcional per mostrar com a label
     }
   } = {};
   @Input() fieldLabels: { [key: string]: string } = {};
@@ -47,9 +48,20 @@ export class GenericFormComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['initialData'] && this.form) {
-      this.form.patchValue(this.initialData);
+      const patchedData: any = { ...this.initialData };
+
+      this.columns.forEach((col) => {
+        if (col.Type.includes('date') && patchedData[col.Field]) {
+          patchedData[col.Field] = mysqlToDateInput(patchedData[col.Field]);
+        }
+      });
+
+      console.log(patchedData);
+
+      this.form.patchValue(patchedData);
     }
   }
+
 
   loadColumns() {
     this._genericFormService.getGenericItems(this.tableName).subscribe({
@@ -74,11 +86,18 @@ export class GenericFormComponent implements OnInit {
   buildForm() {
     const group: any = {};
     this.columns.forEach((col) => {
-      const initialValue = this.initialData ? this.initialData[col.Field] : '';
+      let initialValue = this.initialData ? this.initialData[col.Field] : '';
+
+      // Formatejar les dates perquè es puguin interpretar
+      if (col.Type.includes('date') && initialValue) {
+        initialValue = mysqlToDateInput(initialValue);
+      }
+
       group[col.Field] = [initialValue];
     });
     this.form = this.fb.group(group);
   }
+
 
   loadSelectOptions() {
     for (const field in this.selectFields) {
@@ -114,14 +133,36 @@ export class GenericFormComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    // Excloem els camps indicats
-    const filteredValue = Object.keys(this.form.value)
+
+    // Prepara objecte per enviar al backend (PUT/POST)
+    const preparedValue = Object.keys(this.form.value)
       .filter(key => !this.excludedFields.includes(key))
       .reduce((obj: any, key) => {
-        obj[key] = this.form.value[key];
+        let value = this.form.value[key];
+
+        // Trobar dades de la columna
+        const col = this.columns.find(c => c.Field === key);
+
+        if (col) {
+          // Si és date convertir a format MySQL
+          // if (col.Type.includes('date') && value) {
+          //   const [yyyy, mm, dd] = value.split('-');
+          //   value = `${yyyy}-${mm}-${dd} 00:00:00`;
+          // }
+
+          // IMPORTANT CONSERVAR AIXÒ, JA QUE HI HA EL PROBLEMA QUE SI L'USUARI NO MARCA RES RETORNA "",
+          // I AMB AIXÒ ES SOLUCIONA EL PROBLEMA
+          if (col.Type.includes('tinyint(1)')) {
+            value = value ? 1 : 0;
+          }
+        }
+
+        obj[key] = value;
         return obj;
       }, {});
-    // Emetem les dades filtrades al component pare
-    this.submitForm.emit(filteredValue);
+
+    // Emetem les dades preparades al component pare
+    this.submitForm.emit(preparedValue);
   }
+
 }

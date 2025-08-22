@@ -41,7 +41,7 @@ export class BookingPageService {
     if (materials.length > 1) {
       params = params.set('id2', materials[1]);
     }
-    return this.http.get(`${environment.apiBaseUrl}/materials`, { params });
+    return this.http.get(`${environment.apiBaseUrl}/materiales`, { params });
   }
 
   getCompany(company_id: number): Observable<any> {

@@ -1,0 +1,24 @@
+<app-generic-form *ngIf="method === 'update'"
+  formTitle="Editar Tipo Camión"
+  tableName="tipo_camiones"
+  [excludedFields]="['created_at','updated_at','materiales','muelles_permitidos']"
+  [initialData]="initialTruckType"
+  (submitForm)="onSubmit($event)">
+</app-generic-form>
+
+<app-generic-form *ngIf="method === 'post'"
+  formTitle="Añadir Tipo Camión"
+  tableName="tipo_camiones"
+  [excludedFields]="['created_at','updated_at','materiales','muelles_permitidos']"
+  (submitForm)="onSubmit($event)">
+</app-generic-form>
+
+<div
+  *ngIf="isLoading"
+  class="absolute inset-0 bg-white/60 flex items-center justify-center z-20"
+>
+  <div class="flex text-center items-center gap-3">
+    <div class="loader animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mb-2"></div>
+    <p class="text-gray-700">Carregant...</p>
+  </div>
+</div>

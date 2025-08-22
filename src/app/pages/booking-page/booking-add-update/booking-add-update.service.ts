@@ -47,4 +47,8 @@ export class BookingAddService {
   deleteFile(document_booking_id: number): Observable<any> {
     return this.http.delete(`${environment.apiBaseUrl}/file/name/${document_booking_id}`);
   }
+
+  getWeightRange(): Observable<any>{
+    return this.http.get(`${environment.apiBaseUrl}/rango/cantidad`);
+  }
 }

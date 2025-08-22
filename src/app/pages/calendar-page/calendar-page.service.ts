@@ -12,7 +12,7 @@ export class CalendarPageService {
   ) {}
 
   getAllBookings(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/reserva`);
+    return this.http.get(`${environment.apiBaseUrl}/reservas/calendar`);
   }
 
   getMuelles(): Observable<any>{

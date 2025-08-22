@@ -24,6 +24,7 @@ import { Booking, BookingDocument } from '../../../core/models/booking.module';
 import { MatIconModule } from '@angular/material/icon';
 import { ConfirmData, ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 import { ToastrService } from 'ngx-toastr';
+import { WeightRange } from '../../../core/models/weightRange.module';
 
 @Component({
   selector: 'app-booking-add',
@@ -41,6 +42,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class BookingAddComponent implements OnInit {
   pedidoForm!: FormGroup;
+  // Formatar les dates
   formatDate = formatDate;
 
   // Fitxers ja existents
@@ -51,6 +53,9 @@ export class BookingAddComponent implements OnInit {
     camionesDisponibles: [],
     muellesDisponibles: [],
   };
+
+  // Control dels rangs de pes
+  weightRange!: WeightRange;
 
   selectedFiles: File[] = [];
 
@@ -102,7 +107,7 @@ export class BookingAddComponent implements OnInit {
       tipoCamion: ['', Validators.required],
       numeroDescargas: [1, [Validators.required, Validators.min(1)]],
       material0: ['', Validators.required],
-      cantidad0: [0, [Validators.required, Validators.min(200), Validators.max(30000)]],
+      cantidad0: [0, [Validators.required]],
       material1: [''],
       cantidad1: [0],
       hora: [''],
@@ -168,11 +173,15 @@ export class BookingAddComponent implements OnInit {
       status: this._bookingService.getStatus(),
       providers: this._bookingService.getProvider(),
       carriers: this._bookingService.getCarriers(),
-    }).subscribe(({ materials, status, providers, carriers }) => {
+      weightRange: this._bookingService.getWeightRange()
+
+    }).subscribe(({ materials, status, providers, carriers, weightRange }) => {
       this.materials = materials;
       this.status = status;
       this.providers = providers;
       this.carriers = carriers;
+      // Fiquem [0], perquè sempre serà el primer
+      this.weightRange = weightRange[0];
 
       this.filteredProviders$ = this.createAutocompleteStream('idProveedor', providers);
       this.filteredCarriers$ = this.createAutocompleteStream('identificadorTransportista', carriers);
@@ -238,7 +247,7 @@ export class BookingAddComponent implements OnInit {
       maxHeight: '90vh',
       data: {
         muelles: this.mollsDisponibles.muellesDisponibles,
-        duracionEntrega: camion?.timpo_descarga_a,
+        duracionEntrega: camion?.tiempo_descarga_a,
       },
       panelClass: 'custom-calendar-dialog',
     });
@@ -249,7 +258,7 @@ export class BookingAddComponent implements OnInit {
           horaInicio: selectedDate.start,
           horaFin: selectedDate.end,
           muelle: selectedDate.resourceId,
-          duracionEntrega: camion?.timpo_descarga_a?.toString() ?? '0',
+          duracionEntrega: camion?.tiempo_descarga_a?.toString() ?? '0',
         });
       }
     });
@@ -267,9 +276,9 @@ export class BookingAddComponent implements OnInit {
       return false;
     }
 
-    if (cantidad0 < 200 || cantidad0 > 30000) {
+    if (cantidad0 < this.weightRange.min_kg || cantidad0 > this.weightRange.max_kg) {
       this.toastr.error(
-        'La cantidad del primer material debe estar entre 200 y 30.000 kg.',
+        `La cantidad del primer material debe estar entre ${this.weightRange.min_kg} y ${this.weightRange.max_kg} kg.`,
         'Cantidad inválida'
       );
       return false;
@@ -285,9 +294,9 @@ export class BookingAddComponent implements OnInit {
       }
 
       const cantidad1 = this.pedidoForm.get('cantidad1')?.value;
-      if (!this.pedidoForm.get('material1')?.value || cantidad1 < 200 || cantidad1 > 30000) {
+      if (!this.pedidoForm.get('material1')?.value || cantidad1 < this.weightRange.min_kg || cantidad1 > this.weightRange.max_kg) {
         this.toastr.error(
-          'La cantidad del segundo material debe estar entre 200 y 30.000 kg.',
+          `La cantidad del segundo material debe estar entre ${this.weightRange.min_kg} y ${this.weightRange.max_kg} kg.`,
           'Cantidad inválida'
         );
         return false;
@@ -384,7 +393,7 @@ export class BookingAddComponent implements OnInit {
           continue;
         }
 
-        // S'ha escedit el limit de pés
+        // S'ha escedit el limit de pes
         if (totalSize + fileSizeMB > maxTotalSizeMB) {
           break;
         }

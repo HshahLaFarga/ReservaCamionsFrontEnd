@@ -1,3 +1,10 @@
+// Converteix una data de MySQL ("2025-08-30 00:00:00") a "YYYY-MM-DD" (IMPORTANT PER QUAN RECOLLIM INFO QUE VOLEM INTRODUIR DINS DEL GENERIC FORM)
+export const mysqlToDateInput = (mysqlDate: string): string | null => {
+  if (!mysqlDate) return null;
+  return mysqlDate.split(" ")[0]; // talla l'hora i es queda amb "2025-08-30"
+};
+
+// Converteix ISO format més llegible per UI (p. ex. "30/08/2025 00:00")
 export const formatDate = (isoString: string): string => {
   const date = new Date(isoString);
   return date.toLocaleString('es-ES', {
@@ -9,6 +16,8 @@ export const formatDate = (isoString: string): string => {
     hour12: false
   });
 };
+
+// Converteix data de l'input ("YYYY-MM-DD") -> format MySQL ("YYYY-MM-DD HH:mm:ss")
 export const formatDateToMySQL = (dateStr: string): string => {
   const date = new Date(dateStr);
   const yyyy = date.getFullYear();
@@ -18,11 +27,10 @@ export const formatDateToMySQL = (dateStr: string): string => {
   const mi = String(date.getMinutes()).padStart(2, '0');
   const ss = String(date.getSeconds()).padStart(2, '0');
   return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
-}
-// true -> passa el formulari   false -> error al formulari
-export function dateRangeValidator(initialDate: string, endDate: string): Boolean {
-    if (new Date(initialDate) > new Date(endDate)) {
-      return false;
-    }
-    return true;
+};
+
+// Valida que la data inicial < data final
+export function dateRangeValidator(initialDate: string, endDate: string): boolean {
+  if (!initialDate || !endDate) return true; // si falten valors, no donem error
+  return new Date(initialDate) <= new Date(endDate);
 }

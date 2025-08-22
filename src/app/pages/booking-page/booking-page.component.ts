@@ -156,8 +156,25 @@ export class BookingPageComponent implements OnInit {
             panelClass: 'app-confirm-modal',
           });
 
+          // depenent de l'opció que es vulgui es podrà descarregar i visualitzar o només visualitzar
           dialogRef.afterClosed().subscribe((result: boolean) => {
-            if (result) console.log('Holaa');
+            if (result) {
+              window.open(fileURL, '_blank');
+            } else {
+              this._bookingService.getFileName(url).subscribe({
+                next: (file) => {
+                  const a = document.createElement('a');
+                  a.href = fileURL;
+                  a.download = file.name;
+                  document.body.appendChild(a);
+                  a.click();
+                  a.remove();
+                },
+                error: (err) => {
+                  console.error('Error obtenint el nom del fitxer', err);
+                }
+              });
+            }
           });
 
         } else {

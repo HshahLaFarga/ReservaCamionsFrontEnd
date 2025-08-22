@@ -1,103 +1,43 @@
 <aside class="w-full bg-gray-900 text-white h-full pt-16 p-6">
   <ul class="space-y-3">
 
-    <!-- Ítem 1 -->
-    <li>
-      <a routerLink="/dashboard" routerLinkActive="bg-blue-600 shadow-md scale-[1.02] rounded px-3 py-2 block"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-[1.05] rounded px-3 py-2 block">
-        {{ 'DASHBOARD' | translate }}
-      </a>
-    </li>
+    <ng-container *ngFor="let item of sidebarItems">
 
-    <div class="border-t border-gray-600 w-full mx-auto opacity-40"></div>
+      <!-- Dropdown -->
+      <li *ngIf="item.children?.length; else singleLink">
+        <button (click)="toggleDropdown(item.label)"
+          class="w-full text-left flex justify-between items-center py-2 hover:bg-gray-800 rounded transition-all duration-300">
+          <span>{{ item.label | translate }}</span>
+          <span class="material-icons transform transition-transform duration-300"
+            [class.rotate-90]="openDropdown === item.label">
+            arrow_right
+          </span>
 
-    <li>
-      <a routerLink="/bookings" routerLinkActive="bg-blue-600 shadow-md scale-[1.02] rounded px-3 py-2 block"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-[1.05] rounded px-3 py-2 block">
-        {{ 'BOOKING_PAGE.TITLE' | translate }}
-      </a>
-    </li>
+        </button>
+        <!-- Submenú -->
+        <ul *ngIf="openDropdown === item.label" class="pl-6 mt-2 space-y-1">
+          <li *ngFor="let child of item.children">
+            <a [routerLink]="child.route" routerLinkActive="bg-blue-600 shadow-md scale-[1.02] rounded px-3 py-2 block"
+              [routerLinkActiveOptions]="{ exact: true }"
+              class="block px-3 py-2 rounded hover:bg-gray-800 transition-all duration-300">
+              {{ child.label | translate }}
+            </a>
+          </li>
+        </ul>
+      </li>
 
-    <div class="border-t border-gray-600 w-full mx-auto opacity-40"></div>
+      <!-- Ítem simple -->
+      <ng-template #singleLink>
+        <li>
+          <a [routerLink]="item.route" routerLinkActive="bg-blue-600 shadow-md scale-[1.02] rounded px-3 py-2 block"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-[1.05] rounded px-3 py-2 block">
+            {{ item.label | translate }}
+          </a>
+        </li>
+      </ng-template>
 
-    <li>
-      <a routerLink="/calendar" routerLinkActive="bg-blue-600 shadow-md scale-[1.02] rounded px-3 py-2 block"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-[1.05] rounded px-3 py-2 block">
-        {{ 'CALENDARIO' | translate }}
-      </a>
-    </li>
+    </ng-container>
 
-    <div class="border-t border-gray-600 w-full mx-auto opacity-40"></div>
-
-    <li>
-      <a routerLink="/materials/lock" routerLinkActive="bg-blue-600 shadow-md scale-[1.02] rounded px-3 py-2 block"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-[1.05] rounded px-3 py-2 block">
-        {{ 'Bloqueo Materiales' | translate }}
-      </a>
-    </li>
-
-    <div class="border-t border-gray-600 w-full mx-auto opacity-40"></div>
-
-    <li>
-      <a routerLink="/provider" routerLinkActive="bg-blue-600 shadow-md scale-[1.02] rounded px-3 py-2 block"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-[1.05] rounded px-3 py-2 block">
-        {{ 'Proveedores' | translate }}
-      </a>
-    </li>
-
-    <div class="border-t border-gray-600 w-full mx-auto opacity-40"></div>
-
-    <li>
-      <a routerLink="/carrier" routerLinkActive="bg-blue-600 shadow-md scale-[1.02] rounded px-3 py-2 block"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-[1.05] rounded px-3 py-2 block">
-        {{ 'Transportista' | translate }}
-      </a>
-    </li>
-
-    <div class="border-t border-gray-600 w-full mx-auto opacity-40"></div>
-
-    <li>
-      <a routerLink="/materials" routerLinkActive="bg-blue-600 shadow-md scale-[1.02] rounded px-3 py-2 block"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-[1.05] rounded px-3 py-2 block">
-        {{ 'Materiales' | translate }}
-      </a>
-    </li>
-
-    <div class="border-t border-gray-600 w-full mx-auto opacity-40"></div>
-
-    <li>
-      <a routerLink="/muelles" routerLinkActive="bg-blue-600 shadow-md scale-[1.02] rounded px-3 py-2 block"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-[1.05] rounded px-3 py-2 block">
-        {{ 'Muelles' | translate }}
-      </a>
-    </li>
-
-    <div class="border-t border-gray-600 w-full mx-auto opacity-40"></div>
-
-    <li>
-      <a routerLink="/companys" routerLinkActive="bg-blue-600 shadow-md scale-[1.02] rounded px-3 py-2 block"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-[1.05] rounded px-3 py-2 block">
-        {{ 'Empresas' | translate }}
-      </a>
-    </li>
-
-    <div class="border-t border-gray-600 w-full mx-auto opacity-40"></div>
-
-    <li>
-      <a routerLink="/users" routerLinkActive="bg-blue-600 shadow-md scale-[1.02] rounded px-3 py-2 block"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-[1.05] rounded px-3 py-2 block">
-        {{ 'Usuarios' | translate }}
-      </a>
-    </li>
   </ul>
 </aside>

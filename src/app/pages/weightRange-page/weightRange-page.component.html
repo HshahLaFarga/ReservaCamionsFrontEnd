@@ -1,0 +1,62 @@
+<div class="max-w-5xl mx-auto p-6 bg-white rounded shadow space-y-4">
+  <!-- Mostrar los valores -->
+  <div *ngIf="!isEditing">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Rango de Peso Actual</h2>
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-gray-700"><strong>Min KG:</strong> {{ weightRange?.min_kg }}</p>
+        <p class="text-gray-700"><strong>Max KG:</strong> {{ weightRange?.max_kg }}</p>
+      </div>
+      <button (click)="toggleEdit()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+        Editar
+      </button>
+    </div>
+  </div>
+
+  <!-- Formulario de edición -->
+  <form *ngIf="isEditing && form" [formGroup]="form" (ngSubmit)="onSubmit()"
+    class="space-y-6 p-6">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Editar Rango de Peso</h2>
+
+    <!-- Campo min_kg -->
+    <div class="mb-4">
+      <label class="block mb-1 text-gray-700 font-medium" for="min_kg">Min KG</label>
+      <input type="number" [formControlName]="'min_kg'" id="min_kg"
+        class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <div *ngIf="form.get('min_kg')?.invalid && form.get('min_kg')?.touched" class="text-red-500 text-sm mt-1">
+        Min KG es requerido y debe ser mayor o igual a 0.
+      </div>
+    </div>
+
+    <!-- Campo max_kg -->
+    <div class="mb-4">
+      <label class="block mb-1 text-gray-700 font-medium" for="max_kg">Max KG</label>
+      <input type="number" [formControlName]="'max_kg'" id="max_kg"
+        class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <div *ngIf="form.get('max_kg')?.invalid && form.get('max_kg')?.touched" class="text-red-500 text-sm mt-1">
+        Max KG es requerido y debe ser mayor o igual a Min KG.
+      </div>
+    </div>
+
+    <div class="flex space-x-4">
+      <button type="submit" [disabled]="form.invalid"
+        class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition">
+        Actualizar
+      </button>
+      <button type="button" (click)="toggleEdit()"
+        class="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400 transition">
+        Cancelar
+      </button>
+    </div>
+  </form>
+</div>
+
+<div
+  *ngIf="isLoading"
+  class="absolute inset-0 bg-white/60 flex items-center justify-center z-20"
+>
+  <div class="flex text-center items-center gap-3">
+    <div class="loader animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mb-2"></div>
+    <p class="text-gray-700">Carregant...</p>
+  </div>
+</div>

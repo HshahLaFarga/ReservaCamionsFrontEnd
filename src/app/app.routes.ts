@@ -19,6 +19,13 @@ import { CompanyPageComponent } from './pages/company-page/company-page.componen
 import { CompanyAddUpdateComponent } from './pages/company-page/company-add-update/company-add-update.component';
 import { UserPageComponent } from './pages/user-page/user-page.component';
 import { UserAddUdpateComponent } from './pages/user-page/user-add-udpate/user-add-udpate.component';
+import { TruckTypePageComponent } from './pages/truckType-page/truckType-page.component';
+import { TruckTypeAddUpdateComponent } from './pages/truckType-page/truckType-add-update/truckType-add-update.component';
+import { WeightRangePageComponent } from './pages/weightRange-page/weightRange-page.component';
+import { StatusPageComponent } from './pages/status-page/status-page.component';
+import { StatusAddUpdateComponent } from './pages/status-page/status-add-update/status-add-update.component';
+import { LockMuellePageComponent } from './pages/muelleLock-page/lockMuelle-page.component';
+import { LockMuelleAddUpdateComponent } from './pages/muelleLock-page/muelleLock-add-update/lockMuelle-add-update.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -59,6 +66,20 @@ export const routes: Routes = [
       { path: 'users', component: UserPageComponent},
       { path: 'users/add', component: UserAddUdpateComponent},
       { path: 'users/edit', component: UserAddUdpateComponent},
+
+      { path: 'trucks/type', component: TruckTypePageComponent},
+      { path: 'trucks/type/add', component: TruckTypeAddUpdateComponent},
+      { path: 'trucks/type/edit', component: TruckTypeAddUpdateComponent},
+
+      { path: 'status', component: StatusPageComponent},
+      { path: 'status/add', component: StatusAddUpdateComponent},
+      { path: 'status/edit', component: StatusAddUpdateComponent},
+
+      { path: 'weight/range', component: WeightRangePageComponent},
+
+      { path: 'lock/muelles', component: LockMuellePageComponent},
+      { path: 'lock/muelles/add', component: LockMuelleAddUpdateComponent},
+      { path: 'lock/muelles/edit', component: LockMuelleAddUpdateComponent},
 
       { path: 'bookings', loadChildren: () => import('./pages/booking-page/booking-page.routes')},
 
