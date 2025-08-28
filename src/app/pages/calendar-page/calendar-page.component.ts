@@ -23,32 +23,22 @@ export class CalendarPageComponent implements OnInit {
   muelles: Muelle[] = [];
   selectedMuelles: number[] = [];
 
-  constructor(private _calendarPageService: CalendarPageService) {}
+  constructor(private _calendarPageService: CalendarPageService) { }
 
   ngOnInit(): void {
     this.loadDefaultData();
   }
 
-  loadDefaultData() {
-    this.getMuelles();
-    this.getBookings();
-  }
-
   calendarOptions: CalendarOptions = {
     initialView: 'timeGridWeek',
     plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
-    dateClick: (arg) => this.handleDateClick(arg),
     nowIndicator: true,
     firstDay: 1,
     weekends: true,
     slotMinTime: '07:00:00',
     slotMaxTime: '19:30:00',
     scrollTime: '07:00:00',
-    businessHours: {
-      daysOfWeek: [1, 2, 3, 4, 5, 6, 7],
-      startTime: '07:00',
-      endTime: '19:30',
-    },
+    businessHours: [],
     slotLabelFormat: {
       hour: '2-digit',
       minute: '2-digit',
@@ -57,11 +47,17 @@ export class CalendarPageComponent implements OnInit {
     events: []
   };
 
+  loadDefaultData() {
+    this.getMuelles();
+    this.getBookings();
+  }
+
   getMuelles() {
     this._calendarPageService.getMuelles().subscribe({
       next: (muelles: Muelle[]) => {
         this.muelles = muelles;
         this.selectedMuelles = this.muelles.map(m => m.muelle_id);
+        this.updateBusinessHours();
         this.filterEventsBySelectedMuelles();
       },
       error: (err) => {
@@ -117,6 +113,7 @@ export class CalendarPageComponent implements OnInit {
       this.selectedMuelles.push(muelleId);
     }
     this.filterEventsBySelectedMuelles();
+    this.updateBusinessHours();
   }
 
   isMuelleSelected(muelleId: number): boolean {
@@ -127,7 +124,55 @@ export class CalendarPageComponent implements OnInit {
     this.calendarOptions.weekends = !this.calendarOptions.weekends;
   }
 
-  handleDateClick(arg: DateClickArg) {
-    alert('date click! ' + arg.dateStr);
+  private getGlobalDayRange(numDia: number) {
+    const horariosDia = this.muelles
+      .filter(m => this.selectedMuelles.includes(m.muelle_id))
+      .flatMap(m => m.horarios || [])
+      .filter(h => Number(h.num_dia) === numDia);
+
+    if (!horariosDia.length) {
+      return { start: '07:00:00', end: '19:30:00' }; // fallback
+    }
+
+    const start = horariosDia.reduce(
+      (min, h) => h.inicio < min ? h.inicio : min,
+      horariosDia[0].inicio
+    );
+
+    const end = horariosDia.reduce(
+      (max, h) => h.fin > max ? h.fin : max,
+      horariosDia[0].fin
+    );
+
+    return { start, end };
   }
+
+  updateBusinessHours() {
+    const businessHours = [1, 2, 3, 4, 5, 6, 7].map(numDia => {
+      const { start, end } = this.getGlobalDayRange(numDia);
+      return {
+        daysOfWeek: [numDia],
+        startTime: start,
+        endTime: end
+      };
+    });
+
+    const allRanges = businessHours.filter(bh => bh.startTime && bh.endTime);
+    const slotMinTime = allRanges.reduce(
+      (min, bh) => bh.startTime < min ? bh.startTime : min,
+      allRanges[0]?.startTime || '07:00:00'
+    );
+    const slotMaxTime = allRanges.reduce(
+      (max, bh) => bh.endTime > max ? bh.endTime : max,
+      allRanges[0]?.endTime || '19:30:00'
+    );
+
+    this.calendarOptions = {
+      ...this.calendarOptions,
+      businessHours,
+      slotMinTime,
+      slotMaxTime
+    };
+  }
+
 }

@@ -1,4 +1,5 @@
 import { Carrier } from "./carrier.module";
+import { TimingMuelle } from "./timingMuelle.model";
 
 export interface Muelle {
   abierto_festivos: number,
@@ -14,6 +15,7 @@ export interface Muelle {
 
   // Relacion
   empresa: Carrier,
+  horarios: TimingMuelle[],
 
   // Formato visual
   abierto_festivosFormated: string,
