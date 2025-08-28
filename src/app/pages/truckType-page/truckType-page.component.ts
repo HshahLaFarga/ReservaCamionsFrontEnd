@@ -74,7 +74,7 @@ export class TruckTypePageComponent implements OnInit {
       title: 'Eliminación de Reserva',
       message: `¿Está seguro de que desea eliminar el tipo camión <strong>${truck.nombre}</strong> una vez hecho no se podrà recuperar?`
     };
-
+    
     const dialogRef = this.dialog.open(ConfirmModalComponent, {
       maxWidth: '95vw',
       width: '65%',

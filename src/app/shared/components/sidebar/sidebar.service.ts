@@ -3,6 +3,7 @@ import { SidebarItem } from "../../../core/models/sidebar.module";
 
 @Injectable({ providedIn: 'root' })
 export class SidebarService {
+  // Futura implementació, d'alguna manera recuperar la info de l'usuari ja sigui després del LOGIN o bé consultant a la BDD i a través del getter gestionar qui ho pot veure i qui no (Estil FargaNet)
   private items: SidebarItem[] = [
     { label: 'DASHBOARD', route: '/dashboard' },
     { label: 'BOOKING_PAGE.TITLE', route: '/bookings' },
@@ -10,7 +11,7 @@ export class SidebarService {
     { label: 'Proveedores', route: '/provider' },
     { label: 'Transportista', route: '/carrier' },
     { label: 'Materiales', route: '/materials' },
-    { label: 'Muelles', route: '/muelles' },
+    { label: 'Muelles', children: [{ label: 'Muelles', route: '/muelles' }, { label: 'Horario Muelles', route: '/muelles/timing'}]},
     { label: 'Empresas', route: '/companys' },
     { label: 'Usuarios', route: '/users' },
     { label: 'Rango KG', route: '/weight/range' },

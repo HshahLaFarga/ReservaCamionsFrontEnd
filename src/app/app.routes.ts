@@ -26,6 +26,8 @@ import { StatusPageComponent } from './pages/status-page/status-page.component';
 import { StatusAddUpdateComponent } from './pages/status-page/status-add-update/status-add-update.component';
 import { LockMuellePageComponent } from './pages/muelleLock-page/lockMuelle-page.component';
 import { LockMuelleAddUpdateComponent } from './pages/muelleLock-page/muelleLock-add-update/lockMuelle-add-update.component';
+import { TimingMuellePageComponent } from './pages/timingMuelle-page/timingMuelle-page.component';
+import { TimingMuelleAddUpdateComponent } from './pages/timingMuelle-page/timingMuelle-add-update/timingMuelle-add-update.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -58,6 +60,10 @@ export const routes: Routes = [
       { path: 'muelles', component: MuellePageComponent},
       { path: 'muelles/add', component: MuelleAddUpdateComponent},
       { path: 'muelles/edit', component: MuelleAddUpdateComponent},
+
+      { path: 'muelles/timing', component: TimingMuellePageComponent},
+      { path: 'muelles/timing/add', component: TimingMuelleAddUpdateComponent},
+      { path: 'muelles/timing/edit', component: TimingMuelleAddUpdateComponent},
 
       { path: 'companys', component: CompanyPageComponent},
       { path: 'companys/add', component: CompanyAddUpdateComponent},

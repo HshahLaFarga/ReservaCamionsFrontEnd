@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../core/envoirment/envoirment.prod';
+import { environment } from '../../core/envoirment/envoirment';
 import { Injectable } from '@angular/core';
 import { MaterialLock } from '../../core/models/material-lock.module';
 

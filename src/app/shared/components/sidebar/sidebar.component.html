@@ -19,7 +19,7 @@
           <li *ngFor="let child of item.children">
             <a [routerLink]="child.route" routerLinkActive="bg-blue-600 shadow-md scale-[1.02] rounded px-3 py-2 block"
               [routerLinkActiveOptions]="{ exact: true }"
-              class="block px-3 py-2 rounded hover:bg-gray-800 transition-all duration-300">
+              class="block px-3 py-2 rounded transition-all duration-300">
               {{ child.label | translate }}
             </a>
           </li>
