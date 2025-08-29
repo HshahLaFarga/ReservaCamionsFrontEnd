@@ -5,12 +5,12 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { forkJoin, map, Observable, startWith } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Truck } from '../../../core/models/truck.module';
-import { Muelle } from '../../../core/models/muelle.module';
+import { Truck } from '../../../core/models/truck.model';
+import { Muelle } from '../../../core/models/muelle.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { Material, MaterialMuelleControl } from '../../../core/models/material.module';
+import { Material, MaterialMuelleControl } from '../../../core/models/material.model';
 
 @Component({
   selector: 'app-material-add-update',

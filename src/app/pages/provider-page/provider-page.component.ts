@@ -1,6 +1,6 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import { GenericListComponent } from '../../shared/components/generic-list/generic-list.component';
-import { Provider } from '../../core/models/provider.module';
+import { Provider } from '../../core/models/provider.model';
 import { ProviderPageService } from './provider-page.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';

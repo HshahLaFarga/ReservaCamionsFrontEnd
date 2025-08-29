@@ -7,8 +7,8 @@ import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { TranslateModule } from '@ngx-translate/core';
 import { CalendarPageService } from './calendar-page.service';
-import { Booking } from '../../core/models/booking.module';
-import { Muelle } from '../../core/models/muelle.module';
+import { Booking } from '../../core/models/booking.model';
+import { Muelle } from '../../core/models/muelle.model';
 
 @Component({
   selector: 'app-calendar-page',

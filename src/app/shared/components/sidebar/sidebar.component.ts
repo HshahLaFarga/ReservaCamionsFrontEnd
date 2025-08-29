@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { SidebarService } from './sidebar.service';
-import { SidebarItem } from '../../../core/models/sidebar.module';
+import { SidebarItem } from '../../../core/models/sidebar.model';
 
 @Component({
   selector: 'app-sidebar',

@@ -1,4 +1,4 @@
-import { Carrier } from "./carrier.module";
+import { Carrier } from "./carrier.model";
 
 export interface Muelle {
   abierto_festivos: number,

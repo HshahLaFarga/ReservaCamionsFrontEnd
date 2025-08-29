@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GenericFormComponent } from '../../../shared/components/generic-form/generic-form.component';
 import { ProviderAddService } from './provider-add-update.service';
-import { Provider } from '../../../core/models/provider.module';
+import { Provider } from '../../../core/models/provider.model';
 import { regex } from '../../../shared/utils/regex';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';

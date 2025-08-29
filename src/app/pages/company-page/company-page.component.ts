@@ -3,7 +3,7 @@ import { GenericListComponent } from '../../shared/components/generic-list/gener
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { Company } from '../../core/models/company.module';
+import { Company } from '../../core/models/company.model';
 import { CompanyPageService } from './company-page.service';
 
 @Component({

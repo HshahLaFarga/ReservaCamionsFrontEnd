@@ -6,9 +6,9 @@ import interactionPlugin from '@fullcalendar/interaction';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import { CalendarModalService } from './calendar-modal.service';
 import { CommonModule } from '@angular/common';
-import { CalendarReservation } from '../../../core/models/calendar.module';
-import { Booking } from '../../../core/models/booking.module';
-import { Muelle } from '../../../core/models/muelle.module';
+import { CalendarReservation } from '../../../core/models/calendar.model';
+import { Booking } from '../../../core/models/booking.model';
+import { Muelle } from '../../../core/models/muelle.model';
 
 
 @Component({

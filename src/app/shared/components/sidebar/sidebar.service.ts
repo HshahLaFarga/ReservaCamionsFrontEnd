@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { SidebarItem } from "../../../core/models/sidebar.module";
+import { SidebarItem } from "../../../core/models/sidebar.model";
 
 @Injectable({ providedIn: 'root' })
 export class SidebarService {
@@ -17,7 +17,10 @@ export class SidebarService {
     { label: 'Rango KG', route: '/weight/range' },
     { label: 'Status', route: '/status' },
     { label: 'Bloqueos', children: [{ label: 'Bloqueo Materiales', route: '/materials/lock' },{ label: 'Bloqueo Muelles', route: '/lock/muelles' }] },
-    { label: 'Tipos', children: [{ label: 'Tipo Camion', route: '/trucks/type' }]},
+    { label: 'Tipos', children: [
+      { label: 'Tipo Camion', route: '/trucks/type' },
+      { label: 'Tipo Proveedor', route: '/provider/type' },
+    ]},
   ];
 
   getSidebarItems(): SidebarItem[] {

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GenericListComponent } from '../../shared/components/generic-list/generic-list.component';
 import { CommonModule } from '@angular/common';
-import { Booking } from '../../core/models/booking.module';
+import { Booking } from '../../core/models/booking.model';
 import { LockMuellePageService } from './lockMuelle-page.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';

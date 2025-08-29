@@ -1,5 +1,5 @@
-import { Booking } from "./booking.module";
-import { Muelle } from "./muelle.module";
+import { Booking } from "./booking.model";
+import { Muelle } from "./muelle.model";
 
 export interface Company {
   empresa_id?: number,

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GenericFormComponent } from '../../../shared/components/generic-form/generic-form.component';
 import { CommonModule } from '@angular/common';
-import { Truck } from '../../../core/models/truck.module';
+import { Truck } from '../../../core/models/truck.model';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { TruckTypeAddUpdateService } from './truckType-add-update.service';

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GenericListComponent } from '../../shared/components/generic-list/generic-list.component';
 import { MaterialLockPageService } from './material-lock-page.service';
-import { MaterialLock } from '../../core/models/material-lock.module';
+import { MaterialLock } from '../../core/models/material-lock.model';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 

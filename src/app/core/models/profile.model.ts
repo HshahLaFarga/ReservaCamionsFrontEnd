@@ -1,4 +1,4 @@
-import { Rol } from "./rol.module";
+import { Rol } from "./rol.model";
 
 export interface Profile {
   id?: string,

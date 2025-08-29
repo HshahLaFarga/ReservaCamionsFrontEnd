@@ -28,6 +28,8 @@ import { LockMuellePageComponent } from './pages/muelleLock-page/lockMuelle-page
 import { LockMuelleAddUpdateComponent } from './pages/muelleLock-page/muelleLock-add-update/lockMuelle-add-update.component';
 import { TimingMuellePageComponent } from './pages/timingMuelle-page/timingMuelle-page.component';
 import { TimingMuelleAddUpdateComponent } from './pages/timingMuelle-page/timingMuelle-add-update/timingMuelle-add-update.component';
+import { ProviderTypeComponent } from './pages/provider-type/provider-type.component';
+import { ProviderTypeAddUpdateComponent } from './pages/provider-type/provider-type-add-update/provider-type-add-update.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -46,6 +48,9 @@ export const routes: Routes = [
       { path: 'provider', component: ProviderPageComponent },
       { path: 'provider/add', component: ProviderAddUpdateComponent },
       { path: 'provider/edit', component: ProviderAddUpdateComponent },
+      { path: 'provider/type', component: ProviderTypeComponent },
+      { path: 'provider/type/add', component: ProviderTypeAddUpdateComponent },
+      { path: 'provider/type/edit', component: ProviderTypeAddUpdateComponent },
 
       { path: 'carrier', component: CarrierPageComponent },
       { path: 'carrier/add', component: CarrierAddUpdateComponent },
@@ -72,6 +77,8 @@ export const routes: Routes = [
       { path: 'users', component: UserPageComponent},
       { path: 'users/add', component: UserAddUdpateComponent},
       { path: 'users/edit', component: UserAddUdpateComponent},
+      { path: 'users/type', component: UserAddUdpateComponent},
+      { path: 'users/role', component: UserAddUdpateComponent},
 
       { path: 'trucks/type', component: TruckTypePageComponent},
       { path: 'trucks/type/add', component: TruckTypeAddUpdateComponent},

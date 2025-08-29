@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../core/envoirment/envoirment';
-import { Booking, BookingDocument } from '../../core/models/booking.module';
+import { Booking, BookingDocument } from '../../core/models/booking.model';
 // import { Profile } from './reservation-page.types';
 
 @Injectable({

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Muelle } from '../../../core/models/muelle.module';
+import { Muelle } from '../../../core/models/muelle.model';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GenericFormComponent } from '../../../shared/components/generic-form/generic-form.component';
 import { CommonModule } from '@angular/common';
-import { Status } from '../../../core/models/status.module';
+import { Status } from '../../../core/models/status.model';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { StatusAddUpdateService } from './status-add-update.service';

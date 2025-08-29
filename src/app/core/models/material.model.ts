@@ -1,5 +1,5 @@
-import { Muelle } from "./muelle.module";
-import { Truck } from "./truck.module";
+import { Muelle } from "./muelle.model";
+import { Truck } from "./truck.model";
 
 export interface Material {
   camiones_permitidos: string,

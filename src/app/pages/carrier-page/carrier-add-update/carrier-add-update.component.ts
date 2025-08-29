@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { GenericFormComponent } from '../../../shared/components/generic-form/generic-form.component';
 import { CommonModule } from '@angular/common';
 import { CarrierAddUpdateService } from './carrier-add-update.service';
-import { Carrier } from '../../../core/models/carrier.module';
+import { Carrier } from '../../../core/models/carrier.model';
 import { regex } from '../../../shared/utils/regex';
 import { Observable } from 'rxjs';
 

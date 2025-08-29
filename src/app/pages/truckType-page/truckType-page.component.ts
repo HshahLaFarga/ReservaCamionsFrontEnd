@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GenericListComponent } from '../../shared/components/generic-list/generic-list.component';
 import { CommonModule } from '@angular/common';
-import { Truck } from '../../core/models/truck.module';
+import { Truck } from '../../core/models/truck.model';
 import { TruckTypePageService } from './truckType-page.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';

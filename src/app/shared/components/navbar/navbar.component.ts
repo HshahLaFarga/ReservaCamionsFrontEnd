@@ -2,7 +2,7 @@ import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
-import { SidebarItem } from '../../../core/models/sidebar.module';
+import { SidebarItem } from '../../../core/models/sidebar.model';
 import { SidebarService } from '../sidebar/sidebar.service';
 
 @Component({

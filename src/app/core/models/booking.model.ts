@@ -1,4 +1,4 @@
-import { Muelle } from "./muelle.module"
+import { Muelle } from "./muelle.model"
 
 export interface Booking {
   "reserva_id"?: number,
