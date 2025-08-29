@@ -52,10 +52,13 @@ export class CalendarModalComponent implements OnInit {
     events: this.events,
     select: this.onTimeSlotSelected.bind(this),
     selectable: true,
-    dateClick: (info) => {
-      console.log('Has clicado:', info.dateStr, 'en muelle:', info.resource?.title);
+    datesSet: (info) => {
+      console.log('Cambio de fecha:', info.start);
+      this.updateBusinessHoursAndResources(info.start);
     }
   };
+
+  timingMuelles: TimingMuelle[] | [] = [];
 
   constructor(
     public dialogRef: MatDialogRef<CalendarModalComponent>,
@@ -64,28 +67,41 @@ export class CalendarModalComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getAllBookings();
+    this.isLoading = true;
+    this.loadTimingsAndBookings();
   }
 
-  getAllBookings() {
-    this.isLoading = true;
-    this._calendarModalService.getAllBookings().subscribe({
-      next: (response) => {
-        this.bookings = response;
-        this.bookings = this.bookings.filter(({muelle1_id}) => this.data.muelles.map((data: Muelle) => (data.numero)).includes(muelle1_id));
-        this.events = this.bookings.map(({ muelle1_id, inicio1, fin1 }) => {
-          return {
-            resourceId: muelle1_id,
-            title: 'Ocupado',
-            start: new Date(inicio1),
-            end: new Date(fin1),
-          };
-        });
+  private loadTimingsAndBookings() {
+    // Primer carreguem horaris dels muelles
+    this._calendarModalService.getTimingMuelle().subscribe({
+      next: (timings: TimingMuelle[]) => {
+        this.timingMuelles = timings;
+        console.log('TimingMuelles:', this.timingMuelles);
+        // Després carreguem les bookings
+        this.getAllBookings();
+      },
+      error: (err) => {
+        console.error(err);
+        this.isLoading = false;
+      }
+    });
+  }
 
-        this.calendarOptions = {
-          ...this.calendarOptions,
-          events: this.events
-        };
+  private getAllBookings() {
+    this._calendarModalService.getAllBookings().subscribe({
+      next: (response: Booking[]) => {
+        this.bookings = response.filter(({ muelle1_id }) =>
+          this.data.muelles.map((m: Muelle) => m.numero).includes(muelle1_id)
+        );
+
+        this.events = this.bookings.map(({ muelle1_id, inicio1, fin1 }) => ({
+          resourceId: muelle1_id,
+          title: 'Ocupado',
+          start: new Date(inicio1),
+          end: new Date(fin1),
+        }));
+
+        this.setupCalendarOptions();
 
         this.isLoading = false;
       },
@@ -95,6 +111,102 @@ export class CalendarModalComponent implements OnInit {
       }
     });
   }
+
+  private setupCalendarOptions(currentDate?: Date) {
+    const dayOfWeek = currentDate ? (currentDate.getDay() === 0 ? 7 : currentDate.getDay()) : 1;
+    // getDay() retorna 0=diumenge, 1=dilluns,..., convertim a 1-7
+
+    const businessHours = [];
+    let slotMinTimeGlobal = '23:59:00';
+    let slotMaxTimeGlobal = '00:00:00';
+
+    // Generem businessHours per cada dia amb timings existents
+    const timingsDia = this.timingMuelles.filter(t => parseInt(t.num_dia) === dayOfWeek);
+
+    if (timingsDia.length) {
+      const startTimes = timingsDia.map(t => t.inicio.toString());
+      const endTimes = timingsDia.map(t => t.fin.toString());
+
+      const minStart = startTimes.reduce((min, val) => val < min ? val : min, startTimes[0]);
+      const maxEnd = endTimes.reduce((max, val) => val > max ? val : max, endTimes[0]);
+
+      slotMinTimeGlobal = minStart;
+      slotMaxTimeGlobal = maxEnd;
+
+      businessHours.push({
+        daysOfWeek: [dayOfWeek],
+        startTime: minStart,
+        endTime: maxEnd
+      });
+    }
+
+    // Prepare resources amb horari només del dia actual
+    const resources = this.data.muelles.map((m: Muelle) => {
+      const timingsMuelleDia = this.timingMuelles
+        .filter(t => t.muelle_id === m.muelle_id && parseInt(t.num_dia) === dayOfWeek);
+
+      const timingStrings = timingsMuelleDia.map(t => `${t.inicio} - ${t.fin}`);
+      return { id: m.numero, title: `${m.nombre_muelle} ${timingStrings.join(', ')}` };
+    });
+
+    console.log('Dia actual:', dayOfWeek);
+    console.log('Resources del dia:', resources);
+
+    this.calendarOptions = {
+      ...this.calendarOptions,
+      businessHours,
+      slotMinTime: slotMinTimeGlobal,
+      slotMaxTime: slotMaxTimeGlobal,
+      resources
+    };
+  }
+
+  private updateBusinessHoursAndResources(currentDate: Date) {
+    const dayOfWeek = currentDate.getDay() === 0 ? 7 : currentDate.getDay(); // 1-7
+
+    // Filtramos los horarios solo del día que se muestra
+    const timingsDia = this.timingMuelles.filter(t => parseInt(t.num_dia) === dayOfWeek);
+
+    let slotMinTimeGlobal = '23:59:00';
+    let slotMaxTimeGlobal = '00:00:00';
+    const businessHours = [];
+
+    if (timingsDia.length) {
+      const startTimes = timingsDia.map(t => t.inicio.toString());
+      const endTimes = timingsDia.map(t => t.fin.toString());
+
+      slotMinTimeGlobal = startTimes.reduce((min, val) => val < min ? val : min, startTimes[0]);
+      slotMaxTimeGlobal = endTimes.reduce((max, val) => val > max ? val : max, endTimes[0]);
+
+      businessHours.push({
+        daysOfWeek: [dayOfWeek],
+        startTime: slotMinTimeGlobal,
+        endTime: slotMaxTimeGlobal
+      });
+    }
+
+    // Actualizamos los recursos mostrando solo el horario de este día
+    const resources = this.data.muelles.map((m: Muelle )=> {
+      const timingsMuelleDia = this.timingMuelles.filter(t => t.muelle_id === m.muelle_id && parseInt(t.num_dia) === dayOfWeek);
+      const timingStrings = timingsMuelleDia.map(t => `${t.inicio} - ${t.fin}`);
+      return { id: m.numero, title: `${m.nombre_muelle} ${timingStrings.join(', ')}` };
+    });
+
+    // Asignamos a calendarOptions
+    this.calendarOptions = {
+      ...this.calendarOptions,
+      businessHours,
+      slotMinTime: slotMinTimeGlobal,
+      slotMaxTime: slotMaxTimeGlobal,
+      resources
+    };
+
+    console.log('Horarios actualizados para el día', dayOfWeek);
+    console.log('Resources:', resources);
+    console.log('BusinessHours:', businessHours);
+  }
+
+
 
   onTimeSlotSelected(info: any) {
     const duracionEntregaMin = this.data.duracionEntrega || 30;
@@ -126,7 +238,7 @@ export class CalendarModalComponent implements OnInit {
 
   save() {
     this.dialogRef.close(
-      {...this.newReservation}
+      { ...this.newReservation }
     );
   }
 }

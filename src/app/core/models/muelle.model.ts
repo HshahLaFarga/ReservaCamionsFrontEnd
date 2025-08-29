@@ -14,6 +14,7 @@ export interface Muelle {
 
   // Relacion
   empresa: Carrier,
+  horarios: TimingMuelle[],
 
   // Formato visual
   abierto_festivosFormated: string,

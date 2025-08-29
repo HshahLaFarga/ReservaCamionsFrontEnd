@@ -37,23 +37,26 @@ export class TimingMuelleAddUpdateComponent implements OnInit {
   }
 
   onSubmit(timingMuelle: TimingMuelle) {
-    console.log(timingMuelle);
+    this.isLoading = true;
 
     let request:  Observable<any>;
 
     if (this.method === 'post') {
-      request = this._timingMuelleAddUpdateService.addTimingMuelle(timingMuelle)
+      request = this._timingMuelleAddUpdateService.addTimingMuelle(timingMuelle);
     } else {
       request = this._timingMuelleAddUpdateService.updateTimingMuelle(timingMuelle, this.initialTimingMuelle!.horarios_muelle_id);
     }
 
     request.subscribe({
         next: () => {
+          this.isLoading = false;
           this.router.navigate(['/muelles/timing']);
           this.method === 'post'? this.toastr.success('Horario del Muelle añadido correctamente', 'Éxito') : this.toastr.success('Horario del Muelle modificado correctamente', 'Éxito');
         },
         error: (err) => {
-            console.error(err);
+          this.isLoading = false;
+          this.toastr.error(err.error.message,'Error');
+          console.error(err);
         }
     });
   }
