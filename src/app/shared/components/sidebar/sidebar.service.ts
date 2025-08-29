@@ -12,6 +12,7 @@ export class SidebarService {
     { label: 'Transportista', route: '/carrier' },
     { label: 'Materiales', route: '/materials' },
     { label: 'Muelles', children: [{ label: 'Muelles', route: '/muelles' }, { label: 'Horario Muelles', route: '/muelles/timing'}]},
+    { label: 'Restricciones', route: '/restrictions' },
     { label: 'Empresas', route: '/companys' },
     { label: 'Usuarios', route: '/users' },
     { label: 'Rango KG', route: '/weight/range' },

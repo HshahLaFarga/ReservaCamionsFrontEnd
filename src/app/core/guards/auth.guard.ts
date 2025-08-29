@@ -14,5 +14,6 @@ export const authGuard: CanActivateFn = () => {
       }
     }),
     map(isLoggedIn => isLoggedIn)
+
   );
 };

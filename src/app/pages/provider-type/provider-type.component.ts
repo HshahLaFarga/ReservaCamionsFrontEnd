@@ -4,7 +4,6 @@ import { ProviderTypeService } from './provider-type.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Truck } from '../../core/models/truck.model';
 import { CommonModule } from '@angular/common';
 import { GenericListComponent } from '../../shared/components/generic-list/generic-list.component';
 import {

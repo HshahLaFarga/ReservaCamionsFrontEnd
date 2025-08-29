@@ -30,6 +30,7 @@ import { TimingMuellePageComponent } from './pages/timingMuelle-page/timingMuell
 import { TimingMuelleAddUpdateComponent } from './pages/timingMuelle-page/timingMuelle-add-update/timingMuelle-add-update.component';
 import { ProviderTypeComponent } from './pages/provider-type/provider-type.component';
 import { ProviderTypeAddUpdateComponent } from './pages/provider-type/provider-type-add-update/provider-type-add-update.component';
+import { RestrictionPageComponent } from './pages/restriction-page/restriction-page.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -93,6 +94,8 @@ export const routes: Routes = [
       { path: 'lock/muelles', component: LockMuellePageComponent},
       { path: 'lock/muelles/add', component: LockMuelleAddUpdateComponent},
       { path: 'lock/muelles/edit', component: LockMuelleAddUpdateComponent},
+
+      { path: 'restrictions', component: RestrictionPageComponent},
 
       { path: 'bookings', loadChildren: () => import('./pages/booking-page/booking-page.routes')},
 
