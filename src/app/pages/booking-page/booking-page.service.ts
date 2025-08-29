@@ -33,6 +33,7 @@ export class BookingPageService {
     return this.http.get(`${environment.apiBaseUrl}/proveedores/${provider_id}`);
   }
 
+  // Llistat de materials per poder ser llistats a l'hora d'imprimir les reserves
   getMaterials(materials: number[]): Observable<any> {
     let params = new HttpParams();
     if (materials.length > 0) {

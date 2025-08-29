@@ -368,6 +368,8 @@ export class BookingAddComponent implements OnInit {
         this.isLoading = false;
         if (err.error.id === 1) {
           this.toastr.error(err.error.message, `Error Reserva material ${err.error.material}`);
+        } if (err.error.id) {
+          this.toastr.error(err.error.message, `Error`);
         } else {
           console.error('Error saving booking:', err);
         }

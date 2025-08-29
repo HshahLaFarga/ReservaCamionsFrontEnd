@@ -12,6 +12,9 @@ export class CalendarModalService {
   ) {}
 
   getAllBookings(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/reserva`, { withCredentials: true});
+    return this.http.get(`${environment.apiBaseUrl}/reserva`);
+  }
+  getTimingMuelle(): Observable<any> {
+    return this.http.get(`${environment.apiBaseUrl}/muelle/horarios`);
   }
 }
