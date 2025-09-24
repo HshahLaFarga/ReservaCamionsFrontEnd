@@ -4,7 +4,7 @@ import { GenericListComponent } from '../../shared/components/generic-list/gener
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { MaterialPageService } from './material-page.service';
-import { Material, MaterialMuelleControl } from '../../core/models/material.module';
+import { Material, MaterialMuelleControl } from '../../core/models/material.model';
 
 @Component({
   selector: 'app-material-page',

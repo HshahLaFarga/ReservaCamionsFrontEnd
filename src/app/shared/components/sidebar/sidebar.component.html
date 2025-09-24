@@ -1,43 +1,112 @@
 <aside class="w-full bg-gray-900 text-white h-full pt-16 p-6">
   <ul class="space-y-3">
 
+    <!-- Sección normal (no admin) -->
     <ng-container *ngFor="let item of sidebarItems">
+      <ng-container *ngIf="!item.admin">
 
-      <!-- Dropdown -->
-      <li *ngIf="item.children?.length; else singleLink">
-        <button (click)="toggleDropdown(item.label)"
-          class="w-full text-left flex justify-between items-center py-2 hover:bg-gray-800 rounded transition-all duration-300">
-          <span>{{ item.label | translate }}</span>
-          <span class="material-icons transform transition-transform duration-300"
-            [class.rotate-90]="openDropdown === item.label">
-            arrow_right
-          </span>
+        <!-- Dropdown -->
+        <li *ngIf="item.children?.length; else singleLink">
+          <button (click)="toggleDropdown(item.label)"
+            class="w-full text-left flex justify-between items-center py-2 px-3 hover:bg-gray-800/50 rounded-xl transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-md hover:shadow-blue-500/20">
+            <mat-icon>{{item?.icon}}</mat-icon>
+            <span>{{ item.label | translate }}</span>
+            <span class="material-icons transform transition-transform duration-300"
+              [class.rotate-90]="openDropdown === item.label">
+              arrow_right
+            </span>
+          </button>
 
-        </button>
-        <!-- Submenú -->
-        <ul *ngIf="openDropdown === item.label" class="pl-6 mt-2 space-y-1">
-          <li *ngFor="let child of item.children">
-            <a [routerLink]="child.route" routerLinkActive="bg-blue-600 shadow-md scale-[1.02] rounded px-3 py-2 block"
+          <!-- Submenú -->
+          <ul *ngIf="openDropdown === item.label" class="pl-6 mt-2 space-y-1">
+            <li *ngFor="let child of item.children">
+              <a [routerLink]="child.route" 
+                routerLinkActive="bg-blue-600 shadow-md scale-[1.02] rounded-xl px-3 py-2 block"
+                [routerLinkActiveOptions]="{ exact: true }"
+                class="block px-3 py-2 rounded-xl transition-all duration-300 ease-in-out hover:bg-gray-800/70 hover:scale-[1.03] hover:shadow-md hover:shadow-blue-500/20">
+                <div class="flex items-center space-x-2">
+                  <mat-icon>{{child?.icon}}</mat-icon>
+                  <span>{{ child.label | translate }}</span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Ítem simple -->
+        <ng-template #singleLink>
+          <li>
+            <a [routerLink]="item.route" 
+              routerLinkActive="bg-blue-600 shadow-md scale-[1.02] rounded-xl px-3 py-2 block"
               [routerLinkActiveOptions]="{ exact: true }"
-              class="block px-3 py-2 rounded transition-all duration-300">
-              {{ child.label | translate }}
+              class="transition-all duration-300 ease-in-out hover:bg-gray-800/70 hover:shadow-md hover:shadow-blue-500/20 hover:scale-[1.03] rounded-xl px-3 py-2 block">
+              <div class="flex items-center space-x-2">
+                <mat-icon>{{item?.icon}}</mat-icon>
+                <span>{{ item.label | translate }}</span>
+              </div>
             </a>
           </li>
-        </ul>
-      </li>
+        </ng-template>
 
-      <!-- Ítem simple -->
-      <ng-template #singleLink>
-        <li>
-          <a [routerLink]="item.route" routerLinkActive="bg-blue-600 shadow-md scale-[1.02] rounded px-3 py-2 block"
-            [routerLinkActiveOptions]="{ exact: true }"
-            class="transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-[1.05] rounded px-3 py-2 block">
-            {{ item.label | translate }}
-          </a>
-        </li>
-      </ng-template>
-
+      </ng-container>
     </ng-container>
+
+    <!-- Línea divisoria -->
+  <div class="relative flex items-center justify-center my-6">
+    <div class="flex-grow border-t border-gray-700"></div>
+    <span class="mx-3 text-sm uppercase tracking-widest text-gray-400">Administrador</span>
+    <div class="flex-grow border-t border-gray-700"></div>
+  </div>
+
+
+    <!-- Sección Admin -->
+    <ul class="space-y-3">
+      <ng-container *ngFor="let item of sidebarItems">
+        <ng-container *ngIf="item.admin">
+
+          <li *ngIf="!item.children; else adminDropdown">
+            <a [routerLink]="item.route" 
+              routerLinkActive="bg-red-600 shadow-md scale-[1.02] rounded-xl px-3 py-2 block"
+              [routerLinkActiveOptions]="{ exact: true }"
+              class="transition-all duration-300 ease-in-out hover:bg-red-800/70 hover:shadow-md hover:shadow-red-500/30 hover:scale-[1.03] rounded-xl px-3 py-2 block">
+              <div class="flex items-center space-x-2">
+                <mat-icon>{{item?.icon}}</mat-icon>
+                <span>{{ item.label | translate }}</span>
+              </div>
+            </a>
+          </li>
+
+          <!-- Dropdown de admin -->
+          <ng-template #adminDropdown>
+            <li>
+              <button (click)="toggleDropdown(item.label)"
+                class="w-full text-left flex justify-between items-center py-2 px-3 hover:bg-red-800/50 rounded-xl transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-md hover:shadow-red-500/20">
+                <mat-icon>{{item?.icon}}</mat-icon>
+                <span>{{ item.label | translate }}</span>
+                <span class="material-icons transform transition-transform duration-300"
+                  [class.rotate-90]="openDropdown === item.label">
+                  arrow_right
+                </span>
+              </button>
+              <ul *ngIf="openDropdown === item.label" class="pl-6 mt-2 space-y-1">
+                <li *ngFor="let child of item.children">
+                  <a [routerLink]="child.route" 
+                    routerLinkActive="bg-red-600 shadow-md scale-[1.02] rounded-xl px-3 py-2 block"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    class="block px-3 py-2 rounded-xl transition-all duration-300 ease-in-out hover:bg-red-800/70 hover:scale-[1.03] hover:shadow-md hover:shadow-red-500/20">
+                    <div class="flex items-center space-x-2">
+                      <mat-icon>{{child?.icon}}</mat-icon>
+                      <span>{{ child.label | translate }}</span>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ng-template>
+
+        </ng-container>
+      </ng-container>
+    </ul>
 
   </ul>
 </aside>

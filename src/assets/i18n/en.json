@@ -47,5 +47,15 @@
 
   "CALENDAR_PAGE": {
     "MOSTRAR_FINDE": "Show weekend"
+  },
+
+  "RESTRICTION_PAGE": {
+    "TITLE": "Restrictions",
+    "DIA": "Day",
+    "MUELLE": "Dock",
+    "TIPO_CAMION": "Truck type",
+    "ID_PROVEEDOR": "Supplier ID",
+    "ACCIONES": "Actions",
+    "ANADIR": "Add restriction"
   }
 }

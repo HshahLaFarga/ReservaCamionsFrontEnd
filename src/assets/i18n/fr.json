@@ -46,5 +46,15 @@
 
   "CALENDAR_PAGE": {
     "MOSTRAR_FINDE": "Afficher le week-end"
+  },
+  
+  "RESTRICTION_PAGE": {
+    "TITLE": "Restrictions",
+    "DIA": "Jour",
+    "MUELLE": "Quai",
+    "TIPO_CAMION": "Type de camion",
+    "ID_PROVEEDOR": "ID fournisseur",
+    "ACCIONES": "Actions",
+    "ANADIR": "Ajouter une restriction"
   }
 }

@@ -7,12 +7,12 @@ import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { BookingPageService } from './booking-page.service';
 import { Router } from '@angular/router';
-import { Booking } from '../../core/models/booking.module';
+import { Booking } from '../../core/models/booking.model';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmData, ConfirmModalComponent } from '../../shared/components/confirm-modal/confirm-modal.component';
 import { formatDate } from '../../shared/utils/date.utils';
 import { forkJoin } from 'rxjs';
-import { Material } from '../../core/models/material.module';
+import { Material } from '../../core/models/material.model';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({

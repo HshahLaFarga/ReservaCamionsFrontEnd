@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../core/envoirment/envoirment';
 import { Injectable } from '@angular/core';
-import { WeightRange } from '../../core/models/weightRange.module';
+import { WeightRange } from '../../core/models/weightRange.model';
 
 @Injectable({
   providedIn: 'root'

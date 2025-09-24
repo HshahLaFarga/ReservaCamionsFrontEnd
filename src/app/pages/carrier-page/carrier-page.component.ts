@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GenericListComponent } from '../../shared/components/generic-list/generic-list.component';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Carrier } from '../../core/models/carrier.module';
+import { Carrier } from '../../core/models/carrier.model';
 import { CarrierPageService } from './carrier-page.service';
 import { CommonModule } from '@angular/common';
 

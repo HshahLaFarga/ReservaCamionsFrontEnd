@@ -13,18 +13,18 @@ import { MatOptionModule } from '@angular/material/core';
 import { forkJoin, Observable, map, startWith } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { Truck } from '../../../core/models/truck.module';
-import { Muelle } from '../../../core/models/muelle.module';
-import { Material } from '../../../core/models/material.module';
-import { Status } from '../../../core/models/status.module';
-import { Provider } from '../../../core/models/provider.module';
-import { Carrier } from '../../../core/models/carrier.module';
-import { CalendarReservation } from '../../../core/models/calendar.module';
-import { Booking, BookingDocument } from '../../../core/models/booking.module';
+import { Truck } from '../../../core/models/truck.model';
+import { Muelle } from '../../../core/models/muelle.model';
+import { Material } from '../../../core/models/material.model';
+import { Status } from '../../../core/models/status.model';
+import { Provider } from '../../../core/models/provider.model';
+import { Carrier } from '../../../core/models/carrier.model';
+import { CalendarReservation } from '../../../core/models/calendar.model';
+import { Booking, BookingDocument } from '../../../core/models/booking.model';
 import { MatIconModule } from '@angular/material/icon';
 import { ConfirmData, ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 import { ToastrService } from 'ngx-toastr';
-import { WeightRange } from '../../../core/models/weightRange.module';
+import { WeightRange } from '../../../core/models/weightRange.model';
 
 @Component({
   selector: 'app-booking-add',

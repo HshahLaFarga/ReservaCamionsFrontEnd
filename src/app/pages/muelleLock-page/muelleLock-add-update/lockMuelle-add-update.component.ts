@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GenericFormComponent } from '../../../shared/components/generic-form/generic-form.component';
 import { CommonModule } from '@angular/common';
 import { BookingPageComponent } from '../../booking-page/booking-page.component';
-import { Booking } from '../../../core/models/booking.module';
+import { Booking } from '../../../core/models/booking.model';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { LockMuelleAddUpdateService } from './lockMuelle-add-update.service';

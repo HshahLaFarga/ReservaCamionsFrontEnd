@@ -1,6 +1,6 @@
 
-import { MaterialLockDetail } from "./material-lock-detail.module"
-import { ProviderType } from "./provider.module"
+import { MaterialLockDetail } from "./material-lock-detail.model"
+import { ProviderType } from "./provider.model"
 
 export interface MaterialLock {
   bloqueo_grupo_id: number,

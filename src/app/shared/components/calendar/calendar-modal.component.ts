@@ -6,11 +6,10 @@ import interactionPlugin from '@fullcalendar/interaction';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import { CalendarModalService } from './calendar-modal.service';
 import { CommonModule } from '@angular/common';
-import { CalendarReservation } from '../../../core/models/calendar.module';
-import { Booking } from '../../../core/models/booking.module';
-import { Muelle } from '../../../core/models/muelle.module';
+import { CalendarReservation } from '../../../core/models/calendar.model';
+import { Booking } from '../../../core/models/booking.model';
+import { Muelle } from '../../../core/models/muelle.model';
 import { TimingMuelle } from '../../../core/models/timingMuelle.model';
-
 
 @Component({
   selector: 'app-calendar-modal',
@@ -94,7 +93,7 @@ export class CalendarModalComponent implements OnInit {
         this.bookings = response.filter(({ muelle1_id }) =>
           this.data.muelles.map((m: Muelle) => m.numero).includes(muelle1_id)
         );
-
+        //Aqui configuramos los bloqueos de los muelles uqe se encuntran en la tabla de reservas
         this.events = this.bookings.map(({ muelle1_id, inicio1, fin1 }) => ({
           resourceId: muelle1_id,
           title: 'Ocupado',

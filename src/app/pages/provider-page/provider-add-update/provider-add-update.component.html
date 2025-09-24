@@ -1,6 +1,6 @@
 <app-generic-form *ngIf="method === 'update'"
-  formTitle="Editar Tipo Camion"
-  tableName="tipocamiones"
+  formTitle="Editar Proveedor"
+  tableName="proveedores"
   [selectFields]="{
     tipo_proveedor_id: { api: 'tipoproveedores', labelField: 'nombre', valueField: 'tipo_proveedor_id', label: 'Tipo de proveedor' }
   }"
@@ -10,8 +10,8 @@
 </app-generic-form>
 
 <app-generic-form *ngIf="method === 'post'"
-  formTitle="Añadir Tipo Camion"
-  tableName="tipocamiones"
+  formTitle="Añadir Proveedor"
+  tableName="proveedores"
   [selectFields]="{
     tipo_proveedor_id: { api: 'muelles', labelField: 'nombre', valueField: 'muelle_id', label: 'Muelles Disponibles' },
   }"

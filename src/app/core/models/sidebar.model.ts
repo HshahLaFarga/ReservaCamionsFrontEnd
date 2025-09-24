@@ -4,4 +4,5 @@ export interface SidebarItem {
   route?: string;
   icon?: string;
   children?: SidebarItem[];
+  admin?: boolean; // Indica si el ítem es solo para administradores
 }

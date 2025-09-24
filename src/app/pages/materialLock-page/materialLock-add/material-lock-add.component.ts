@@ -4,15 +4,15 @@ import { BookingAddService } from '../../booking-page/booking-add-update/booking
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common'
-import { ProviderType } from '../../../core/models/provider.module';
-import { Material } from '../../../core/models/material.module';
+import { ProviderType } from '../../../core/models/provider.model';
+import { Material } from '../../../core/models/material.model';
 import { MaterialLockAddService } from './material-lock-add.service';
 import { map, startWith } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
-import { MaterialLock } from '../../../core/models/material-lock.module';
+import { MaterialLock } from '../../../core/models/material-lock.model';
 import { dateRangeValidator } from '../../../shared/utils/date.utils';
 
 @Component({

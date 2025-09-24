@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { CompanyAddUpdateService } from './company-add-update.service';
-import { Company } from '../../../core/models/company.module';
+import { Company } from '../../../core/models/company.model';
 import { Observable } from 'rxjs';
 
 @Component({

@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { GenericListComponent } from '../../shared/components/generic-list/generic-list.component';
 import { CommonModule } from '@angular/common';
 import { StatusPageService } from './status-page.service';
-import { Status } from '../../core/models/status.module';
+import { Status } from '../../core/models/status.model';
 
 @Component({
   selector: 'app-status-page',

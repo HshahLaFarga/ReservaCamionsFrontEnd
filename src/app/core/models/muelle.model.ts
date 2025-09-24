@@ -1,4 +1,4 @@
-import { Carrier } from "./carrier.module";
+import { Carrier } from "./carrier.model";
 import { TimingMuelle } from "./timingMuelle.model";
 
 export interface Muelle {

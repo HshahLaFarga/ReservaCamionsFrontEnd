@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { WeightRangePageService } from './weightRange-page.service';
-import { WeightRange } from '../../core/models/weightRange.module';
+import { WeightRange } from '../../core/models/weightRange.model';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 

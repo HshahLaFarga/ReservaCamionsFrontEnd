@@ -3,7 +3,7 @@ import { GenericFormComponent } from '../../../shared/components/generic-form/ge
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { Profile } from '../../../core/models/profile.module';
+import { Profile } from '../../../core/models/profile.model';
 import { Observable } from 'rxjs';
 import { UserAddUdpateService } from './user-add-update.service';
 

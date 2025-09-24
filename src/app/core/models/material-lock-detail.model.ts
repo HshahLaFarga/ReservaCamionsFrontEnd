@@ -1,4 +1,4 @@
-import { Material } from "./material.module"
+import { Material } from "./material.model"
 
 export interface MaterialLockDetail {
     bloqueo_grupo_detalle_id: number,

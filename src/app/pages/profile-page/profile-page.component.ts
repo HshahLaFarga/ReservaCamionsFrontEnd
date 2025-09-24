@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ProfilePageService } from './profile-page.service';
-import { Profile } from '../../core/models/profile.module';
+import { Profile } from '../../core/models/profile.model';
 
 @Component({
   selector: 'app-profile-page',

@@ -46,5 +46,15 @@
 
   "CALENDAR_PAGE": {
     "MOSTRAR_FINDE": "Mostrar cap de setmana"
+  },
+
+  "RESTRICTION_PAGE": {
+    "TITLE": "Restriccions",
+    "DIA": "Dia",
+    "MUELLE": "Moll",
+    "TIPO_CAMION": "Tipus de camió",
+    "ID_PROVEEDOR": "ID del proveïdor",
+    "ACCIONES": "Accions",
+    "ANADIR": "Afegeix restricció"
   }
 }
