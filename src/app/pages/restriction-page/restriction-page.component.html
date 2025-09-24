@@ -1,26 +1,27 @@
-<div class="title">LA FARGA Recepción de Mercancías</div>
-
 <div class="table-wrapper">
   <table class="matrix-table">
     <thead>
       <tr>
         <th></th>
-        @for (header of headers; track header) {
-          <th>{{ header }}</th>
+        @for (header of headers; track header.id) {
+          <th>{{ header.nombre }}</th>
         }
       </tr>
     </thead>
     <tbody>
-      @for (row of rows; track row) {
+      @for (row of rows; track row.id) {
         <tr>
           <!-- encabezado fila -->
-          <th>{{ row }}</th>
+          <th>{{ row.nombre }}</th>
 
           <!-- celdas -->
-          @for (col of headers; track col) {
-            <td [class.diagonal]="row === col">
-              @if (row !== col) {
-                <mat-checkbox [(ngModel)]="matrix[row][col]"></mat-checkbox>
+          @for (col of headers; track col.id) {
+            <td [class.diagonal]="row.id === col.id">
+              @if (row.id !== col.id) {
+                <mat-checkbox 
+                  [(ngModel)]="matrix[row.id][col.id]"
+                  (change)="onCheckboxChange(row.id, col.id, $event.checked)"
+                ></mat-checkbox>
               }
             </td>
           }
@@ -29,7 +30,6 @@
     </tbody>
   </table>
 </div>
-
 <div class="actions">
-  <button mat-raised-button color="primary" (click)="actualizar()">ACTUALIZAR</button>
+  <button mat-raised-button color="primary" (click)="saveMatrix()">ACTUALIZAR</button>
 </div>

@@ -31,6 +31,7 @@ import { TimingMuelleAddUpdateComponent } from './pages/timingMuelle-page/timing
 import { ProviderTypeComponent } from './pages/provider-type/provider-type.component';
 import { ProviderTypeAddUpdateComponent } from './pages/provider-type/provider-type-add-update/provider-type-add-update.component';
 import { RestrictionPageComponent } from './pages/restriction-page/restriction-page.component';
+import { ReportComponent } from './pages/report/report.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -45,6 +46,8 @@ export const routes: Routes = [
       { path: 'calendar', component: CalendarPageComponent},
 
       { path: 'profile', component: ProfilePageComponent },
+
+      { path: 'report', component: ReportComponent },
 
       { path: 'provider', component: ProviderPageComponent },
       { path: 'provider/add', component: ProviderAddUpdateComponent },

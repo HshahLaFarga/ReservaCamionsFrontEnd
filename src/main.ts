@@ -31,7 +31,7 @@ bootstrapApplication(AppComponent, {
       }),
       ToastrModule.forRoot({
         positionClass: 'toast-top-right',
-        timeOut: 3000,
+        timeOut: 5000,
         closeButton: true,
         progressBar: true
       })

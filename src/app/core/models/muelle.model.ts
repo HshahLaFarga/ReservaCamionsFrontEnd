@@ -1,4 +1,5 @@
 import { Carrier } from "./carrier.model";
+import { TimingMuelle } from "./timingMuelle.model";
 
 export interface Muelle {
   abierto_festivos: number,

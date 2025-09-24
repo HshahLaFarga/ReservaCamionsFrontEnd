@@ -4,12 +4,13 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { SidebarService } from './sidebar.service';
 import { SidebarItem } from '../../../core/models/sidebar.model';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
   templateUrl: './sidebar.component.html',
-  imports: [RouterModule, TranslateModule, CommonModule],
+  imports: [RouterModule, TranslateModule, CommonModule, MatIconModule],
 })
 export class SidebarComponent implements OnInit {
 

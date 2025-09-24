@@ -47,5 +47,15 @@
 
   "CALENDAR_PAGE": {
     "MOSTRAR_FINDE": "Mostrar fin de semana"
+  },
+
+  "RESTRICTION_PAGE": {
+    "TITLE": "Restricciones",
+    "DIA": "Día",
+    "MUELLE": "Muelle",
+    "TIPO_CAMION": "Tipo de camión",
+    "ID_PROVEEDOR": "ID del proveedor",
+    "ACCIONES": "Acciones",
+    "ANADIR": "Añadir restricción"
   }
 }
