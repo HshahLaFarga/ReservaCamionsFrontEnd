@@ -111,6 +111,7 @@ export class CalendarModalComponent implements OnInit {
       }
     });
   }
+  
 
   private setupCalendarOptions(currentDate?: Date) {
     const dayOfWeek = currentDate ? (currentDate.getDay() === 0 ? 7 : currentDate.getDay()) : 1;
