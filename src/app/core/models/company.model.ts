@@ -1,16 +1,16 @@
-import { Booking } from "./booking.model";
+import { Booking } from "./reserva.model";
 import { Muelle } from "./muelle.model";
 
 export interface Company {
-  empresa_id?: number,
+  empresa_lfycs_id?: number,
   nombre: string,
-  descripcion: string,
-  estado: number,
+  descripcion?: string,
 
   // Relaciones
-  muelles?: Muelle,
-  reservas?: Booking
+  muelles?: Muelle[],
+  reservas?: Booking[]
 
   // Texto Formateado
-  estadoFormated: string
+  estadoFormated?: string
+  conjuntoMuelles?: String
 }

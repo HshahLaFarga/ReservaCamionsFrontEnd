@@ -7,15 +7,12 @@ export interface Profile {
   apellidos: string,
   email: string,
   password?: string,
-  PIN?: string,
   NIF?: string,
-  tel1:string,
-  rol_id?: Rol,
-  estado?: number,
+  tel1?:string,
+  rol_id?: number,
 
   // Relaciones
-  rol?: Rol,
+  roles?: Rol[],
 
-  // Fomated Activo
-  estadoFormated?: string,
+  rolesFormated?: string;
 }

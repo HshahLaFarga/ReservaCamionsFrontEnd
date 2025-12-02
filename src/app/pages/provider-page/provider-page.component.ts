@@ -1,6 +1,6 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 import { GenericListComponent } from '../../shared/components/generic-list/generic-list.component';
-import { Provider } from '../../core/models/provider.model';
+import { Provider } from '../../core/models/proveedor.model';
 import { ProviderPageService } from './provider-page.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -20,11 +20,11 @@ export class ProviderPageComponent implements OnInit {
   isLoading: boolean = false;
 
   columns = [
-    { key: 'nombre', label: 'Nombre Proveedor' },
-    { key: 'NIF', label: 'NIF' },
-    { key: 'email', label: 'Correo' },
-    { key: 'tel1', label: 'Telf. 1' },
-    { key: 'tel2', label: 'Telf. 2' },
+    { key: 'entidad.nombre', label: 'Nombre Proveedor' },
+    { key: 'entidad.nif', label: 'NIF' },
+    { key: 'entidad.email', label: 'Correo' },
+    { key: 'entidad.telefono1', label: 'Telf. 1' },
+    { key: 'entidad.telefono2', label: 'Telf. 2' },
     { key: 'tipo_proveedor.nombre', label: 'Tipo Proveedor' },
   ];
 
@@ -39,11 +39,8 @@ export class ProviderPageComponent implements OnInit {
   }
 
   loadDefaultData(){
+    //Get Troviders
     this.isLoading = true;
-    this.getProviders();
-  }
-
-  getProviders(){
     this._providerPageService.getProviders().subscribe({
     next: (providers) => {
       this.providers = providers;

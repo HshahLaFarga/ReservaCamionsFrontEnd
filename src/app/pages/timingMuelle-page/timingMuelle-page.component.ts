@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TimingMuelle } from '../../core/models/timingMuelle.model';
+import { HorarioMuelle } from '../../core/models/horario_muelle';
 import { GenericListComponent } from '../../shared/components/generic-list/generic-list.component';
 import { CommonModule } from '@angular/common';
 import { TimingMuellePageService } from './timingMuelle-page.service';
@@ -16,11 +16,10 @@ import { ConfirmData, ConfirmModalComponent } from '../../shared/components/conf
 })
 export class TimingMuellePageComponent implements OnInit {
 
-  timingMuelles: TimingMuelle[] = [];
+  timingMuelles: HorarioMuelle[] = [];
   columns = [
-    { key: 'dia', label: 'Día' },
-    { key: 'num_dia', label: 'Numero Día' },
-    { key: 'muelle.nombre_muelle', label: 'Nombre Muelle' },
+    { key: 'dia_semana', label: 'Día' },
+    { key: 'muelle.nombre', label: 'Nombre Muelle' },
     { key: 'inicio', label: 'Inicio' },
     { key: 'fin', label: 'Fin' },
   ];
@@ -42,7 +41,7 @@ export class TimingMuellePageComponent implements OnInit {
     this.isLoading = true;
 
     this._timingMuellePageService.getTimingMuelles().subscribe({
-        next: (timingMuelles: TimingMuelle[]) => {
+        next: (timingMuelles: HorarioMuelle[]) => {
           this.timingMuelles = timingMuelles;
           this.isLoading = false;
         },
@@ -57,7 +56,7 @@ export class TimingMuellePageComponent implements OnInit {
     this.router.navigate(['/muelles/timing/add']);
   }
 
-  onEdit(timingMuelle: TimingMuelle) {
+  onEdit(timingMuelle: HorarioMuelle) {
     this.router.navigate(['/muelles/timing/edit'],{
       state: {
         method: 'update',
@@ -66,7 +65,7 @@ export class TimingMuellePageComponent implements OnInit {
     });
   }
   // pendent fer dialog
-  onDelete(timingMuelle: TimingMuelle) {
+  onDelete(timingMuelle: HorarioMuelle) {
     const modalInformation: ConfirmData = {
           title: 'Eliminación de Documento',
           message: `¿Está seguro de que desea eliminar el horario del muelle?, una vez eliminado no se podràn recuperar`,

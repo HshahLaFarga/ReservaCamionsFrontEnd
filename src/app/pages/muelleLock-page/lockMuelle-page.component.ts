@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GenericListComponent } from '../../shared/components/generic-list/generic-list.component';
 import { CommonModule } from '@angular/common';
-import { Booking } from '../../core/models/booking.model';
+import { Booking } from '../../core/models/reserva.model';
 import { LockMuellePageService } from './lockMuelle-page.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
@@ -19,10 +19,10 @@ export class LockMuellePageComponent implements OnInit {
   isLoading: Boolean = false;
 
   columns = [
-    { key: 'notas', label: 'Asunto' },
-    { key: 'muelle1.nombre_muelle', label: 'Muelle' },
-    { key: 'inicio1', label: 'Hora inicio' },
-    { key: 'fin1', label: 'Hora fin' },
+    { key: 'muelle.nombre', label: 'Muelle' },
+    { key: 'asunto', label: 'Asunto' },
+    { key: 'inicio', label: 'Hora inicio' },
+    { key: 'fin', label: 'Hora fin' },
   ];
 
   constructor(

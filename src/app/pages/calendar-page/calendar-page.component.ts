@@ -7,7 +7,7 @@ import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { TranslateModule } from '@ngx-translate/core';
 import { CalendarPageService } from './calendar-page.service';
-import { Booking } from '../../core/models/booking.model';
+import { Booking } from '../../core/models/reserva.model';
 import { Muelle } from '../../core/models/muelle.model';
 
 @Component({
@@ -93,24 +93,24 @@ export class CalendarPageComponent implements OnInit {
     } else {
       if (this.bookings === null) return;
       this.events = this.bookings
-        .filter((b) => this.selectedMuelles.includes(b.muelle1!.muelle_id))
+        .filter((b) => this.selectedMuelles.includes(b.muelle!.muelle_id))
         .map(
           ({
-            proveedor_id,
-            tipo_material1_id,
-            tipo_material2_id,
-            inicio1,
-            fin1,
-            muelle1,
+            proveedor,
+            material1,
+            material2,
+            inicio,
+            fin,
+            muelle,
           }) => {
-            const title = tipo_material2_id
-              ? `${proveedor_id} - ${tipo_material1_id} - ${tipo_material2_id}`
-              : `${proveedor_id} - ${tipo_material1_id}`;
+            const title = material2?.material_id
+              ? `${proveedor?.proveedor_id} - ${material1?.material_id} - ${material2?.material_id}`
+              : `${proveedor?.proveedor_id} - ${material1?.material_id}`;
             return {
               title,
-              start: inicio1,
-              end: fin1,
-              backgroundColor: muelle1?.color,
+              start: inicio,
+              end: fin,
+              backgroundColor: muelle?.color,
             };
           }
         );
@@ -145,7 +145,7 @@ export class CalendarPageComponent implements OnInit {
     const horariosDia = this.muelles
       .filter((m) => this.selectedMuelles.includes(m.muelle_id))
       .flatMap((m) => m.horarios || [])
-      .filter((h) => Number(h.num_dia) === numDia);
+      .filter((h) => Number(h.dia_semana) === numDia);
 
     if (!horariosDia.length) {
       return { start: '07:00:00', end: '19:30:00' }; // fallback

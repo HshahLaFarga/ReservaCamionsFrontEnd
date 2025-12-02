@@ -2,7 +2,7 @@
   formTitle="Editar Usuarios"
   tableName="users"
   [selectFields]="{
-    rol_id: { api: 'roles', labelField: 'nombre', valueField: 'rol_id', label: 'Rol' }
+    rol: { api: 'roles', labelField: 'nombre', valueField: 'rol_id', label: 'Rol' }
   }"
   [excludedFields]="['created_at','updated_at','email_verified_at','remember_token']"
   [initialData]="initialUserData"
@@ -13,7 +13,7 @@
   formTitle="Añadir Usuarios"
   tableName="users"
   [selectFields]="{
-    rol_id: { api: 'roles', labelField: 'nombre', valueField: 'rol_id', label: 'Rol' }
+    rol: { api: 'roles', labelField: 'nombre', valueField: 'rol_id', label: 'Rol' }
   }"
   [excludedFields]="['created_at','updated_at','email_verified_at','remember_token']"
   (submitForm)="onSubmit($event)">

@@ -5,12 +5,12 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { forkJoin, map, Observable, startWith } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { Truck } from '../../../core/models/truck.model';
+import { TipoCamion } from '../../../core/models/tipo_camion.model';
 import { Muelle } from '../../../core/models/muelle.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { Material, MaterialMuelleControl } from '../../../core/models/material.model';
+import { Material } from '../../../core/models/material.model';
 
 @Component({
   selector: 'app-material-add-update',
@@ -35,9 +35,9 @@ export class MaterialAddUpdateComponent implements OnInit {
   isLoading: boolean = false;
 
   truckControl: FormControl<any> = new FormControl('');
-  filteredTrucks: Truck[] = [];
-  selectedTrucks: Truck[] = [];
-  trucks: Truck[] = [];
+  filteredTrucks: TipoCamion[] = [];
+  selectedTrucks: TipoCamion[] = [];
+  trucks: TipoCamion[] = [];
 
   muelleControl: FormControl<any> = new FormControl('');
   filteredMuelles: Muelle[] = [];
@@ -74,6 +74,8 @@ export class MaterialAddUpdateComponent implements OnInit {
     });
   }
 
+
+  //Esta función llena los campos para hacer un update
   loadDefaultData() {
     forkJoin({
       trucks: this._materialAddUpdateService.getTrucks(),
@@ -85,9 +87,8 @@ export class MaterialAddUpdateComponent implements OnInit {
       const state = history.state;
       if (state.method === 'update') {
         this.method = state.method;
-        this.selectedTrucks = this.loadUpdateTrucks(state.material.control_material_muelle);
-        this.selectedMuelles = this.loadUpdateMuelles(state.material.control_material_muelle);
-
+        this.selectedTrucks = state.material.tipo_camiones || [];
+        this.selectedMuelles = state.material.muelles || [];
         this.buildForm(state.material);
       } else {
         this.buildForm();
@@ -101,7 +102,6 @@ export class MaterialAddUpdateComponent implements OnInit {
     this.form.patchValue({
       nombre: material.nombre,
       codigo_sap: material.codigo_sap,
-      estado: material.estado,
       trucks: material.trucks?.map((t: any) => t.id) || [],
       muelles: material.muelles?.map((m: any) => m.id) || []
     });
@@ -109,17 +109,17 @@ export class MaterialAddUpdateComponent implements OnInit {
 
   buildForm(material?: Material) {
     this.form = this.fb.group({
-      nombre: [material ? material.nombre_material : '', Validators.required],
+      nombre: [material ? material.nombre : '', Validators.required],
       codigo_sap: [material ? material.codigo_sap : '', Validators.required],
-      estado: [material ? material.estado : true],
-      trucks: [material ? this.loadUpdateTrucks(material.control_material_muelle) : [], Validators.required],
-      muelles: [material ? this.loadUpdateMuelles(material.control_material_muelle) : [], Validators.required],
+      tipo_camiones: [this.selectedTrucks],
+      muelles: [this.selectedMuelles]
     });
   }
 
   // No s'ha tipat perquè donava error si es tipava correctament
   // les dues funcions serveixen per fer la càrrega inicial
   loadUpdateMuelles(control: any): any[] {
+    return [];
     const muelles: any[] = control.map((controlMM: any) => controlMM.muelle);
     const uniqueMuelles = muelles.filter(
       (muelle: any, index: number, self: any[]) =>
@@ -128,6 +128,7 @@ export class MaterialAddUpdateComponent implements OnInit {
     return uniqueMuelles;
   }
   loadUpdateTrucks(control: any): any[] {
+    return [];
     const trucks: any[] = control.map((controlMM: any) => controlMM.tipo_camion);
     const uniqueTrucks = trucks.filter(
       (truck: any, index: number, self: any[]) =>
@@ -136,7 +137,7 @@ export class MaterialAddUpdateComponent implements OnInit {
     return uniqueTrucks;
   }
 
-  onSelected(selected: Truck | Muelle) {
+  onSelected(selected: TipoCamion | Muelle) {
     if ('tipo_camion_id' in selected) {
       if (!this.selectedTrucks.some(t => t.tipo_camion_id === selected.tipo_camion_id)) {
         this.selectedTrucks.push(selected);
@@ -163,7 +164,7 @@ export class MaterialAddUpdateComponent implements OnInit {
     this.form.get('muelles')?.setValue(this.selectedMuelles)
   }
 
-  private _filterTrucks(name: string): Truck[] {
+  private _filterTrucks(name: string): TipoCamion[] {
     const filterValue = name.toLowerCase();
     return this.trucks.filter(truck =>
       truck.nombre.toLowerCase().includes(filterValue) &&
@@ -174,7 +175,7 @@ export class MaterialAddUpdateComponent implements OnInit {
   private _filterMuelles(name: string): Muelle[] {
     const filterValue = name.toLowerCase();
     return this.muelles.filter(muelle =>
-      muelle.nombre_muelle.toLowerCase().includes(filterValue) &&
+      muelle.nombre.toLowerCase().includes(filterValue) &&
       !this.selectedMuelles.some(m => m.muelle_id === muelle.muelle_id)
     );
   }
@@ -186,6 +187,7 @@ export class MaterialAddUpdateComponent implements OnInit {
       return;
     }
     const materialData = this.form.value;
+    console.log('Material data to submit: ', materialData);
 
     let response: Observable<any>;
 

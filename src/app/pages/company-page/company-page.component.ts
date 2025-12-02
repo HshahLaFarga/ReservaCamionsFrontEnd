@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { Company } from '../../core/models/company.model';
 import { CompanyPageService } from './company-page.service';
+import { Muelle } from '../../core/models/muelle.model';
 
 @Component({
   selector: 'app-company-page',
@@ -20,7 +21,8 @@ export class CompanyPageComponent implements OnInit {
   columns = [
     { key: 'nombre', label: 'Nombre' },
     { key: 'descripcion', label: 'Descripción' },
-    { key: 'estadoFormated', label: 'Estado' }
+    { key: 'estadoFormated', label: 'Estado' },
+    { key: 'conjuntoMuelles', label: 'Muelles' }
   ];
 
   constructor(
@@ -38,7 +40,10 @@ export class CompanyPageComponent implements OnInit {
     this._companyPageService.getCompanys().subscribe({
       next: (companys: Company[]) => {
         this.companys = companys.map((company) => {
-          company.estadoFormated = company.estado === 1 ? 'Activo' : 'Inactivo';
+          if(company.muelles && company.muelles.length > 0) {
+            const nombresMuelles = company.muelles?.map((muelle: Muelle) => muelle.nombre) || [];
+            company.conjuntoMuelles = nombresMuelles.join(', ');
+          }
           return company
         });
         this.isLoading = false;
@@ -67,6 +72,7 @@ export class CompanyPageComponent implements OnInit {
     this._companyPageService.deleteCompany(company).subscribe({
       next: () => {
         this.loadDefaultData();
+        this.toastr.success('Empresa desactivada correctamente', 'Éxito');
         this.isLoading = false;
       },
       error: (err) => {

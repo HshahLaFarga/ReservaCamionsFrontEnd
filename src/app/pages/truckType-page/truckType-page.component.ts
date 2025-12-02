@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GenericListComponent } from '../../shared/components/generic-list/generic-list.component';
 import { CommonModule } from '@angular/common';
-import { Truck } from '../../core/models/truck.model';
+import { TipoCamion } from '../../core/models/tipo_camion.model';
 import { TruckTypePageService } from './truckType-page.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -20,12 +20,10 @@ export class TruckTypePageComponent implements OnInit {
   columns = [
     { key: 'nombre', label: 'Nombre Tipo Camión' },
     { key: 'descripcion', label: 'Descripción' },
-    { key: 'tiempo_descarga_a', label: 'Tiempo Descarga A' },
-    { key: 'tiempo_descarga_b', label: 'Tiempo Descarga B' },
-    { key: 'estado', label: 'Estado' },
-    { key: 'bloqueo_muelles', label: 'Bloqueo Muelles' },
+    { key: 'tiempo_descarga_1', label: 'Tiempo Descarga' },
+    { key: 'bloqueo_muellesFormated', label: 'Bloqueo Muelles' },
   ];
-  truckType: Truck[] = [];
+  tipoCamiones: TipoCamion[] = [];
 
   isLoading: Boolean = false;
 
@@ -44,8 +42,13 @@ export class TruckTypePageComponent implements OnInit {
     this.isLoading = true;
     // Obtenim tots els tipus de camions
     this._truckTypePageService.getTruckTypes().subscribe({
-      next: (truckType) => {
-        this.truckType = truckType;
+      next: (tipoCamiones) => {
+        this.tipoCamiones = tipoCamiones.map((tipoCamion: TipoCamion) => {
+          tipoCamion.bloqueo_muelles == true ? tipoCamion.bloqueo_muellesFormated = 'Si' : tipoCamion.bloqueo_muellesFormated = 'No';
+          return tipoCamion
+        });
+        
+        this.tipoCamiones = tipoCamiones;
         this.isLoading = false;
       },
       error: (err) => {
@@ -59,7 +62,7 @@ export class TruckTypePageComponent implements OnInit {
     this.router.navigate(['trucks/type/add']);
   }
 
-  onEdit(truck: Truck) {
+  onEdit(truck: TipoCamion) {
     this.router.navigate(['trucks/type/edit'], {
       state: {
         truck: { ...truck },
@@ -68,7 +71,7 @@ export class TruckTypePageComponent implements OnInit {
     });
   }
 
-  onDelete(truck: Truck) {
+  onDelete(truck: TipoCamion) {
 
     const modalInformation: ConfirmData = {
       title: 'Eliminación de Reserva',

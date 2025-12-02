@@ -3,6 +3,7 @@ import { LoginService } from './login.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,10 @@ export class LoginComponent{
   loading = false;
   errorMessage = '';
 
-  constructor(private _loginService: LoginService, private router: Router) {}
+  constructor(
+    private _loginService: LoginService, private router: Router,
+    private toastr: ToastrService
+  ) {}
 
   onSubmit() {
     if (!this.email || !this.password) return;
@@ -28,11 +32,12 @@ export class LoginComponent{
     this._loginService.login(this.email, this.password).subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/']);
       },
       error: (err) => {
         this.loading = false;
-        this.errorMessage = 'Error en usuario o contraseña.';
+        this.errorMessage = 'Credenciales incorrectas.';
+        this.toastr.error(this.errorMessage, 'Error');
         console.error(err);
       }
     });

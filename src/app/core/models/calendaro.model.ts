@@ -1,5 +1,5 @@
 export interface CalendarReservation {
-  id: string,
+  id?: string,
   title: string,
   start: string,
   end: string,

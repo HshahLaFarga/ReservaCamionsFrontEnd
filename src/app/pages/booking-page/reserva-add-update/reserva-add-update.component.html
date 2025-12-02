@@ -2,12 +2,12 @@
 
   <h1 class="text-2xl font-bold text-gray-800 mb-4">{{method === 'update'? 'Modificar Pedido' : 'Nou Pedido'}}</h1>
 
-  <form [formGroup]="pedidoForm" (ngSubmit)="onSubmit()" class="space-y-6">
+  <form [formGroup]="bookingform" (ngSubmit)="onSubmit()" class="space-y-6">
 
     <!-- Matrícula Camión -->
     <div>
       <label class="block text-sm font-medium text-gray-700">Matrícula Camión</label>
-      <input type="text" formControlName="matriculaCamion"
+      <input type="text" formControlName="matricula_camion"
         class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
     </div>
 
@@ -15,7 +15,7 @@
     <div class="p-4 border space-y-3">
       <div>
         <label class="block text-sm font-medium text-gray-700">Número de descargas</label>
-        <select formControlName="numeroDescargas"
+        <select formControlName="numero_descargas"
           class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
           <option [value]="1">1</option>
           <option [value]="2">2</option>
@@ -26,14 +26,14 @@
       <div class="flex flex-row space-x-2">
         <div>
           <label class="block text-sm font-medium text-gray-700">Código Pedido LF 1</label>
-          <input type="text" formControlName="pedido_LF_0"
+          <input type="text" formControlName="pedido1"
             class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
         </div>
 
-        <div *ngIf="pedidoForm.get('numeroDescargas')?.value == 2" class="space-x-2 flex flex-row">
+        <div *ngIf="bookingform.get('numeroDescargas')?.value == 2" class="space-x-2 flex flex-row">
           <div>
             <label class="block text-sm font-medium text-gray-700">Código Pedido LF 2</label>
-            <input type="text" formControlName="pedido_LF_1" [disabled]="pedidoForm.get('usarMismoCodigo')?.value"
+            <input type="text" formControlName="pedido2" [disabled]="bookingform.get('usarMismoCodigo')?.value"
               class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
           </div>
           <label class="inline-flex items-center">
@@ -44,18 +44,18 @@
       </div>
 
       <!-- Inputs dinàmics -->
-      <div *ngFor="let i of [0, 1]; let idx = index" [hidden]="idx >= pedidoForm.get('numeroDescargas')?.value">
+      <div *ngFor="let i of [0, 1]; let idx = index" [hidden]="idx >= bookingform.get('numero_descargas')?.value">
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700">Material {{ idx + 1 }}</label>
-            <select [formControlName]="'material' + idx"
+            <select [formControlName]="'material' + (idx+1)"
               class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
-              <option *ngFor="let mat of materials" [value]="mat.material_id">{{ mat.nombre_material }}</option>
+              <option *ngFor="let mat of materials" [value]="mat.material_id">{{ mat.nombre }}</option>
             </select>
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Cantidad {{ idx + 1 }}</label>
-            <input type="number" [formControlName]="'cantidad' + idx"
+            <input type="number" [formControlName]="'cantidad' + (idx+1)"
               class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
           </div>
         </div>
@@ -63,10 +63,10 @@
 
       <!-- Camió Disponible -->
       <div class="mt-4">
-        <label class="block text-sm font-medium text-gray-700">Camió disponible</label>
-        <select formControlName="tipoCamion"
+        <label class="block text-sm font-medium text-gray-700">Camión disponible</label>
+        <select formControlName="tipo_camion"
           class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
-          <option *ngFor="let camion of mollsDisponibles?.camionesDisponibles" [value]="camion.tipo_camion_id">
+          <option *ngFor="let camion of itemsDisponible?.camiones" [value]="camion.tipo_camion_id">
             {{ camion.nombre }}
           </option>
         </select>
@@ -88,7 +88,7 @@
       <div>
         <label class="block text-sm font-medium text-gray-700">Duración Entrega (min)</label>
         <div class="mt-1 block w-full rounded border border-gray-300 bg-gray-100 px-3 py-2">
-          {{ pedidoForm.get('duracionEntrega')?.value }}
+          {{ bookingform.get('duracion_entrega')?.value }}
         </div>
       </div>
 
@@ -96,7 +96,7 @@
       <div>
         <label class="block text-sm font-medium text-gray-700">Muelle</label>
         <div class="mt-1 block w-full rounded border border-gray-300 bg-gray-100 px-3 py-2">
-          {{ pedidoForm.get('muelle')?.value }}
+            {{ getMuelleNombre() || '—' }}
         </div>
       </div>
 
@@ -104,7 +104,7 @@
       <div>
         <label class="block text-sm font-medium text-gray-700">Hora Inicio</label>
         <div class="mt-1 block w-full rounded border border-gray-300 bg-gray-100 px-3 py-2">
-          {{ pedidoForm.get('horaInicio')?.value ? formatDate(pedidoForm.get('horaInicio')?.value) : ''}}
+          {{ bookingform.get('inicio')?.value ? formatDate(bookingform.get('inicio')?.value) : ''}}
         </div>
       </div>
 
@@ -112,40 +112,47 @@
       <div>
         <label class="block text-sm font-medium text-gray-700">Hora Fin</label>
         <div class="mt-1 block w-full rounded border border-gray-300 bg-gray-100 px-3 py-2">
-          {{ pedidoForm.get('horaFin')?.value ? formatDate(pedidoForm.get('horaFin')?.value) : ''}}
+          {{ bookingform.get('fin')?.value ? formatDate(bookingform.get('fin')?.value) : ''}}
         </div>
       </div>
 
       <!-- Status -->
       <div>
-        <label class="block text-sm font-medium text-gray-700">Status</label>
-        <select formControlName="idStatus"
+        <label class="block text-sm font-medium text-gray-700">Estado</label>
+        <select formControlName="estado"
           class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
-          <option *ngFor="let stat of status" [value]="stat.status_id">
+          <option *ngFor="let stat of status" [value]="stat.estado_id">
             {{ stat.nombre }}
           </option>
         </select>
       </div>
 
       <!-- Proveedor -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Proveedor</label>
       <mat-form-field class="w-full">
-        <input matInput formControlName="idProveedor" [matAutocomplete]="autoProveedor">
+        <input matInput formControlName="proveedor" [matAutocomplete]="autoProveedor">
         <mat-autocomplete #autoProveedor="matAutocomplete" [displayWith]="displayFnProveedor">
           <mat-option *ngFor="let provider of filteredProviders$ | async" [value]="provider.proveedor_id">
-            {{ provider.nombre }}
+            {{ provider?.entidad?.nombre }}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
+      </div>
 
-      <!-- Transportista -->
+      <!-- Carrier -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Transportista</label>
+
       <mat-form-field class="w-full">
-        <input matInput formControlName="identificadorTransportista" [matAutocomplete]="autoCarrier">
+        <input matInput formControlName="transportista" [matAutocomplete]="autoCarrier">
         <mat-autocomplete #autoCarrier="matAutocomplete" [displayWith]="displayFnCarrier">
-          <mat-option *ngFor="let carrier of filteredCarriers$ | async" [value]="carrier.transporte_id">
-            {{ carrier.nombre }}
+          <mat-option *ngFor="let Carrier of filteredCarriers$ | async" [value]="Carrier.transportista_id">
+            {{ Carrier.entidad.nombre }}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
+      </div>
 
       <!-- Aduana -->
       <div>
@@ -173,9 +180,9 @@
 
     <!-- Botó Enviar -->
     <div class="text-right pt-4">
-      <button type="submit" [disabled]="pedidoForm.invalid || isLoading" [ngClass]="{
-    'bg-green-600 hover:bg-green-700': pedidoForm.valid,
-    'bg-green-800 opacity-65 cursor-not-allowed': pedidoForm.invalid
+      <button type="submit" [disabled]="bookingform.invalid || isLoading" [ngClass]="{
+    'bg-green-600 hover:bg-green-700': bookingform.valid,
+    'bg-green-800 opacity-65 cursor-not-allowed': bookingform.invalid
   }" class="px-6 py-2 text-white rounded transition">
         {{method === 'update'? 'Modificar Pedido' : 'Enviar Pedido'}}
       </button>

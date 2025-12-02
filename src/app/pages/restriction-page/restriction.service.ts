@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../core/envoirment/envoirment';
-import { Restriction } from '../../core/models/restriction.model';
+import { Restriction } from '../../core/models/restriccion.model';
 
 @Injectable({
   providedIn: 'root'

@@ -1,21 +1,21 @@
 <app-generic-form *ngIf="method === 'update'"
-  formTitle="Editar Transportista"
-  tableName="transportes"
+  formTitle="Editar Carrier"
+  tableName="transportistas"
   [selectFields]="{
     proveedor_id: { api: 'proveedores', labelField: 'nombre', valueField: 'proveedor_id', label: 'Proveedor' }
   }"
-  [excludedFields]="['created_at','updated_at']"
+  [excludedFields]="['created_at','updated_at', 'entidad_id']"
   [initialData]="initialCarrierData"
   (submitForm)="onSubmit($event)">
 </app-generic-form>
 
 <app-generic-form *ngIf="method === 'post'"
-  formTitle="Añadir Transportista"
-  tableName="transportes"
+  formTitle="Añadir Carrier"
+  tableName="transportistas"
   [selectFields]="{
     proveedor_id: { api: 'proveedores', labelField: 'nombre', valueField: 'proveedor_id', label: 'Proveedor' }
   }"
-  [excludedFields]="['created_at','updated_at']"
+  [excludedFields]="['created_at','updated_at','entidad_id']"
   (submitForm)="onSubmit($event)">
 </app-generic-form>
 

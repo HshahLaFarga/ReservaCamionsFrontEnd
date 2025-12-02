@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { GenericFormComponent } from '../../../shared/components/generic-form/generic-form.component';
 import { CommonModule } from '@angular/common';
-import { Status } from '../../../core/models/status.model';
+import { Status } from '../../../core/models/estado.model';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { StatusAddUpdateService } from './status-add-update.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-status-add-update',
@@ -41,7 +41,7 @@ export class StatusAddUpdateComponent implements OnInit {
     if (this.method === 'post') {
       request = this._statusAddUpdateService.addStatus(status);
     } else {
-      request = this._statusAddUpdateService.updateStatus(status, this.initialStatusData!.status_id);
+      request = this.initialStatusData!.estado_id ? this._statusAddUpdateService.updateStatus(status, this.initialStatusData!.estado_id) : of(null);
     }
 
     request.subscribe({

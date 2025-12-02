@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BookingAddService } from '../../booking-page/booking-add-update/booking-add-update.service';
+import { BookingAddUpdateService } from '../../booking-page/reserva-add-update/reserva-add-udpdate.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common'
-import { ProviderType } from '../../../core/models/provider.model';
+import { TipoProveedor } from '../../../core/models/proveedor.model';
 import { Material } from '../../../core/models/material.model';
 import { MaterialLockAddService } from './material-lock-add.service';
 import { map, startWith } from 'rxjs';
@@ -12,7 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
-import { MaterialLock } from '../../../core/models/material-lock.model';
+import { MaterialLock } from '../../../core/models/bloqueo_grupo_material.model';
 import { dateRangeValidator } from '../../../shared/utils/date.utils';
 
 @Component({
@@ -29,7 +29,7 @@ export class MaterialLockAddComponent implements OnInit {
   materials: Material[] = [];
   selectedMaterials: Material[] = [];
   materialSearch: string = '';
-  providers_type: ProviderType[] = [];
+  providers_type: TipoProveedor[] = [];
 
   isLoading: boolean = false;
 
@@ -87,7 +87,7 @@ export class MaterialLockAddComponent implements OnInit {
   private _filterMaterials(name: string): Material[] {
     const filterValue = name.toLowerCase();
     return this.materials.filter(material =>
-      material.nombre_material.toLowerCase().includes(filterValue) &&
+      material.nombre.toLowerCase().includes(filterValue) &&
       !this.selectedMaterials.some(m => m.material_id === material.material_id)
     );
   }

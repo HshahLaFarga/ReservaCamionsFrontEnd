@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GenericFormComponent } from '../../../shared/components/generic-form/generic-form.component';
 import { CommonModule } from '@angular/common';
-import { Truck } from '../../../core/models/truck.model';
+import { TipoCamion } from '../../../core/models/tipo_camion.model';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { TruckTypeAddUpdateService } from './truckType-add-update.service';
@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
 })
 export class TruckTypeAddUpdateComponent implements OnInit {
 
-  initialTruckType: Truck | null = null;
+  initialTruckType: TipoCamion | null = null;
   method: 'post' | 'update' = 'post';
 
   isLoading: Boolean = false;
@@ -34,19 +34,18 @@ export class TruckTypeAddUpdateComponent implements OnInit {
     }
   }
 
-  checkData(truck: Truck): Boolean {
+  checkData(truck: TipoCamion): Boolean {
     return true;
   }
 
-  onSubmit(truck: Truck){
+  onSubmit(truck: TipoCamion){
     this.isLoading = true;
     if (this.checkData(truck)) {
       let request!: Observable<any>;
 
       if (this.method === 'post') {
         // Validem que en el cas que l'usuari no marqui res, sigui 0
-        if (truck.bloqueo_muelles.toString() === "") truck.bloqueo_muelles = 0;
-        if (truck.estado.toString() === "") truck.estado = 0;
+        if (truck.bloqueo_muelles.toString() === "") truck.bloqueo_muelles = false;
 
         request = this._truckTypeAddUpadateService.addTruckType(truck);
       } else if (this.method === 'update' && this.initialTruckType?.tipo_camion_id) {

@@ -5,7 +5,6 @@ import { SidebarItem } from "../../../core/models/sidebar.model";
 export class SidebarService {
   // Futura implementació, d'alguna manera recuperar la info de l'usuari ja sigui després del LOGIN o bé consultant a la BDD i a través del getter gestionar qui ho pot veure i qui no (Estil FargaNet)
   private items: SidebarItem[] = [
-    { label: 'DASHBOARD', route: '/dashboard', icon: 'dashboard' },
     {
       label: 'BOOKING_PAGE.TITLE',
       route: '/bookings',
@@ -13,7 +12,7 @@ export class SidebarService {
     },
     { label: 'CALENDARIO', route: '/calendar', icon: 'calendar_month' },
     { label: 'Proveedores', route: '/provider', icon: 'business' },
-    { label: 'Transportista', route: '/carrier', icon: 'local_shipping' },
+    { label: 'Transportistas', route: '/transportista', icon: 'local_shipping' },
     { label: 'Informes', route: '/report', icon: 'bar_chart' },
     { label: 'Materiales', route: '/materials', icon: 'inventory' },
     {
@@ -33,7 +32,7 @@ export class SidebarService {
     { label: 'Empresas', route: '/companys', icon: 'apartment', admin: true  },
     { label: 'Usuarios', route: '/users', icon: 'people', admin: true  },
     { label: 'Rango KG', route: '/weight/range', icon: 'fitness_center', admin: true  },
-    { label: 'Status', route: '/status', icon: 'info', admin: true  },
+    { label: 'Estados', route: '/estados', icon: 'info', admin: true  },
     {
       label: 'Bloqueos',
       admin: true,

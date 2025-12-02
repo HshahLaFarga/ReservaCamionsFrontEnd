@@ -2,9 +2,9 @@
   formTitle="Editar Bloqueo Muelles"
   tableName="reservas"
   [selectFields]="{
-    muelle1_id: { api: 'muelles', labelField: 'nombre_muelle', valueField: 'muelle_id', label: 'Muelle' }
+    muelle1_id: { api: 'muelles', labelField: 'nombre', valueField: 'muelle_id', label: 'Muelle' }
   }"
-  [excludedFields]="['tipo_camion_id','tipo_material1_id','tipo_material2_id', 'proveedor_id', 'transporte_id', 'muelle2_id', 'status_id', 'empresa_id', 'cantidad1', 'cantidad2', 'pedido_LF', 'matricula_camion', 'inicio2', 'fin2', 'es_aduana', 'tel1', 'duracion1', 'duracion2', 'created_at', 'updated_at']"
+  [excludedFields]="['tipo_camion_id','tipo_material1_id','tipo_material2_id', 'proveedor_id', 'transportista_id', 'muelle2_id', 'estado_id', 'empresa_id', 'cantidad1', 'cantidad2', 'pedido_LF', 'matricula_camion', 'inicio2', 'fin2', 'es_aduana', 'tel1', 'duracion1', 'duracion2', 'created_at', 'updated_at']"
   [initialData]="initialLockMuelleData"
   (submitForm)="onSubmit($event)">
 </app-generic-form>
@@ -13,9 +13,9 @@
   formTitle="Añadir Bloqueo Muelles"
   tableName="reservas"
   [selectFields]="{
-    muelle1_id: { api: 'muelles', labelField: 'nombre_muelle', valueField: 'muelle_id', label: 'Muelle' }
+    muelle1_id: { api: 'muelles', labelField: 'nombre', valueField: 'muelle_id', label: 'Muelle' }
   }"
-  [excludedFields]="['tipo_camion_id','tipo_material1_id','tipo_material2_id', 'proveedor_id', 'transporte_id', 'muelle2_id', 'status_id', 'empresa_id', 'cantidad1', 'cantidad2', 'pedido_LF', 'matricula_camion', 'inicio2', 'fin2', 'es_aduana', 'tel1', 'duracion1', 'duracion2', 'created_at', 'updated_at']"
+  [excludedFields]="['tipo_camion_id','tipo_material1_id','tipo_material2_id', 'proveedor_id', 'transportista_id', 'muelle2_id', 'estado_id', 'empresa_id', 'cantidad1', 'cantidad2', 'pedido_LF', 'matricula_camion', 'inicio2', 'fin2', 'es_aduana', 'tel1', 'duracion1', 'duracion2', 'created_at', 'updated_at']"
   (submitForm)="onSubmit($event)">
 </app-generic-form>
 

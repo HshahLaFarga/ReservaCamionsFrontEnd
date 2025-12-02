@@ -4,7 +4,8 @@ import { ToastrService } from 'ngx-toastr';
 import { GenericListComponent } from '../../shared/components/generic-list/generic-list.component';
 import { CommonModule } from '@angular/common';
 import { StatusPageService } from './status-page.service';
-import { Status } from '../../core/models/status.model';
+import { Status } from '../../core/models/estado.model';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-status-page',
@@ -18,7 +19,6 @@ export class StatusPageComponent implements OnInit {
   columns = [
     { key: 'nombre', label: 'Nombre Status' },
     { key: 'descripcion', label: 'Descripción' },
-    { key: 'estadoFormated', label: 'Estado' },
   ];
 
   isLoading: Boolean = false;
@@ -38,7 +38,6 @@ export class StatusPageComponent implements OnInit {
     this._statusPageService.getStatus().subscribe({
         next: (status: Status[]) => {
           this.status = status.map((stat) => {
-            stat.estado === 1 ? stat.estadoFormated = 'Activo' : stat.estadoFormated = 'Inactivo';
             return stat;
           });
           this.isLoading = false;
@@ -64,7 +63,7 @@ export class StatusPageComponent implements OnInit {
 
   onDelete(status: Status) {
     this.isLoading = true;
-    this._statusPageService.deleteStatus(status.status_id).subscribe({
+    status.estado_id ? this._statusPageService.deleteStatus(status.estado_id).subscribe({
         next: () => {
           this.toastr.success('Status eliminado correctamente','Éxito');
           this.isLoading = false;
@@ -73,7 +72,8 @@ export class StatusPageComponent implements OnInit {
             console.error(err);
             this.isLoading = false;
         }
-    });
+    })
+    : of(null);
   }
 
 }

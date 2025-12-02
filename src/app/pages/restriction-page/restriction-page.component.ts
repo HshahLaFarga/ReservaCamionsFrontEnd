@@ -9,7 +9,7 @@ import { RestrictionService } from './restriction.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Restriction } from '../../core/models/restriction.model';
+import { Restriction } from '../../core/models/restriccion.model';
 import { Muelle } from '../../core/models/muelle.model';
 
 
@@ -92,7 +92,7 @@ export class RestrictionPageComponent {
       this.muelles = muelles;
 
       // Construimos headers y rows con ID + nombre
-      this.headers = muelles.map(m => ({ id: m.muelle_id, nombre: m.nombre_muelle }));
+      this.headers = muelles.map(m => ({ id: m.muelle_id, nombre: m.nombre }));
       this.rows = [...this.headers];
 
       // Inicializamos matriz en false

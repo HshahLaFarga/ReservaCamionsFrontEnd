@@ -4,7 +4,9 @@ import { GenericListComponent } from '../../shared/components/generic-list/gener
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { MaterialPageService } from './material-page.service';
-import { Material, MaterialMuelleControl } from '../../core/models/material.model';
+import { Material } from '../../core/models/material.model';
+import { TipoCamion } from '../../core/models/tipo_camion.model';
+import { Muelle } from '../../core/models/muelle.model';
 
 @Component({
   selector: 'app-material-page',
@@ -20,7 +22,7 @@ export class MaterialPageComponent implements OnInit {
 
   columns = [
     { key: 'codigo_sap', label: 'Codi Sap' },
-    { key: 'nombre_material', label: 'Nombre Material' },
+    { key: 'nombre', label: 'Nombre Material' },
     { key: 'estadoFormated', label: 'Estado' },
     { key: 'conjuntoCamiones', label: 'Camiones Permitidos'},
     { key: 'conjuntoMuelles', label: 'Muelles Permitidos'}
@@ -41,31 +43,18 @@ export class MaterialPageComponent implements OnInit {
     // Obtenim la info i la formatem acord perquè la puguem passar correctament al genèric list
     this._materialPageService.getMaterials().subscribe({
       next: (materials) => {
+        console.log('Materials loaded: ', materials);
         this.materials = materials.map((material: Material) => {
           // Formatem el camp d'estat
-          material.estadoFormated = material.estado === 1 ? 'Activo' : 'Inactivo';
+          
+          if (material.tipo_camiones && material.tipo_camiones.length > 0) {
+            const nombresCamiones = material.tipo_camiones.map((tipoCamion: TipoCamion) => tipoCamion.nombre);
+            material.conjuntoCamiones = nombresCamiones.join(', ');
+          }
 
-          if (material.control_material_muelle.length > 0) {
-            // Fem el set per evitar repetits
-            const nomsCamionsUnics = Array.from(
-              new Set(
-                material.control_material_muelle
-                  .map((controlMaterialMuelle: MaterialMuelleControl) => controlMaterialMuelle.tipo_camion?.nombre)
-                  .filter((nom): nom is string => !!nom)
-              )
-            );
-
-            // Fem el set per evitar repetits
-            const idsMollsUnics = Array.from(
-              new Set(
-                material.control_material_muelle
-                  .map((controlMaterialMuelle: MaterialMuelleControl) => controlMaterialMuelle.muelle_id)
-                  .filter((id): id is number => !!id)
-              )
-            );
-            // Guardem el nou valor per els molls
-            material.conjuntoCamiones = nomsCamionsUnics.join('<br>');
-            material.conjuntoMuelles = idsMollsUnics;
+          if (material.muelles && material.muelles.length > 0) {
+            const nombresMuelles = material.muelles.map((muelle: Muelle) => muelle.nombre);
+            material.conjuntoMuelles = nombresMuelles.join(', ');
           }
 
           return material;

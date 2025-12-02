@@ -15,10 +15,11 @@ export class CompanyAddUpdateService {
   ) {}
 
   storeCompany(company: Company): Observable<any> {
-    return this.http.post(`${environment.apiBaseUrl}/empresas`,company);
+    return this.http.post(`${environment.apiBaseUrl}/empresas_lfycs`,company);
   }
 
   updateCompany(company: Company, Company_id: number): Observable<any> {
-    return this.http.put(`${environment.apiBaseUrl}/empresas/${Company_id}`,company);
+    console.log(company, Company_id);
+    return this.http.put(`${environment.apiBaseUrl}/empresas_lfycs/${Company_id}`,company);
   }
 }

@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ProfilePageService } from './profile-page.service';
-import { Profile } from '../../core/models/profile.model';
+import { Profile } from '../../core/models/usuario.model';
 
 @Component({
   selector: 'app-profile-page',
@@ -40,7 +40,6 @@ export class ProfilePageComponent implements OnInit {
         apellidos:'asa',
         email: this.form.value.email,
         password: this.form.value.password,
-        PIN: this.form.value.pin,
         tel1: this.form.value.tel1
       }
 

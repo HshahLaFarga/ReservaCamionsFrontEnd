@@ -3,7 +3,7 @@ import { GenericListComponent } from '../../shared/components/generic-list/gener
 import { UserPageService } from './user-page.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { Profile } from '../../core/models/profile.model';
+import { Profile } from '../../core/models/usuario.model';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -19,15 +19,12 @@ export class UserPageComponent implements OnInit {
   isLoading: boolean = false;
 
   columns = [
-    { key: 'username', label: 'Usuario' },
-    { key: 'name', label: 'Nombre' },
+    { key: 'nombre', label: 'Nombre' },
     { key: 'apellidos', label: 'Apelllido' },
     { key: 'rol.nombre', label: 'Rol' },
-    { key: 'PIN', label: 'PIN' },
     { key: 'NIF', label: 'NIF' },
     { key: 'email', label: 'Email' },
     { key: 'tel1', label: 'Telf. 1' },
-    { key: 'estadoFormated', label: 'Estado' },
   ];
 
   constructor(
@@ -45,7 +42,7 @@ export class UserPageComponent implements OnInit {
     this._userPageService.getUser().subscribe({
       next: (users: Profile[]) => {
         this.users = users.map((user) => {
-          user.estadoFormated = user.estado === 1 ? 'Activo' : 'Inactivo';
+          user.rolesFormated = user.roles?.map(r => r.nombre).join(', ') || '';
           return user;
         })
         this.isLoading = false;

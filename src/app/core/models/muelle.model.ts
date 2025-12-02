@@ -1,23 +1,19 @@
-import { Carrier } from "./carrier.model";
-import { TimingMuelle } from "./timingMuelle.model";
+import { Carrier } from "./transportista.model";
+import { HorarioMuelle } from "./horario_muelle";
 
 export interface Muelle {
-  abierto_festivos: number,
-  cantidat_acceptada: number,
+  muelle_id: number,
   color: string,
   descripcion: string,
-  empresa_id: number,
-  estado: number,
-  muelle_id: number,
-  nombre_muelle: string,
-  numero: number,
-  zona: string,
+  nombre: string,
 
   // Relacion
   empresa: Carrier,
-  horarios: TimingMuelle[],
+  empresa_id: number,
+
+  horarios: HorarioMuelle[],
 
   // Formato visual
-  abierto_festivosFormated: string,
-  estadoFormated: string
+  abierto_festivosFormated?: string,
+  estadoFormated?: string
 }

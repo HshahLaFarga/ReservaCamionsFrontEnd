@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { WeightRangePageService } from './weightRange-page.service';
-import { WeightRange } from '../../core/models/weightRange.model';
+import { Parametro } from '../../core/models/parametro';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -15,10 +15,13 @@ import { CommonModule } from '@angular/common';
 export class WeightRangePageComponent implements OnInit {
 
   form!: FormGroup;
-  weightRange: WeightRange | null = null;
+  // weightRange: Parametro | null = null;
+  min_kg: Parametro | null = null;
+  max_kg: Parametro | null = null;
   isEditing: boolean = false;
 
   isLoading: Boolean = false;
+
 
   // Validador personalizado: max_kg >= min_kg
   maxGteMinValidator(group: FormGroup) {
@@ -30,7 +33,12 @@ export class WeightRangePageComponent implements OnInit {
   onSubmit(): void {
     this.isLoading = true;
     if (this.form.valid) {
-      this._wegithRangePageService.updateWeightRange(this.form.value,this.weightRange!.rango_cantidad_id).subscribe({
+      const claves = {
+        min_kg: this.form.value.min_kg,
+        max_kg: this.form.value.max_kg
+      }      
+
+      this._wegithRangePageService.updateWeightRange(claves).subscribe({
           next: () => {
             this.loadDefaultData();
             this.toastr.success('Cantidad actualizada correctamente', ' Éxito');
@@ -41,7 +49,7 @@ export class WeightRangePageComponent implements OnInit {
               this.isEditing = false;
               this.isLoading = false;
           }
-      });;
+      });
     } else {
       this.form.markAllAsTouched();
     }
@@ -60,9 +68,10 @@ export class WeightRangePageComponent implements OnInit {
   loadDefaultData() {
     this.isLoading = true;
     this._wegithRangePageService.getWeightRange().subscribe({
-      next: (weightRange: WeightRange[]) => {
+      next: (claves: any) => {
         // Fiquem directamente el de 0 per poder obtenir el primer ja que només n'hi ha un registre d'aquest
-        this.weightRange = weightRange[0];
+        this.min_kg = claves.min_kg
+        this.max_kg = claves.max_kg;
         this.isLoading = false;
         this.buildForm();
       },
@@ -75,8 +84,8 @@ export class WeightRangePageComponent implements OnInit {
 
   buildForm() {
     this.form = this.fb.group({
-      min_kg: [this.weightRange?.min_kg, [Validators.required, Validators.min(0)]],
-      max_kg: [this.weightRange?.max_kg, [Validators.required]]
+      min_kg: [this.min_kg?.clave, [Validators.required, Validators.min(0)]],
+      max_kg: [this.max_kg?.clave, [Validators.required]]
     }, { validators: this.maxGteMinValidator });
   }
 

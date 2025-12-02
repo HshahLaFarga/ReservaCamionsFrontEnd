@@ -3,9 +3,9 @@ import { GenericFormComponent } from '../../../shared/components/generic-form/ge
 import { TimingMuelleAddUpdateService } from './timingMuelle-add-update.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { TimingMuelle } from '../../../core/models/timingMuelle.model';
+import { HorarioMuelle } from '../../../core/models/horario_muelle';
 import { CommonModule } from '@angular/common';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-timingMuelle-add-update',
@@ -16,7 +16,7 @@ import { Observable } from 'rxjs';
 export class TimingMuelleAddUpdateComponent implements OnInit {
 
 
-  initialTimingMuelle: TimingMuelle | null = null;
+  initialTimingMuelle: HorarioMuelle | null = null;
   method: 'post' | 'update' = 'post';
 
   isLoading: Boolean = false;
@@ -36,7 +36,7 @@ export class TimingMuelleAddUpdateComponent implements OnInit {
     }
   }
 
-  onSubmit(timingMuelle: TimingMuelle) {
+  onSubmit(timingMuelle: HorarioMuelle) {
     this.isLoading = true;
 
     let request:  Observable<any>;
@@ -44,7 +44,7 @@ export class TimingMuelleAddUpdateComponent implements OnInit {
     if (this.method === 'post') {
       request = this._timingMuelleAddUpdateService.addTimingMuelle(timingMuelle);
     } else {
-      request = this._timingMuelleAddUpdateService.updateTimingMuelle(timingMuelle, this.initialTimingMuelle!.horarios_muelle_id);
+      request = this.initialTimingMuelle?.horarios_muelle_id ? this._timingMuelleAddUpdateService.updateTimingMuelle(timingMuelle, this.initialTimingMuelle?.horarios_muelle_id) : of(null);
     }
 
     request.subscribe({

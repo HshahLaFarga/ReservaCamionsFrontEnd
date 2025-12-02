@@ -4,7 +4,7 @@
   [excludedFields]="['created_at','updated_at','materiales','horarios_muelle_id']"
   [initialData]="initialTimingMuelle"
   [selectFields]="{
-    muelle_id: { api: 'muelles', labelField: 'nombre_muelle', valueField: 'muelle_id', label: 'Muelle' }
+    muelle_id: { api: 'muelles', labelField: 'nombre', valueField: 'muelle_id', label: 'Muelle' }
   }"
   (submitForm)="onSubmit($event)">
 </app-generic-form>
@@ -14,7 +14,7 @@
   tableName="horarios_muelles"
   [excludedFields]="['created_at','updated_at','horarios_muelle_id']"
   [selectFields]="{
-    muelle_id: { api: 'muelles', labelField: 'nombre_muelle', valueField: 'muelle_id', label: 'Muelle' }
+    muelle_id: { api: 'muelles', labelField: 'nombre', valueField: 'muelle_id', label: 'Muelle' }
   }"
   (submitForm)="onSubmit($event)">
 </app-generic-form>

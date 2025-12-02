@@ -19,14 +19,10 @@ export class MuellePageComponent implements OnInit {
   isLoading: boolean = false;
 
   columns = [
-    { key: 'nombre_muelle', label: 'Nombre Muelle' },
+    { key: 'nombre', label: 'Nombre Muelle' },
     { key: 'descripcion', label: 'Descripción' },
-    { key: 'numero', label: 'Número' },
-    { key: 'zona', label: 'Zona' },
-    { key: 'abierto_festivosFormated', label: 'Abierto Festivos' },
     { key: 'color', label: 'Color Calendario' },
-    { key: 'estadoFormated', label: 'Estado' },
-    { key: 'empresa.nombre', label: 'Empresa' }
+    { key: 'empresa_lfycs.nombre', label: 'Empresa' }
   ];
 
   constructor(
@@ -48,8 +44,6 @@ export class MuellePageComponent implements OnInit {
     this._muellePageService.getMuelles().subscribe({
     next: (muelles: Muelle[]) => {
       this.muelles = muelles.map((muelle) => {
-        muelle.abierto_festivosFormated = muelle.abierto_festivos === 1? 'Abierto' : 'Cerrado';
-        muelle.estadoFormated = muelle.estado === 1? 'Activo' : 'Inactivo';
         return muelle;
       });
       this.isLoading = false;
@@ -79,7 +73,7 @@ export class MuellePageComponent implements OnInit {
     this._muellePageService.deleteMuelles(muelle).subscribe({
       next: () => {
         this.loadDefaultData();
-        this.toastr.success('Proveedor eliminado correctamente', 'Éxito');
+        this.toastr.success('Muelle desactivado correctamente', 'Éxito');
         this.isLoading = false;
       },
       error: err => {

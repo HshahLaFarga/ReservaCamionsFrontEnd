@@ -1,51 +1,69 @@
-<div class="max-w-md mx-auto mt-20 p-6 border rounded shadow">
-  <h2 class="text-2xl mb-6 text-center">Login</h2>
+<div class="h-screen w-screen flex items-center justify-center
+            bg-gradient-to-br from-[#FE7354]/20 to-[#00D5CD]/20">
 
-  <form (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
-    <div class="mb-4">
-      <label for="email" class="block mb-1 font-semibold">Email</label>
-      <input
-        type="email"
-        id="email"
-        name="email"
-        [(ngModel)]="email"
-        required
-        email
-        class="w-full border px-3 py-2 rounded"
-        #emailInput="ngModel"
-      />
-      <div *ngIf="emailInput.invalid && emailInput.touched" class="text-red-600 text-sm">
-        Email inválido o requerido.
+  <div class="w-full max-w-md p-8 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20">
+
+    <h2 class="text-3xl font-bold mb-6 text-center bg-gradient-to-r 
+               from-[#FE7354] to-[#00D5CD] bg-clip-text text-transparent">
+      Login
+    </h2>
+
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
+
+      <!-- Email -->
+      <div class="mb-5">
+        <label for="email" class="block mb-1 font-semibold text-gray-700">Usuaio / Email</label>
+        <input
+          type="text"
+          id="email"
+          name="email"
+          [(ngModel)]="email"
+          required
+          class="w-full px-4 py-3 rounded-lg border border-gray-300 
+                 focus:outline-none focus:ring-2 focus:ring-[#00D5CD] 
+                 focus:border-transparent transition-all shadow-sm bg-white"
+          #emailInput="ngModel"
+        />
+        <div
+          *ngIf="emailInput.invalid && emailInput.touched"
+          class="text-[#FE7354] text-sm mt-1"
+        >
+          Email inválido o requerido.
+        </div>
       </div>
-    </div>
 
-    <div class="mb-4">
-      <label for="password" class="block mb-1 font-semibold">Contraseña</label>
-      <input
-        type="password"
-        id="password"
-        name="password"
-        [(ngModel)]="password"
-        required
-        minlength="6"
-        class="w-full border px-3 py-2 rounded"
-        #passwordInput="ngModel"
-      />
-      <div *ngIf="passwordInput.invalid && passwordInput.touched" class="text-red-600 text-sm">
-        La contraseña debe tener al menos 6 caracteres.
+      <!-- Contraseña -->
+      <div class="mb-5">
+        <label for="password" class="block mb-1 font-semibold text-gray-700">
+          Contraseña
+        </label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          [(ngModel)]="password"
+          required
+          minlength="6"
+          class="w-full px-4 py-3 rounded-lg border border-gray-300
+                 focus:outline-none focus:ring-2 focus:ring-[#00D5CD] 
+                 focus:border-transparent transition-all shadow-sm bg-white"
+          #passwordInput="ngModel"
+        />
+        <div
+          *ngIf="passwordInput.invalid && passwordInput.touched"
+          class="text-[#FE7354] text-sm mt-1"
+        >
+          La contraseña debe tener al menos 6 caracteres.
+        </div>
       </div>
-    </div>
 
-    <button
-      type="submit"
-      [disabled]="loginForm.invalid || loading"
-      class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-    >
-      {{ loading ? 'Entrando...' : 'Entrar' }}
-    </button>
-
-    <div *ngIf="errorMessage" class="mt-4 text-red-600 text-center">
-      {{ errorMessage }}
-    </div>
-  </form>
-</div>
+      <!-- Botón -->
+      <button
+        type="submit"
+        [disabled]="loginForm.invalid || loading"
+        class="w-full py-3 rounded-lg text-white font-semibold shadow-md
+               bg-gradient-to-r from-[#FE7354] to-[#00D5CD]
+               hover:opacity-90 transition disabled:opacity-50"
+      >
+        {{ loading ? 'Entrando...' : 'Entrar' }}
+      </button>

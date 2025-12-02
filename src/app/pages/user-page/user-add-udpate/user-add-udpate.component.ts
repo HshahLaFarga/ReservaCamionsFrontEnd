@@ -3,7 +3,7 @@ import { GenericFormComponent } from '../../../shared/components/generic-form/ge
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { Profile } from '../../../core/models/profile.model';
+import { Profile } from '../../../core/models/usuario.model';
 import { Observable } from 'rxjs';
 import { UserAddUdpateService } from './user-add-update.service';
 
@@ -30,7 +30,9 @@ export class UserAddUdpateComponent implements OnInit {
     const state = history.state
     if (state.method === 'update') {
       this.method = state.method;
-      this.initialUserData = state.user;
+      const {rol, ...resto} = state.user;
+      console.log('Usurio a editar:', state.user);
+      this.initialUserData = { ...rol, ...resto };
     }
   }
 

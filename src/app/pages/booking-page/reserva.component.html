@@ -16,7 +16,7 @@
     <!-- Hora inicio -->
     <ng-container matColumnDef="hora_inicio">
       <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.HORA_INICIO' | translate }} </th>
-      <td mat-cell *matCellDef="let booking"> {{ booking.inicio1 }} </td>
+      <td mat-cell *matCellDef="let booking"> {{ booking.inicio }} </td>
     </ng-container>
 
     <!-- Tipo de camión 1 -->
@@ -37,14 +37,16 @@
         {{ 'BOOKING_PAGE.ID_MATERIALS' | translate }}
       </th>
       <td mat-cell *matCellDef="let booking">
-        {{ booking.material1 ? booking.material.nombre_material + ' - ' + booking.material1.nombre_material : booking.material?.nombre_material }}
+        {{ booking.material1 ? booking.material1.nombre: booking.material1?.nombre }} {{ booking.material2 ? ', ' + booking.material2.nombre : '' }}
       </td>
     </ng-container>
 
     <!-- Muelle -->
     <ng-container matColumnDef="muelle">
       <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.MUELLE' | translate }} </th>
-      <td mat-cell *matCellDef="let booking"> {{ booking.muelle1_id }} </td>
+      <td mat-cell *matCellDef="let booking"> 
+        {{ booking?.muelle?.nombre }} 
+      </td>
     </ng-container>
 
     <!-- Cantidad -->
@@ -56,13 +58,13 @@
     <!-- ID Proveedor -->
     <ng-container matColumnDef="id_proveedor">
       <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.ID_PROVEEDOR' | translate }} </th>
-      <td mat-cell *matCellDef="let booking"> {{ booking.proveedor.nombre }} </td>
+      <td mat-cell *matCellDef="let booking"> {{ booking.proveedor.entidad.nombre }} </td>
     </ng-container>
 
     <!-- Pedido -->
     <ng-container matColumnDef="pedido">
       <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.PEDIDO' | translate }} </th>
-      <td mat-cell *matCellDef="let booking"> {{ booking.pedido_LF }} </td>
+      <td mat-cell *matCellDef="let booking"> {{ booking.pedido1 }} </td>
     </ng-container>
 
     <!-- Documentos -->

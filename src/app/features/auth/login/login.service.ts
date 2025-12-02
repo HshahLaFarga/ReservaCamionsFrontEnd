@@ -27,16 +27,16 @@ export class LoginService {
     return null;
   }
 
-  login(email: string, password: string): Observable<any> {
+  login(login: string, password: string): Observable<any> {
     return this.http.get('http://localhost/sanctum/csrf-cookie').pipe(
       switchMap(() => {
-        const token = this.getCSRFToken();
+        const CSRFtoken = this.getCSRFToken();
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
-          ...(token ? { 'X-XSRF-TOKEN': token } : {})
+          ...(CSRFtoken ? { 'X-XSRF-TOKEN': CSRFtoken } : {})
         });
 
-        return this.http.post('http://localhost/api/login', { email, password }, { headers })
+        return this.http.post('http://localhost/api/user/login', { login, password }, { headers })
           .pipe(tap(() => this._isLoggedIn.next(true)));
       })
     );

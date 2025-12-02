@@ -17,7 +17,7 @@ export class StatusPageService {
     return this.http.get(`${environment.apiBaseUrl}/status`);
   }
 
-  deleteStatus(status_id: number): Observable<any> {
-    return this.http.delete(`${environment.apiBaseUrl}/status/${status_id}`);
+  deleteStatus(estado_id: number): Observable<any> {
+    return this.http.delete(`${environment.apiBaseUrl}/status/${estado_id}`);
   }
 }

@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './features/auth/layouts/main-layout.component';
-import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page.component';
 import { ProfilePageComponent } from './pages/profile-page/profile-page.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { CalendarPageComponent } from './pages/calendar-page/calendar-page.component';
@@ -41,7 +40,6 @@ export const routes: Routes = [
     canActivate: [authGuard],
 
     children: [
-      { path: 'dashboard', component: DashboardPageComponent },
 
       { path: 'calendar', component: CalendarPageComponent},
 
@@ -56,9 +54,9 @@ export const routes: Routes = [
       { path: 'provider/type/add', component: ProviderTypeAddUpdateComponent },
       { path: 'provider/type/edit', component: ProviderTypeAddUpdateComponent },
 
-      { path: 'carrier', component: CarrierPageComponent },
-      { path: 'carrier/add', component: CarrierAddUpdateComponent },
-      { path: 'carrier/edit', component: CarrierAddUpdateComponent },
+      { path: 'transportista', component: CarrierPageComponent },
+      { path: 'transportista/add', component: CarrierAddUpdateComponent },
+      { path: 'transportista/edit', component: CarrierAddUpdateComponent },
 
       { path: 'materials', component: MaterialPageComponent },
       { path: 'materials/add', component: MaterialAddUpdateComponent },
@@ -88,9 +86,9 @@ export const routes: Routes = [
       { path: 'trucks/type/add', component: TruckTypeAddUpdateComponent},
       { path: 'trucks/type/edit', component: TruckTypeAddUpdateComponent},
 
-      { path: 'status', component: StatusPageComponent},
-      { path: 'status/add', component: StatusAddUpdateComponent},
-      { path: 'status/edit', component: StatusAddUpdateComponent},
+      { path: 'estados', component: StatusPageComponent},
+      { path: 'estado/add', component: StatusAddUpdateComponent},
+      { path: 'estado/edit', component: StatusAddUpdateComponent},
 
       { path: 'weight/range', component: WeightRangePageComponent},
 
@@ -100,9 +98,9 @@ export const routes: Routes = [
 
       { path: 'restrictions', component: RestrictionPageComponent},
 
-      { path: 'bookings', loadChildren: () => import('./pages/booking-page/booking-page.routes')},
+      { path: 'bookings', loadChildren: () => import('./pages/booking-page/reserva.routes')},
 
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full'},
+      { path: '', redirectTo: 'calendar', pathMatch: 'full'},
     ]
   }
 ];

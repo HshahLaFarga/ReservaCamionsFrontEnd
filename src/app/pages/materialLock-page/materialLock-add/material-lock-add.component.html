@@ -52,11 +52,11 @@
     <mat-form-field class="w-full" appearance="fill">
       <mat-label>Añade un material al grupo</mat-label>
       <input type="text" matInput [formControl]="materialControl" [matAutocomplete]="auto"
-        [ngModel]="materialControl.value?.nombre_material || materialControl.value" />
+        [ngModel]="materialControl.value?.nombre || materialControl.value" />
 
       <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onMaterialSelected($event.option.value)">
         <mat-option *ngFor="let material of filteredMaterials" [value]="material">
-          {{ material.nombre_material }}
+          {{ material.nombre }}
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
@@ -67,7 +67,7 @@
       <div class="flex flex-wrap gap-2 border p-4 rounded bg-gray-50">
         <div *ngFor="let material of selectedMaterials; let i = index"
           class="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-          {{ material.nombre_material }}
+          {{ material.nombre }}
           <button (click)="deleteMaterialFromArray(i)" class="ml-2 text-red-500 hover:text-red-700 focus:outline-none"
             title="Eliminar material">
             ✖

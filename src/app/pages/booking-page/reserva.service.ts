@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../core/envoirment/envoirment';
-import { Booking, BookingDocument } from '../../core/models/booking.model';
+import { Booking, BookingDocument } from '../../core/models/reserva.model';
 // import { Profile } from './reservation-page.types';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BookingPageService {
+export class ReservaService {
   constructor(
     private http: HttpClient
   ) { }
@@ -51,7 +51,7 @@ export class BookingPageService {
   getTruck(truck_id: number): Observable<any> {
     return this.http.get(`${environment.apiBaseUrl}/tipocamiones/${truck_id}`);
   }
-  getTransportista(transportista_id: number): Observable<any> {
+  getCarrier(transportista_id: number): Observable<any> {
     return this.http.get(`${environment.apiBaseUrl}/transportistas/${transportista_id}`);
   }
 }

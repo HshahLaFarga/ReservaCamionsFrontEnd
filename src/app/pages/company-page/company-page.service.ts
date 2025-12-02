@@ -14,10 +14,10 @@ export class CompanyPageService {
   ) {}
 
   getCompanys(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/empresas`);
+    return this.http.get(`${environment.apiBaseUrl}/empresas_lfycs`);
   }
 
   deleteCompany(company: Company): Observable<any> {
-    return this.http.delete(`${environment.apiBaseUrl}/empresas/${company.empresa_id}`);
+    return this.http.delete(`${environment.apiBaseUrl}/empresas_lfycs/${company.empresa_lfycs_id}`);
   }
 }

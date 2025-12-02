@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GenericListComponent } from '../../shared/components/generic-list/generic-list.component';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Carrier } from '../../core/models/carrier.model';
+import { Carrier } from '../../core/models/transportista.model';
 import { CarrierPageService } from './carrier-page.service';
 import { CommonModule } from '@angular/common';
 
@@ -15,16 +15,15 @@ import { CommonModule } from '@angular/common';
 
 export class CarrierPageComponent implements OnInit {
 
-  carriers: Carrier[] = [];
+  Carriers: Carrier[] = [];
 
   isLoading: boolean = false;
 
   columns = [
-    { key: 'nombre', label: 'Nombre Transportista' },
-    { key: 'NIF', label: 'NIF' },
-    { key: 'email', label: 'Correo' },
-    { key: 'tel1', label: 'Telf. 1' },
-    { key: 'proveedor.nombre', label: 'Proveedor' },
+    { key: 'entidad.nombre', label: 'Nombre' },
+    { key: 'entidad.nif', label: 'NIF' },
+    { key: 'entidad.email', label: 'Correo' },
+    { key: 'entidad.telefono1', label: 'Telf. 1' },
   ];
 
   constructor(
@@ -39,9 +38,10 @@ export class CarrierPageComponent implements OnInit {
   }
 
   loadDefaultData() {
-    this._carrierPageService.getCarriers().subscribe({
-      next: (carriers) => {
-        this.carriers = carriers;
+    //Get Transportisas
+    this._carrierPageService.getTransportistas().subscribe({
+      next: (Carriers) => {
+        this.Carriers = Carriers;
         this.isLoading = false;
       },
       error: (err) => {
@@ -52,24 +52,24 @@ export class CarrierPageComponent implements OnInit {
   }
 
   onAdd() {
-    this.router.navigate(['carrier/add'])
+    this.router.navigate(['transportista/add'])
   }
 
-  onEdit(carrier: Carrier) {
-    this.router.navigate(['carrier/edit'], {
+  onEdit(Carrier: Carrier) {
+    this.router.navigate(['transportista/edit'], {
       state: {
-        carrier: { ...carrier },
+        carrier: { ...Carrier },
         method: 'update'
       }
     });
   }
 
-  onDelete(carrier: Carrier) {
+  onDelete(Carrier: Carrier) {
     this.isLoading = true;
-    this._carrierPageService.deleteCarrier(carrier).subscribe({
+    this._carrierPageService.deleteCarrier(Carrier).subscribe({
       next: () => {
         this.loadDefaultData();
-        this.toastr.success('Transportista eliminado correctamente', 'Éxito');
+        this.toastr.success('Carrier eliminado correctamente', 'Éxito');
         this.isLoading = false;
       },
       error: (err) => {

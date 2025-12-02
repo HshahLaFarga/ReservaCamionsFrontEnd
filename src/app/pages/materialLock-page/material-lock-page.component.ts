@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GenericListComponent } from '../../shared/components/generic-list/generic-list.component';
 import { MaterialLockPageService } from './material-lock-page.service';
-import { MaterialLock } from '../../core/models/material-lock.model';
+import { MaterialLock } from '../../core/models/bloqueo_grupo_material.model';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -22,8 +22,8 @@ export class MaterialLockPageComponent implements OnInit {
     { key: 'materiales', label: 'Nombre Materiales' },
     { key: 'cantidad', label: 'Cantidad Total' },
     { key: 'cantidadDisponible', label: 'Cantidad Disponible' },
-    { key: 'inicio', label: 'Data Inicio' },
-    { key: 'fin', label: 'Data Fin' },
+    { key: 'inicio', label: 'Fecha Inicio' },
+    { key: 'fin', label: 'Fecha Fin' },
   ];
 
   constructor(
@@ -46,11 +46,11 @@ export class MaterialLockPageComponent implements OnInit {
       this.lockedMaterials = lockedMaterials.map((materialLock) => {
         return {
           nombre: materialLock.tipoproveedor.nombre,
-          materiales: materialLock.detalles.length === 0? 'No hi han materials assignats' : materialLock.detalles.map(({material}) => `${material.nombre_material}`).join('<br>'),
+          materiales: materialLock.detalles.length === 0? 'No hi han materials assignats' : materialLock.detalles.map(({material}) => `${material.nombre}`).join('<br>'),
           cantidad: materialLock.cantidad_total,
           cantidadDisponible: materialLock.cantidad_disponible,
-          inicio: materialLock.fecha_desde,
-          fin: materialLock.fecha_hasta,
+          inicio: materialLock.inicio,
+          fin: materialLock.fin,
           object: materialLock
         }
       });

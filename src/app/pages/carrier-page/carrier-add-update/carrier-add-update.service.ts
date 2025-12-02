@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../core/envoirment/envoirment';
 import { Injectable } from '@angular/core';
-import { Carrier } from '../../../core/models/carrier.model';
+import { Carrier } from '../../../core/models/transportista.model';
 
 
 @Injectable({
@@ -15,11 +15,11 @@ export class CarrierAddUpdateService {
     private http: HttpClient
   ) { }
 
-  storeCarrier(carrier: Carrier): Observable<any> {
-    return this.http.post(`${environment.apiBaseUrl}/transportistas`,carrier);
+  storeCarrier(Carrier: Carrier): Observable<any> {
+    return this.http.post(`${environment.apiBaseUrl}/transportistas`,Carrier);
   }
 
-  updateCarrier(carrier: Carrier, carrier_id: number): Observable<any> {
-    return this.http.put(`${environment.apiBaseUrl}/transportistas/${carrier_id}`,carrier);
+  updateCarrier(Carrier: Carrier, transportista_id: number): Observable<any> {
+    return this.http.put(`${environment.apiBaseUrl}/transportistas/${transportista_id}`,Carrier);
   }
 }

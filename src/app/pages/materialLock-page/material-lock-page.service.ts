@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../core/envoirment/envoirment';
 import { Injectable } from '@angular/core';
-import { MaterialLock } from '../../core/models/material-lock.model';
+import { MaterialLock } from '../../core/models/bloqueo_grupo_material.model';
 
 @Injectable({
   providedIn: 'root'

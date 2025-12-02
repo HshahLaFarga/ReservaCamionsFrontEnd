@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Provider } from '@angular/core';
 import { GenericFormComponent } from '../../../shared/components/generic-form/generic-form.component';
-import { ProviderType } from '../../../core/models/provider.model';
+import { TipoProveedor } from '../../../core/models/proveedor.model';
 import { ProviderTypeAddUpdateService } from './provider-type-add-update.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
   styles: ``,
 })
 export class ProviderTypeAddUpdateComponent {
-  initialProviderType: ProviderType | null = null;
+  initialProviderType: TipoProveedor | null = null;
   method: 'post' | 'update' = 'post';
 
   isLoading: Boolean = false;

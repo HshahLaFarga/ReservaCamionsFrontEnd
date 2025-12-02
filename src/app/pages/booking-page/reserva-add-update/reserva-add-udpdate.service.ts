@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { observable, Observable } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { environment } from '../../../core/envoirment/envoirment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BookingAddService {
+export class BookingAddUpdateService {
   constructor(
     private http: HttpClient,
   ) {}
@@ -19,11 +19,6 @@ export class BookingAddService {
     return this.http.get(`${environment.apiBaseUrl}/materiales`);
   }
 
-  getAvailableTrucks(materiales: number[], requirements: boolean): Observable<any>{
-    materiales = materiales.filter(m => m !== 0);
-    return this.http.post(`${environment.apiBaseUrl}/controlCamion`,{ materiales, restricciones:requirements });
-  }
-
   getStatus(): Observable<any>{
     return this.http.get(`${environment.apiBaseUrl}/status`);
   }
@@ -32,15 +27,16 @@ export class BookingAddService {
     return this.http.get(`${environment.apiBaseUrl}/proveedores`);
   }
 
-  getCarriers(): Observable<any>{
+  getTransportistas(): Observable<any>{
     return this.http.get(`${environment.apiBaseUrl}/transportistas`);
   }
 
-  createReservation(booking: any): Observable<any> {
+  createBooking(booking: any): Observable<any> {
+    console.log('Booking to store', booking);
     return this.http.post(`${environment.apiBaseUrl}/reserva`,booking);
   }
 
-  updateReservation(formData: FormData): Observable<any> {
+  updateBooking(formData: FormData): Observable<any> {
     return this.http.post(`${environment.apiBaseUrl}/reserva/${formData.get('reserva_id')}`, formData);
   }
 
@@ -48,7 +44,12 @@ export class BookingAddService {
     return this.http.delete(`${environment.apiBaseUrl}/file/name/${document_booking_id}`);
   }
 
-  getWeightRange(): Observable<any>{
-    return this.http.get(`${environment.apiBaseUrl}/rango/cantidad`);
-  }
+  getWeightRange(): Observable<any> {
+  
+      const params = new HttpParams()
+      .append('keys[]', 'min_kg')
+      .append('keys[]', 'max_kg');
+    
+      return this.http.get(`${environment.apiBaseUrl}/config/claves`, { params });
+    }
 }

@@ -44,7 +44,7 @@ export class CompanyAddUpdateComponent implements OnInit {
     if(this.method === 'post'){
       request = this._companyAddUpdateService.storeCompany(company);
     } else {
-      request = this._companyAddUpdateService.updateCompany(company, history.state.company.empresa_id);
+      request = this._companyAddUpdateService.updateCompany(company, history.state.company.empresa_lfycs_id);
     }
 
     request.subscribe({

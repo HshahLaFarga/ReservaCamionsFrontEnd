@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ProviderType } from '../../core/models/provider.model';
+import { TipoProveedor } from '../../core/models/proveedor.model';
 import { ProviderTypeService } from './provider-type.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -21,7 +21,7 @@ import {
 export class ProviderTypeComponent {
   // Estructura inicial component list
   columns = [{ key: 'nombre', label: 'Tipo proveedor' }];
-  providerType: ProviderType[] = [];
+  providerType: TipoProveedor[] = [];
 
   isLoading: Boolean = false;
 
@@ -55,7 +55,7 @@ export class ProviderTypeComponent {
     this.router.navigate(['provider/type/add']);
   }
 
-  onEdit(provider: ProviderType) {
+  onEdit(provider: TipoProveedor) {
     this.router.navigate(['provider/type/edit'], {
       state: {
         provider: { ...provider },
@@ -64,7 +64,7 @@ export class ProviderTypeComponent {
     });
   }
 
-  onDelete(proveedor: ProviderType) {
+  onDelete(proveedor: TipoProveedor) {
     const modalInformation: ConfirmData = {
       title: 'Eliminación de Reserva',
       message: `¿Está seguro de que desea eliminar el tipo camión <strong>${proveedor.nombre}</strong> una vez hecho no se podrà recuperar?`,

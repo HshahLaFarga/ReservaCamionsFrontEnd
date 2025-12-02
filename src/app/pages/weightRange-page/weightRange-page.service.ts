@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../core/envoirment/envoirment';
 import { Injectable } from '@angular/core';
-import { WeightRange } from '../../core/models/weightRange.model';
+import { Parametro } from '../../core/models/parametro';
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +14,15 @@ export class WeightRangePageService {
   ) {}
 
   getWeightRange(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/rango/cantidad`);
+
+    const params = new HttpParams()
+    .append('keys[]', 'min_kg')
+    .append('keys[]', 'max_kg');
+  
+    return this.http.get(`${environment.apiBaseUrl}/config/claves`, { params });
   }
 
-  updateWeightRange(weightRange: WeightRange, weightRange_id: number): Observable<any> {
-    return this.http.put(`${environment.apiBaseUrl}/rango/cantidad/${weightRange_id}`,weightRange);
+  updateWeightRange(claves: any): Observable<any> {
+    return this.http.put(`${environment.apiBaseUrl}/config/claves`,claves);
   }
 }

@@ -1,6 +1,6 @@
 <app-generic-form *ngIf="method === 'update'"
-  formTitle="Editar Empresa"
-  tableName="empresas"
+  formTitle="Editar Empresa Lfycs"
+  tableName="empresas_lfycs"
   [excludedFields]="['created_at','updated_at']"
   [initialData]="initialCompanyData"
   (submitForm)="onSubmit($event)">
@@ -8,7 +8,7 @@
 
 <app-generic-form *ngIf="method === 'post'"
   formTitle="Añadir Muelles"
-  tableName="empresas"
+  tableName="empresas_lfycs"
   [excludedFields]="['created_at','updated_at']"
   (submitForm)="onSubmit($event)">
 </app-generic-form>

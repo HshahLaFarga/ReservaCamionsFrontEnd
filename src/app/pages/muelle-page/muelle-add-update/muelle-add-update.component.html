@@ -2,7 +2,7 @@
   formTitle="Editar Muelles"
   tableName="muelles"
   [selectFields]="{
-    empresa_id: { api: 'empresas', labelField: 'nombre', valueField: 'empresa_id', label: 'Empresa' }
+    empresa_lfycs_id: { api: 'empresas_lfycs', labelField: 'nombre', valueField: 'empresa_lfycs_id', label: 'Empresa' }
   }"
   [excludedFields]="['created_at','updated_at']"
   [initialData]="initialMuelleData"
@@ -13,7 +13,7 @@
   formTitle="Añadir Muelles"
   tableName="muelles"
   [selectFields]="{
-    empresa_id: { api: 'empresas', labelField: 'nombre', valueField: 'empresa_id', label: 'Empresa' }
+    empresa_lfycs_id: { api: 'empresas_lfycs', labelField: 'nombre', valueField: 'empresa_lfycs_id', label: 'Empresa' }
   }"
   [excludedFields]="['created_at','updated_at']"
   (submitForm)="onSubmit($event)">

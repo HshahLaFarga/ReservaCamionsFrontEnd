@@ -1,9 +1,0 @@
-<div class="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-  <a *ngFor="let option of optionsToShow"
-     [routerLink]="option.route"
-     class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition p-6 flex flex-col items-center cursor-pointer">
-    <span class="material-icons text-5xl text-white mb-4">{{ option.icon }}</span>
-    <h2 class="text-xl text-white font-semibold mb-2">{{ option.labelKey | translate }}</h2>
-    <p class="text-gray-600 dark:text-white text-center">{{ option.descriptionKey | translate }}</p>
-  </a>
-</div>

@@ -6,7 +6,7 @@ import { LoginService } from '../../features/auth/login/login.service';
 export const authGuard: CanActivateFn = () => {
   const loginService = inject(LoginService);
   const router = inject(Router);
-return true;
+// return true;
   return loginService.isLoggedIn$.pipe(
     tap(isLoggedIn => {
       if (!isLoggedIn) {
