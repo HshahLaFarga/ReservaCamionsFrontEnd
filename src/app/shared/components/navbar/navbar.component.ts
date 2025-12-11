@@ -4,32 +4,38 @@ import { CommonModule } from '@angular/common';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { SidebarItem } from '../../../core/models/sidebar.model';
 import { SidebarService } from '../sidebar/sidebar.service';
+import { LoggedUser } from '../../../core/models/logged_user.model';
+import { LoginService } from '../../../features/auth/login/login.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
   templateUrl: './navbar.component.html',
   imports: [RouterModule, CommonModule, TranslateModule],
-  styles: []
+  styles: [],
 })
 export class NavbarComponent implements OnInit {
   dropdownOpen = false;
   currentLang: string;
-  
+
   // Idiomes actuals
-  langs: string[] = ['ca','es','en','fr'];
+  langs: string[] = ['ca', 'es', 'en', 'fr'];
 
   sidebarItems: SidebarItem[] = [];
 
   constructor(
     private translate: TranslateService,
     private elRef: ElementRef,
-    private _sidebarService:  SidebarService
+    private _sidebarService: SidebarService,
+    private _loginService: LoginService
   ) {
-    this.currentLang = this.translate.currentLang || this.translate.getDefaultLang() || 'en';
+    this.currentLang =
+      this.translate.currentLang || this.translate.getDefaultLang() || 'en';
   }
   ngOnInit(): void {
-    this.sidebarItems = this._sidebarService.getSidebarItems();
+    this._loginService.authState$.subscribe((user: LoggedUser | null) => {
+      this.sidebarItems = this._sidebarService.getSidebarItems(user);
+    });
   }
 
   // #### CONFIGURACIÓ IDIOMES ####

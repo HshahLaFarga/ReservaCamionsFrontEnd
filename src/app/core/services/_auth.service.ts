@@ -8,7 +8,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 })
 export class AuthService {
   private tokenKey = 'auth_token';
-  private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
+  private loggedIn = new BehaviorSubject<boolean>(false);
 
   constructor(private http: HttpClient) {}
 
@@ -17,24 +17,30 @@ export class AuthService {
   }
 
   login(credentials: {email: string, password: string}): Observable<any> {
-    return this.http.post<{token: string}>('/api/login', credentials).pipe(
-      tap(response => {
-        localStorage.setItem(this.tokenKey, response.token);
-        this.loggedIn.next(true);
-      })
+    return this.http.post<{token: string}>('/api/login', credentials,{
+      withCredentials: true
+    }).pipe(
+      tap(()=>this.loggedIn.next(true))
     );
   }
 
   logout() {
-    localStorage.removeItem(this.tokenKey);
-    this.loggedIn.next(false);
+    return this.http.post('/api/logout', {}, { withCredentials: true })
+    .pipe(tap(() => this.loggedIn.next(false)));
   }
 
   isLoggedIn() {
     return this.loggedIn.asObservable();
   }
 
-  getToken() {
-    return localStorage.getItem(this.tokenKey);
+  /** Consulta al backend si la cookie es válida */
+  checkAuthenticated() {
+    return this.http.get('/api/authenticated', {
+      withCredentials: true
+    }).pipe(
+      tap((res: any) => {
+        this.loggedIn.next(res.logged);
+      })
+    );
   }
 }

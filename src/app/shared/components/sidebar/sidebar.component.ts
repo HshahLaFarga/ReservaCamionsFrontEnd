@@ -5,6 +5,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SidebarService } from './sidebar.service';
 import { SidebarItem } from '../../../core/models/sidebar.model';
 import { MatIconModule } from '@angular/material/icon';
+import { LoggedUser } from '../../../core/models/logged_user.model';
+import { LoginService } from '../../../features/auth/login/login.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -13,20 +15,23 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [RouterModule, TranslateModule, CommonModule, MatIconModule],
 })
 export class SidebarComponent implements OnInit {
-
   sidebarItems: SidebarItem[] = [];
 
   openDropdown: string | null = null;
+  router: any;
 
-  constructor (
-    private _sidebarService:  SidebarService
+  usuario$ = this._loginService.authState$;
+
+  constructor(
+    private _sidebarService: SidebarService,
+    private _loginService: LoginService
   ) {}
 
   ngOnInit(): void {
-    this.loadDefaultData();
-  }
-  loadDefaultData() {
-    this.sidebarItems = this._sidebarService.getSidebarItems();
+    this._loginService.authState$.subscribe((user: LoggedUser | null) => {
+      this.sidebarItems = this._sidebarService.getSidebarItems(user);
+      console.log('user', user);
+    });
   }
 
   toggleDropdown(label: string) {
@@ -38,6 +43,12 @@ export class SidebarComponent implements OnInit {
   }
 
   logout() {
-    throw new Error('Method not implemented.');
+    this._loginService.logout().subscribe({
+      next: () => {
+        // Redirigir a login
+        this.router.navigate(['/login']);
+      },
+      error: (err: any) => console.error('Error al cerrar sesión', err),
+    });
   }
 }

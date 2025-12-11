@@ -66,11 +66,14 @@
     </ng-container>
 
     <!-- Divider -->
-    <div class="flex items-center my-6">
-      <div class="flex-grow border-t border-gray-700"></div>
-      <span class="mx-3 text-xs uppercase tracking-widest text-gray-500">Administrador</span>
-      <div class="flex-grow border-t border-gray-700"></div>
-    </div>
+     @if((usuario$ | async)?.instance === 'usuario'){
+      <div class="flex items-center my-6">
+        <div class="flex-grow border-t border-gray-700"></div>
+        <span class="mx-3 text-xs uppercase tracking-widest text-gray-500">Administrador</span>
+        <div class="flex-grow border-t border-gray-700"></div>
+      </div>
+     }
+    
 
     <!-- Admin section -->
     <ng-container *ngFor="let item of sidebarItems">

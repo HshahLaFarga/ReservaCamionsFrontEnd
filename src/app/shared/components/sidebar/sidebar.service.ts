@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { SidebarItem } from "../../../core/models/sidebar.model";
+import { LoggedUser } from "../../../core/models/logged_user.model";
 
 @Injectable({ providedIn: 'root' })
 export class SidebarService {
@@ -10,7 +11,7 @@ export class SidebarService {
       route: '/bookings',
       icon: 'event_available',
     },
-    { label: 'CALENDARIO', route: '/calendar', icon: 'calendar_month' },
+    { label: 'CALENDARIO', route: '/calendar', icon: 'calendar_month', },
     { label: 'Proveedores', route: '/provider', icon: 'business' },
     { label: 'Transportistas', route: '/transportista', icon: 'local_shipping' },
     { label: 'Informes', route: '/report', icon: 'bar_chart' },
@@ -53,7 +54,20 @@ export class SidebarService {
     },
   ];
 
-  getSidebarItems(): SidebarItem[] {
-    return this.items;
+  private EntidadItems: SidebarItem[] = [
+    {
+      label: 'BOOKING_PAGE.TITLE',
+      route: '/bookings',
+      icon: 'event_available',
+    },
+    { label: 'CALENDARIO', route: '/calendar', icon: 'calendar_month', },
+  ]; 
+
+
+  // 🔹 Método principal
+  getSidebarItems(user: LoggedUser | null): SidebarItem[] {
+    if (!user) return []; // no hay usuario logueado
+
+    return user.instance === 'entidad' ? this.EntidadItems : this.items;
   }
 }

@@ -1,15 +1,23 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { switchMap, tap } from 'rxjs/operators';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 import { environment } from '../../../core/envoirment/envoirment';
+import { LoggedUser } from '../../../core/models/logged_user.model';
+import { map } from 'rxjs/operators';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
-  private _isLoggedIn = new BehaviorSubject<boolean>(false);
-  isLoggedIn$ = this._isLoggedIn.asObservable();
+  private _authState = new BehaviorSubject<LoggedUser | null>(null);
+  authState$ = this._authState.asObservable();
+
+  // Helper para saber el tipo de instancia actual fácilmente
+  currentInstanceType$ = this.authState$.pipe(
+      map(state => state?.instance || null)
+  );
 
   constructor(private http: HttpClient) {
     this.checkAuth().subscribe();
@@ -27,30 +35,43 @@ export class LoginService {
     return null;
   }
 
-  login(login: string, password: string): Observable<any> {
-    return this.http.get('http://localhost/sanctum/csrf-cookie').pipe(
+  login(login: string, password: string): Observable<LoggedUser> {
+    return this.http.get(`${environment.apiBaseUrl}/sanctum/csrf-cookie`).pipe(
       switchMap(() => {
         const CSRFtoken = this.getCSRFToken();
         const headers = new HttpHeaders({
           'Content-Type': 'application/json',
-          ...(CSRFtoken ? { 'X-XSRF-TOKEN': CSRFtoken } : {})
+          ...(CSRFtoken ? { 'X-XSRF-TOKEN': CSRFtoken } : {}),
         });
 
-        return this.http.post('http://localhost/api/user/login', { login, password }, { headers })
-          .pipe(tap(() => this._isLoggedIn.next(true)));
+        return this.http.post<LoggedUser>(`${environment.apiBaseUrl}/login`, { login, password }, { headers })
+          .pipe(tap((res) => {
+            this._authState.next(res);
+            console.log('Logged in user:', res);
+          }));
       })
     );
   }
 
   logout(): Observable<any> {
     return this.http.post(`${environment.apiBaseUrl}/logout`, {}, { withCredentials: true }).pipe(
-      tap(() => this._isLoggedIn.next(false))
+      tap(() => this._authState.next(null))
     );
   }
 
-  checkAuth(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/authenticated`, { withCredentials: true }).pipe(
-      tap((res: any) => this._isLoggedIn.next(res.authenticated))
+  checkAuth(): Observable<LoggedUser | null> {
+  return this.http.get<LoggedUser>(`${environment.apiBaseUrl}/authenticated`, { withCredentials: true })
+    .pipe(
+      tap(res => this._authState.next(res)),
+      catchError(() => {
+        this._authState.next(null);
+        return of(null);
+      })
     );
+}
+
+
+  get currentUser(): LoggedUser | null {
+      return this._authState.value;
   }
 }

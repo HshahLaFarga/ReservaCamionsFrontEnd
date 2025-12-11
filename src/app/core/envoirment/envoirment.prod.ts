@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'http://localhost/api',
-  apiCookieUrl: 'http://localhost',
-  refererHeader: 'localhost'
+  apiBaseUrl: 'http://citaprevia.lafarga.es/api',
+  apiCookieUrl: 'http://citaprevia.lafarga.es',
+  refererHeader: 'citaprevia.lafarga.es'
 };
