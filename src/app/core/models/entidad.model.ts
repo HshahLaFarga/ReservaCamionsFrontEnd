@@ -12,5 +12,4 @@ export interface Entidad {
     telefono2?: string,
     alerta: boolean,
     idioma: `es` | `en` | `fr` | `ca`,
-    codigo_sap: string,
 }

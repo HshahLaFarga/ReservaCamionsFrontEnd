@@ -1,4 +1,4 @@
-<aside class="w-full h-full bg-gradient-to-b from-[#FE7354]/80 to-[#00D5CD]/30 text-white pt-16 p-6 select-none">
+<aside class="w-full h-full bg-gradient-to-b from-white from-10% via-[#008c8c] via-250% to-[#C45438] text-black pt-16 p-6 select-none shadow-md">
   <ul class="space-y-2">
 
     <!-- Ítems no admin -->
@@ -10,8 +10,8 @@
           <button 
             (click)="toggleDropdown(item.label)"
             class="w-full flex items-center justify-between px-4 py-3 rounded-xl 
-                   hover:bg-gray-800/50 transition-all duration-300 
-                   hover:shadow-lg hover:shadow-blue-500/10 hover:scale-[1.015] 
+                   hover:bg-white transition-all duration-500 
+                   hover:shadow-lg hover:text-[#C45438]
                    backdrop-blur-sm"
           >
             <div class="flex items-center space-x-3">
@@ -19,7 +19,7 @@
               <span class="font-medium tracking-wide">{{ item.label | translate }}</span>
             </div>
 
-            <span class="material-icons transition-transform duration-300"
+            <span class="material-icons transition-transform duration-500"
               [class.rotate-90]="openDropdown === item.label">
               arrow_right
             </span>
@@ -33,10 +33,10 @@
             <li *ngFor="let child of item.children">
               <a
                 [routerLink]="child.route"
-                routerLinkActive="bg-[#FE7354] shadow-lg rounded-xl scale-[1.02]"
+                routerLinkActive="bg-[#FE7354] shadow-lg rounded-xl"
                 [routerLinkActiveOptions]="{ exact: true }"
                 class="flex px-3 py-2 rounded-xl transition-all duration-300 
-                       hover:bg-gray-800/70 hover:scale-[1.03] hover:shadow-lg hover:shadow-blue-500/10"
+                       hover:bg-white hover:text-[#C45438] hover:shadow-lg hover:shadow-blue-500/10 hover:px-4 hover:py-3 hover:rounded-xl"
               >
                 <mat-icon class="mr-2 text-sm">{{ child.icon }}</mat-icon>
                 <span class="text-sm tracking-wide">{{ child.label | translate }}</span>
@@ -50,12 +50,10 @@
           <li>
             <a 
               [routerLink]="item.route"
-              routerLinkActive="bg-[#FE7354] shadow-lg scale-[1.02] rounded-xl px-4 py-3 block"
+              routerLinkActive="bg-[#FE7354] shadow-lg rounded-xl px-4 py-3 block"
               [routerLinkActiveOptions]="{ exact: true }"
               class="flex items-center space-x-3 px-4 py-3 rounded-xl 
-                     hover:bg-gray-800/70 hover:scale-[1.03] 
-                     transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10"
-            >
+                     transition-all duration-300 hover:shadow-lg hover:bg-white hover:text-[#C45438]  hover:rounded-xl">
               <mat-icon>{{ item?.icon }}</mat-icon>
               <span class="font-medium tracking-wide">{{ item.label | translate }}</span>
             </a>
@@ -83,10 +81,10 @@
         <li *ngIf="!item.children; else adminDropdown">
           <a 
             [routerLink]="item.route"
-            routerLinkActive="bg-red-600 shadow-lg scale-[1.02] rounded-xl px-4 py-3 block"
+            routerLinkActive="bg-red-600 shadow-lg  rounded-xl px-4 py-3 block"
             [routerLinkActiveOptions]="{ exact: true }"
             class="flex items-center space-x-3 px-4 py-3 rounded-xl 
-                   hover:bg-red-800/70 hover:scale-[1.03] 
+                   hover:bg-red-800/70 
                    transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20"
           >
             <mat-icon>{{ item?.icon }}</mat-icon>
@@ -101,7 +99,7 @@
               (click)="toggleDropdown(item.label)"
               class="w-full flex items-center justify-between px-4 py-3 rounded-xl 
                      hover:bg-red-800/40 transition-all duration-300 
-                     hover:shadow-lg hover:shadow-red-500/20 hover:scale-[1.015]"
+                     hover:shadow-lg hover:shadow-red-500/20 "
             >
               <div class="flex items-center space-x-3">
                 <mat-icon>{{ item?.icon }}</mat-icon>
@@ -121,11 +119,11 @@
               <li *ngFor="let child of item.children">
                 <a 
                   [routerLink]="child.route"
-                  routerLinkActive="bg-red-600 shadow-lg scale-[1.02] rounded-xl px-3 py-2 block"
+                  routerLinkActive="bg-red-600 shadow-lg  rounded-xl px-3 py-2 block"
                   [routerLinkActiveOptions]="{ exact: true }"
                   class="flex items-center space-x-2 px-3 py-2 rounded-xl 
                          transition-all duration-300 hover:bg-red-800/70 
-                         hover:scale-[1.03] hover:shadow-lg hover:shadow-red-500/20"
+                        hover:shadow-lg hover:shadow-red-500/20"
                 >
                   <mat-icon>{{ child?.icon }}</mat-icon>
                   <span>{{ child.label | translate }}</span>

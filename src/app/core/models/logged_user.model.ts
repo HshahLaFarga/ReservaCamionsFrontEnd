@@ -1,6 +1,7 @@
 import { Profile } from "./usuario.model";
 import { Carrier } from "./transportista.model";
 import { Provider } from "./proveedor.model";
+import { Entidad } from "./entidad.model";
 
 // 1. Definimos las combinaciones posibles
 // Fíjate que 'instance' no es string, es el valor literal exacto.
@@ -13,8 +14,10 @@ export interface LoggedProfile {
 
 export interface LoggedEntidad {
     instance: 'entidad'; // O 'transportista'
-    user: Carrier | Provider;
+    user: Entidad;
     logged: boolean;
+    proveedor?: Provider | null;
+    transportista?: Carrier | null;
 }
 
 // 2. Unimos todo en un solo tipo

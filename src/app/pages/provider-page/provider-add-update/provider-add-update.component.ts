@@ -73,13 +73,13 @@ export class ProviderAddUpdateComponent implements OnInit {
       telefono2: data?.telefono2,
       alerta: data?.alerta === 1, // convertir a boolean
       idioma: data?.idioma,
-      codigo_sap: data?.codigo_sap,
     }
 
     const proveedor: Provider = {
       tipo_proveedor_id:  Number(data?.tipo_proveedor_id),
       entidad: entidad,
       email_notificaciones: data?.email_notificaciones,
+      codigo_sap: data?.codigo_sap,
     }
 
     if (this.checkData(proveedor)) {
@@ -100,15 +100,7 @@ export class ProviderAddUpdateComponent implements OnInit {
           this.isLoading = false;
         },
         error: (err) => {
-          if (err.error.message.includes('email')) {
-            this.toastr.error('El correo electrónico ya está en uso', 'Error');
-          } else if (err.error.message.includes('tel')) {
-            this.toastr.error('El número de teléfono ya está en uso', 'Error');
-          } else if (err.error.message.includes('n i f')) {
-            this.toastr.error('El NIF ya esta en uso', 'Error');
-          } else {
-            console.error('Error al añadir o modificar proveedor', err);
-          }
+          this.toastr.error(err.error.message || 'Ha ocurrido un error', 'Error');
           this.isLoading = false;
         }
       })

@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'http://localhost/api',
-  apiCookieUrl: 'http://localhost',
+  apiBaseUrl: 'http://192.168.105.116/api',
+  apiCookieUrl: 'http://192.168.105.116',
   refererHeader: 'localhost'
 };

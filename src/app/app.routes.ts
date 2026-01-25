@@ -43,6 +43,7 @@ export const routes: Routes = [
 
       { path: 'calendar', component: CalendarPageComponent},
 
+      
       { path: 'profile', component: ProfilePageComponent },
 
       { path: 'report', component: ReportComponent },

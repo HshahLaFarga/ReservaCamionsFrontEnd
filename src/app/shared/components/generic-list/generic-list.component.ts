@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import {MatSort, MatSortModule} from '@angular/material/sort';
+import {MatTableDataSource, MatTableModule} from '@angular/material/table';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
 
 interface Column {
   key: string;
@@ -14,6 +19,9 @@ interface Column {
   imports: [CommonModule, FormsModule]
 })
 export class GenericListComponent {
+  displayedColumns: string[] = [];
+  dataSource = new MatTableDataSource<any>();
+
   @Input() items: any[] = [];
   @Input() columns: Column[] = [];
 
@@ -23,6 +31,12 @@ export class GenericListComponent {
   currentPage = 1;
   pageSize = 10;
   searchTerm = '';
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+    console.log('GenericListComponent initialized with items:', this.items);
+    console.log('and columns:', this.columns);
+  }
 
   // Accés segur a propietats anidades (tipo_proveedor.nombre)
   getNestedProperty(item: any, key: string): any {

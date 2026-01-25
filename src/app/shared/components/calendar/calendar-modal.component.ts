@@ -46,8 +46,12 @@ export class CalendarModalComponent implements OnInit {
     plugins: [resourceTimeGridPlugin, interactionPlugin],
     initialView: 'resourceTimeGridDay',
     locale: 'es',
+    slotDuration: { minutes: 20 },
     slotMinTime: '07:00:00',
     slotMaxTime: '19:00:00',
+    snapDuration: `${this.data.duracion_entrega}:00`,
+    selectOverlap: false,
+    eventOverlap: false,
     resources: this.data.muelles.map((muelle: Muelle) => ({ id: muelle.muelle_id, title: muelle.nombre })),
     events: this.events,
     select: this.onTimeSlotSelected.bind(this),
@@ -69,6 +73,7 @@ export class CalendarModalComponent implements OnInit {
   ngOnInit(): void {
     this.isLoading = true;
     this.loadTimingsAndBookings();
+    console.log('Data: ', this.data);
   }
 
   private loadTimingsAndBookings() {
@@ -211,10 +216,26 @@ export class CalendarModalComponent implements OnInit {
 
 
   onTimeSlotSelected(info: any) {
-    console.log('Time slot selected:', info);
     const duracionEntregaMin = this.data.duracionEntrega || 30;
     const start = info.start;
     const end = new Date(start.getTime() + duracionEntregaMin * 60000);
+
+    // 🔍 Validar solapamientos
+    const eventos = this.calendarOptions.events as any[];
+
+    // const haySolape = eventos.some(e => {
+    //   if (e.id === 'planning-reservation') return false;
+
+    //   const eStart = new Date(e.start);
+    //   const eEnd = new Date(e.end);
+
+    //   return start < eEnd && end > eStart;
+    // });
+
+    // if (haySolape) {
+    //   // ❌ No cabe exactamente
+    //   return;
+    // }
 
     this.newReservation = {
       id: "planning-reservation",

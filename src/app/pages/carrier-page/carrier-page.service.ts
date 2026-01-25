@@ -22,6 +22,6 @@ export class CarrierPageService {
 
   // Mètode no funcional pendent parlar amb hassan per aclarir recursivitat
   deleteCarrier(Carrier: Carrier): Observable<any> {
-    return this.http.delete(`${environment.apiBaseUrl}/proveedores/${Carrier.transportista_id}`);
+    return this.http.delete(`${environment.apiBaseUrl}/transportistas/${Carrier.transportista_id}`);
   }
 }

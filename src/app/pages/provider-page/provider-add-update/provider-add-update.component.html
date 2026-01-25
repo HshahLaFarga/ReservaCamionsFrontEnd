@@ -15,7 +15,7 @@
   [selectFields]="{
     tipo_proveedor_id: { api: 'tipoproveedores', labelField: 'nombre', valueField: 'tipo_proveedor_id', label: 'Tipo de proveedor' },
   }"
-  [excludedFields]="['created_at','updated_at', 'entidad_id']"
+  [excludedFields]="['created_at','updated_at', 'entidad_id', 'idioma']"
   (submitForm)="onSubmit($event)">
 </app-generic-form>
 

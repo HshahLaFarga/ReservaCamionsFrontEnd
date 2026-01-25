@@ -25,13 +25,17 @@
 
       <!-- Altres inputs (text, select, etc.) -->
       <ng-template #otherInputs>
-        <label class="block mb-1 text-gray-700 font-medium" [for]="col.Field">{{ getLabel(col.Field) }}</label>
+        <label class="block mb-1 text-gray-700 font-medium" [for]="col.Field">
+          {{ getLabel(col.Field) }} 
+          <span *ngIf="col.Null === 'NO'" class="text-red-500">*</span>
+        </label>
 
         <ng-container *ngIf="selectFields[col.Field]; else normalInput">
           <select
             [formControlName]="col.Field"
             class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             [id]="col.Field"
+            [required]="col.Null === 'NO'"
           >
             <option value="">-- Selecciona {{ getLabel(col.Field) }} --</option>
             <option *ngFor="let opt of selectOptions[col.Field]" [value]="opt[selectFields[col.Field].valueField]">
@@ -46,6 +50,7 @@
             [formControlName]="col.Field"
             [id]="col.Field"
             class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            [required]="col.Null === 'NO'"
           />
         </ng-template>
       </ng-template>

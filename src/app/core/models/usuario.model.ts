@@ -2,14 +2,16 @@ import { Rol } from "./rol.model";
 
 export interface Profile {
   id?: string,
-  name: string,
+  nombre: string,
+  apellidos?: string,
   username: string,
-  apellidos: string,
+  contraseña: string,
   email: string,
   password?: string,
   NIF?: string,
-  tel1?:string,
+  tel1?:number,
   rol_id?: number,
+  idioma?: 'es' | 'en' | 'fr' | 'cat',
 
   // Relaciones
   roles?: Rol[],

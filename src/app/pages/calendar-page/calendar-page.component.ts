@@ -16,6 +16,11 @@ import { Muelle } from '../../core/models/muelle.model';
   imports: [CommonModule, FullCalendarModule, TranslateModule],
   templateUrl: './calendar-page.component.html',
   styles: `
+    div[fixed] {
+      transition: opacity 0.1s ease-in-out;
+      /* Evitamos que el tooltip parpadee si el ratón queda debajo */
+      pointer-events: none; 
+    }
   `,
 })
 export class CalendarPageComponent implements OnInit {
@@ -24,8 +29,13 @@ export class CalendarPageComponent implements OnInit {
   isLoading: boolean = false;
   muelles: Muelle[] = [];
   selectedMuelles: number[] = [];
-  tooltipData: any = null; // datos del tooltip
+  // tooltipData: any = null; // datos del tooltip
   tooltipStyle: any = {}; // posición CSS
+
+  // Define estas variables en tu clase
+  tooltipVisible = false;
+  tooltipPos = { x: 0, y: 0 };
+  tooltipData: any = {};
 
   constructor(private _calendarPageService: CalendarPageService) {}
 
@@ -49,8 +59,37 @@ export class CalendarPageComponent implements OnInit {
       hour12: false,
     },
     events: [],
-    eventMouseEnter: this.handleEventMouseEnter.bind(this),
-    eventMouseLeave: this.handleEventMouseLeave.bind(this),
+    // eventMouseEnter: this.handleEventMouseEnter.bind(this),
+    // eventMouseLeave: this.handleEventMouseLeave.bind(this),
+    eventMouseEnter: (info) => {
+      this.tooltipVisible = true;
+
+      // 1. Cargamos los datos
+      const props = info.event.extendedProps;
+      this.tooltipData = {
+        title: info.event.title,
+        proveedor: props['proveedor']?.entidad?.nombre || 'N/A',
+        matricula: props['matricula'] || 'S/N',
+      };
+
+      // 2. Escuchamos el movimiento del ratón solo mientras estamos sobre el evento
+      const moveHandler = (e: MouseEvent) => {
+        this.tooltipPos = { x: e.clientX + 15, y: e.clientY + 15 };
+      };
+
+      // Guardamos la referencia para poder quitarla luego
+      info.el.addEventListener('mousemove', moveHandler);
+
+      // Al salir, limpiamos el evento de escucha
+      info.el.onmouseleave = () => {
+        this.tooltipVisible = false;
+        info.el.removeEventListener('mousemove', moveHandler);
+      };
+    },
+
+    eventMouseLeave: () => {
+      this.tooltipVisible = false;
+    },
   };
 
   loadDefaultData() {
@@ -94,26 +133,17 @@ export class CalendarPageComponent implements OnInit {
       if (this.bookings === null) return;
       this.events = this.bookings
         .filter((b) => this.selectedMuelles.includes(b.muelle!.muelle_id))
-        .map(
-          ({
-            proveedor,
-            material1,
-            material2,
-            inicio,
-            fin,
-            muelle,
-          }) => {
-            const title = material2?.material_id
-              ? `${proveedor?.proveedor_id} - ${material1?.material_id} - ${material2?.material_id}`
-              : `${proveedor?.proveedor_id} - ${material1?.material_id}`;
-            return {
-              title,
-              start: inicio,
-              end: fin,
-              backgroundColor: muelle?.color,
-            };
-          }
-        );
+        .map(({ proveedor, material1, material2, inicio, fin, muelle }) => {
+          const title = material2?.material_id
+            ? `${proveedor?.proveedor_id} - ${material1?.material_id} - ${material2?.material_id}`
+            : `${proveedor?.proveedor_id} - ${material1?.material_id}`;
+          return {
+            title,
+            start: inicio,
+            end: fin,
+            backgroundColor: muelle?.color,
+          };
+        });
     }
     this.calendarOptions = {
       ...this.calendarOptions,
@@ -203,14 +233,16 @@ export class CalendarPageComponent implements OnInit {
     el.setAttribute('data-title', info.event.title);
     el.setAttribute(
       'data-date',
-      `${info.event.start?.toLocaleDateString()} - ${info.event.end?.toLocaleDateString() || ''}`
+      `${info.event.start?.toLocaleDateString()} - ${
+        info.event.end?.toLocaleDateString() || ''
+      }`
     );
   }
 
   handleEventMouseLeave(info: any) {
     const el = info.el as HTMLElement;
-  el.classList.remove('show-tooltip');
-  el.removeAttribute('data-title');
-  el.removeAttribute('data-date');
+    el.classList.remove('show-tooltip');
+    el.removeAttribute('data-title');
+    el.removeAttribute('data-date');
   }
 }

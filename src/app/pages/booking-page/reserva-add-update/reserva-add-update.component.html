@@ -66,7 +66,7 @@
         <label class="block text-sm font-medium text-gray-700">Camión disponible</label>
         <select formControlName="tipo_camion"
           class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
-          <option *ngFor="let camion of itemsDisponible?.camiones" [value]="camion.tipo_camion_id">
+          <option *ngFor="let camion of itemsDisponible.camiones" [value]="camion.tipo_camion_id">
             {{ camion.nombre }}
           </option>
         </select>
@@ -131,7 +131,7 @@
       <div>
         <label class="block text-sm font-medium text-gray-700">Proveedor</label>
       <mat-form-field class="w-full">
-        <input matInput formControlName="proveedor" [matAutocomplete]="autoProveedor">
+        <input matInput formControlName="proveedor" [matAutocomplete]="autoProveedor" [disabled]="isProveedor">
         <mat-autocomplete #autoProveedor="matAutocomplete" [displayWith]="displayFnProveedor">
           <mat-option *ngFor="let provider of filteredProviders$ | async" [value]="provider.proveedor_id">
             {{ provider?.entidad?.nombre }}
@@ -145,7 +145,7 @@
         <label class="block text-sm font-medium text-gray-700">Transportista</label>
 
       <mat-form-field class="w-full">
-        <input matInput formControlName="transportista" [matAutocomplete]="autoCarrier">
+        <input matInput formControlName="transportista" [matAutocomplete]="autoCarrier" [disabled]="isTransportista">
         <mat-autocomplete #autoCarrier="matAutocomplete" [displayWith]="displayFnCarrier">
           <mat-option *ngFor="let Carrier of filteredCarriers$ | async" [value]="Carrier.transportista_id">
             {{ Carrier.entidad.nombre }}

@@ -4,7 +4,7 @@
   [selectFields]="{
     rol: { api: 'roles', labelField: 'nombre', valueField: 'rol_id', label: 'Rol' }
   }"
-  [excludedFields]="['created_at','updated_at','email_verified_at','remember_token']"
+  [excludedFields]="['created_at','updated_at','email_verified_at','remember_token', 'contraseña_antigua']"
   [initialData]="initialUserData"
   (submitForm)="onSubmit($event)">
 </app-generic-form>
@@ -15,7 +15,7 @@
   [selectFields]="{
     rol: { api: 'roles', labelField: 'nombre', valueField: 'rol_id', label: 'Rol' }
   }"
-  [excludedFields]="['created_at','updated_at','email_verified_at','remember_token']"
+  [excludedFields]="['created_at','updated_at','email_verified_at','remember_token', 'contraseña_antigua']"
   (submitForm)="onSubmit($event)">
 </app-generic-form>
 

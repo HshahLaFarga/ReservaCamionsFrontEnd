@@ -1,10 +1,10 @@
 import { Component, Injectable, OnInit } from '@angular/core';
-import { GenericListComponent } from '../../shared/components/generic-list/generic-list.component';
 import { Provider } from '../../core/models/proveedor.model';
 import { ProviderPageService } from './provider-page.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
+import { GenericListComponent } from '../../shared/components/generic-list/generic-list.component';
 
 @Component({
   selector: 'app-provider-page',

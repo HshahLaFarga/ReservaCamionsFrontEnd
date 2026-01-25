@@ -67,7 +67,7 @@ export class SidebarService {
   // 🔹 Método principal
   getSidebarItems(user: LoggedUser | null): SidebarItem[] {
     if (!user) return []; // no hay usuario logueado
-
+    // console.log('user from SidebarService:', user);
     return user.instance === 'entidad' ? this.EntidadItems : this.items;
   }
 }

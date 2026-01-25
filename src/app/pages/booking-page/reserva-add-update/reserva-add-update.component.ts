@@ -31,6 +31,7 @@ import {
 } from '../../../shared/components/confirm-modal/confirm-modal.component';
 import { ToastrService } from 'ngx-toastr';
 import { Entidad } from '../../../core/models/entidad.model';
+import { LoginService } from '../../../features/auth/login/login.service';
 
 @Component({
   selector: 'app-booking-add',
@@ -47,6 +48,7 @@ import { Entidad } from '../../../core/models/entidad.model';
   ],
 })
 export class ReservaAddUpdateComponent implements OnInit {
+
   bookingform!: FormGroup;
   formatDate = formatDate;
 
@@ -85,19 +87,31 @@ export class ReservaAddUpdateComponent implements OnInit {
   disableCleanMaterials = false;
   isLoading = false;
 
+  currentUser = this._loginService.currentUser;
+  isTransportista = false;
+  isProveedor = false;
+
   constructor(
     private fb: FormBuilder,
     private _bookingService: BookingAddUpdateService,
     private dialog: MatDialog,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private _loginService: LoginService,
   ) {}
 
   ngOnInit(): void {
+    this.loadDefaultData();
+
+    this.currentUser = this._loginService.currentUser;
+    this.isTransportista = this.currentUser?.instance === 'entidad' && !!this.currentUser?.transportista;
+    this.isProveedor = this.currentUser?.instance === 'entidad' && !!this.currentUser?.proveedor;
+
     this.isLoading = true;
     this.bookingform = this.buildForm();
+
     this.setupValueChangeSubscriptions();
-    this.loadDefaultData();
+
   }
 
   buildForm(): FormGroup {
@@ -192,6 +206,26 @@ export class ReservaAddUpdateComponent implements OnInit {
           transportistas
         );
 
+        // 🔹 Bloquear campos según usuario
+        if (this.isProveedor && this.currentUser?.instance === 'entidad'  && this.currentUser?.proveedor) {
+          this.bookingform.get('proveedor')?.setValue(this.currentUser.proveedor.proveedor_id);
+          this.bookingform.get('proveedor')?.disable();
+        }
+
+        if (this.isTransportista && this.currentUser?.instance === 'entidad'  &&  this.currentUser?.transportista) {
+          this.bookingform.get('transportista')?.setValue(this.currentUser.transportista.transportista_id);
+          this.bookingform.get('transportista')?.disable();
+        }
+
+         // 🔹 Aquí asignamos "Pendiente" si es proveedor o transportista
+        if (this.isProveedor || this.isTransportista) {
+          const pendiente = this.status.find(s => s.nombre.toLowerCase() === 'pendiente');
+          if (pendiente) {
+            this.bookingform.get('estado')?.setValue(pendiente.estado_id);
+            this.bookingform.get('estado')?.disable();
+          }
+        }
+
         const state = history.state as {
           book?: Booking;
           method?: 'post' | 'update';
@@ -199,7 +233,6 @@ export class ReservaAddUpdateComponent implements OnInit {
         if (state.method === 'update') {
           this.method = 'update';
           this.booking = state.book!;
-          console.log('Booking loaded for update:', this.booking);
           this.changeToUpdateForm();
           this.disableCleanMaterials = true;
           this.existingFiles = this.booking.documentos || [];
@@ -274,7 +307,6 @@ export class ReservaAddUpdateComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((selectedDate: CalendarReservation) => {
       if (selectedDate) {
-        console.log('Selected date from calendar modal:', selectedDate);
         selectedDate;
         this.bookingform.patchValue({
           inicio: selectedDate.start,
@@ -350,6 +382,18 @@ export class ReservaAddUpdateComponent implements OnInit {
 
     const form = this.bookingform;
     const formData = new FormData();
+
+    const proveedorId = this.isProveedor && this.currentUser?.instance === 'entidad'
+    ? this.currentUser!.proveedor!.proveedor_id
+    : this.bookingform.get('proveedor')?.value;
+
+    const transportistaId = this.isTransportista && this.currentUser?.instance === 'entidad'
+    ? this.currentUser!.transportista!.transportista_id
+    : this.bookingform.get('transportista')?.value;
+
+    formData.append('proveedor_id', String(proveedorId));
+    formData.append('transportista_id', String(transportistaId));
+
 
     formData.append('tipo_camion_id', String(form.get('tipo_camion')?.value));
     formData.append('material1_id', String(form.get('material1')?.value));
@@ -462,7 +506,6 @@ export class ReservaAddUpdateComponent implements OnInit {
 
   // Autocompletament camps inicial
   changeToUpdateForm(): void {
-    console.log('Booking a editar:', this.booking);
     // Obtenim els valors dels pedido_LF, ja que arriben XXX|YYY
     // const [lf0, lf1] = (this.booking.pedido1?.split('|').map(p => p.trim()) ?? [this.booking.pedido1 || '', '']);
     const hasSecondMaterial =
@@ -478,7 +521,6 @@ export class ReservaAddUpdateComponent implements OnInit {
         muelles: material.muelles,
       };
     }
-    console.log('Items disponibles al cargar booking:', this.booking);
     this.bookingform.patchValue({
       matricula_camion: this.booking.matricula_camion,
       tipo_camion: this.booking?.tipo_camion?.tipo_camion_id,
@@ -551,7 +593,6 @@ export class ReservaAddUpdateComponent implements OnInit {
       telefono1: '',
       alerta: false,
       idioma: 'es',
-      codigo_sap: '',
     };
 
     const proveedor: Provider = {
@@ -559,6 +600,7 @@ export class ReservaAddUpdateComponent implements OnInit {
       tipo_proveedor_id: 0,
       entidad,
       email_notificaciones: '',
+      codigo_sap: '',
     };
 
     return {

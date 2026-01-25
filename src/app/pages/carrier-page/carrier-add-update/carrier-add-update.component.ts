@@ -68,7 +68,6 @@ export class CarrierAddUpdateComponent implements OnInit {
           telefono2: data?.telefono2,
           alerta: data?.alerta === 1, // convertir a boolean
           idioma: data?.idioma,
-          codigo_sap: data?.codigo_sap,
         }
 
     const carrier: Carrier = {

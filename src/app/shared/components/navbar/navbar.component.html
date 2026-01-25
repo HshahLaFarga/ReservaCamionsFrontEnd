@@ -1,4 +1,4 @@
-<nav class="flex justify-between items-center w-full text-white p-4">
+<nav class="flex justify-between items-center w-full text-[#C45438]/80 p-4 shadow-md">
     <div class="text-xl font-bold">
     <a href="#" class="flex items-center space-x-2">
       <img src="assets/img/LogoLaFarga.png" alt="Logo LaFargaNet" class="h-8 w-auto">
@@ -12,15 +12,15 @@
     <span class="material-icons">menu</span>
   </button>
 
-  <ul class="hidden lg:flex space-x-6 items-center">
+  <ul class="hidden lg:flex space-x-6 items-center [li>:hover>a]:hover:bg-[#C45438]/80 [li>a]:px-3 [li>a]:py-2 [li>a]:rounded transition-all duration-300 ease-in-out">
     <li class="relative" (click)="toggleDropdown()" tabindex="0">
       <a href="javascript:void(0)" class="hover:text-blue-400 flex items-center cursor-pointer">
         <span class="material-icons">language</span>
         <span class="ml-1 capitalize">{{ currentLang }}</span>
         <span class="material-icons ml-1 text-sm">arrow_drop_down</span>
       </a>
-      <ul *ngIf="dropdownOpen" class="absolute right-0 mt-2 w-32 bg-gray-800 rounded shadow-lg z-50">
-        <li *ngFor="let lang of langs" class="px-4 py-2 hover:bg-gray-700 cursor-pointer capitalize"
+      <ul *ngIf="dropdownOpen" class="absolute right-0 mt-2 w-32  rounded shadow-lg z-50">
+        <li *ngFor="let lang of langs" class="px-4 py-2 hover:bg-[#C45438]/80 hover:text-white duration-400 cursor-pointer capitalize"
             (click)="changeLanguage(lang)">
           {{ lang }}
         </li>
@@ -32,7 +32,7 @@
       </a>
     </li>
     <li>
-      <a href="#" (click)="logout()" class="hover:text-red-500">
+      <a href="javascript:void(0)" (click)="logout()" class="hover:text-red-500">
         <span class="material-icons">exit_to_app</span>
       </a>
     </li>
@@ -51,7 +51,7 @@
   class="fixed top-0 left-0 w-64 h-full bg-gray-900 text-white p-6 z-50 shadow-lg lg:hidden"
 >
   <button (click)="toggleMobileSidebar()" class="text-white absolute top-4 right-4">
-    <span class="material-icons">close</span>
+    <span class="material-icons">exit_to_app</span>
   </button>
   <ul class="mt-10 space-y-4">
     <ng-container *ngFor="let item of sidebarItems; let last = last">

@@ -9,12 +9,9 @@ import { Observable, BehaviorSubject } from 'rxjs';
 export class AuthService {
   private tokenKey = 'auth_token';
   private loggedIn = new BehaviorSubject<boolean>(false);
+  authState$: any;
 
   constructor(private http: HttpClient) {}
-
-  private hasToken(): boolean {
-    return !!localStorage.getItem(this.tokenKey);
-  }
 
   login(credentials: {email: string, password: string}): Observable<any> {
     return this.http.post<{token: string}>('/api/login', credentials,{

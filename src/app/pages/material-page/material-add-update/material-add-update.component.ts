@@ -199,7 +199,7 @@ export class MaterialAddUpdateComponent implements OnInit {
 
     response.subscribe({
       next: () => {
-        this.method === 'post' ? this.toastr.success('Reserva añadida correctamente', 'Éxito') : this.toastr.success('Reserva actualizada correctamente', 'Éxito');
+        this.method === 'post' ? this.toastr.success('Material añadida correctamente', 'Éxito') : this.toastr.success('Material actualizada correctamente', 'Éxito');
         this.router.navigate(['materials']);
         this.isLoading = false;
       },

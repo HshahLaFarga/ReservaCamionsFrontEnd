@@ -6,6 +6,7 @@ export interface Provider {
   tipo_proveedor_id: number, //Esto para hacer el PUT/POST
   entidad: Entidad;
   email_notificaciones: string,
+  codigo_sap: string,
 }
 
 export interface TipoProveedor {

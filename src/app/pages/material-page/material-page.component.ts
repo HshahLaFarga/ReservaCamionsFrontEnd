@@ -90,7 +90,7 @@ export class MaterialPageComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error deleting material',  err);
+        console.error('Error eliminando material',  err);
         this.isLoading = false;
       }
     });

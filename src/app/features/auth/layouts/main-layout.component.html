@@ -1,6 +1,6 @@
 <div class="h-screen w-screen flex flex-col">
   <!-- Navbar fixat a dalt -->
-  <header class="fixed top-0 left-0 right-0 h-16 bg-gray-800 text-white z-50">
+  <header class="fixed top-0 left-0 right-0 h-16 bg-white text-black z-50">
     <app-navbar></app-navbar>
   </header>
 
@@ -11,8 +11,10 @@
     </aside>
 
     <!-- Contingut principal: espaiat per sideabar i navbar -->
-    <main class="flex-1 ml-0 lg:ml-64 mt-0 overflow-y-auto bg-gray-100 p-4" style="height: calc(100vh - 4rem);">
-      <router-outlet></router-outlet>
+    <main class="flex-1 ml-0 lg:ml-64 mt-0 overflow-y-auto bg-[#f8f8f8] p-4" style="height: calc(100vh - 4rem);">
+      <div class="bg-white rounded-2xl shadow-xl p-6">
+        <router-outlet></router-outlet>
+      </div>
       <!-- Aquí el contingut -->
     </main>
   </div>

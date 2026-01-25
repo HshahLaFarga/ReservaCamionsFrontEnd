@@ -42,3 +42,14 @@
     </div>
   </div>
 </div>
+
+<div 
+  *ngIf="tooltipVisible" 
+  [ngStyle]="{'top.px': tooltipPos.y, 'left.px': tooltipPos.x}"
+  class="fixed z-[100] p-3 bg-white border border-gray-200 shadow-xl rounded-lg pointer-events-none min-w-[200px]"
+>
+  <h4 class="font-bold text-blue-700 border-b mb-1">{{ tooltipData.title }}</h4>
+  <p class="text-xs text-gray-600"><strong>Inici:</strong> {{ tooltipData.start }}</p>
+  <p class="text-xs text-gray-600" *ngIf="tooltipData.proveedor"><strong>Prov:</strong> {{ tooltipData.proveedor }}</p>
+  <p class="text-xs text-gray-600" *ngIf="tooltipData.matricula"><strong>Matrícula:</strong> {{ tooltipData.matricula }}</p>
+</div>

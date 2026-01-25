@@ -35,11 +35,11 @@ export class ProfilePageComponent implements OnInit {
     // En el cas que sigui vàlid efectuem la petició
     if (this.form.valid) {
       this.user = {
-        name: this.form.value.name,
+        nombre: this.form.value.name,
         username: 'prova',
         apellidos:'asa',
         email: this.form.value.email,
-        password: this.form.value.password,
+        contraseña: this.form.value.password,
         tel1: this.form.value.tel1
       }
 

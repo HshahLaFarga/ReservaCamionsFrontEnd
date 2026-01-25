@@ -13,6 +13,9 @@ import { mysqlToDateInput } from '../../utils/date.utils';
     CommonModule,
     ReactiveFormsModule
   ],
+  styles: `
+    /* Estils addicionals si cal */
+  `
 })
 export class GenericFormComponent implements OnInit {
   // Camps d'entrada
@@ -29,6 +32,7 @@ export class GenericFormComponent implements OnInit {
   @Input() fieldLabels: { [key: string]: string } = {};
   @Input() excludedFields: string[] = [];
   @Input() initialData: any | null = null;
+  // @Input() requiredFields: string[] = [];
 
 
   // Camp de sortida
@@ -72,9 +76,9 @@ export class GenericFormComponent implements OnInit {
           !col.Extra.includes('auto_increment') &&
           !this.excludedFields.includes(col.Field)
         );
-        // Construcció del formulari
+
         this.buildForm();
-        // Carregar els que siguin combobox que s'hagin indicat en el component
+        // Cargar los combobox
         this.loadSelectOptions();
       },
       error: (err) => {
@@ -114,17 +118,18 @@ export class GenericFormComponent implements OnInit {
     }
   }
 
-  // Entendre el tipus
+  // Obtner el tipo de input según el DataType de la BBDD
   getInputType(columnType: string): string {
     if (/^tinyint\(1\)/.test(columnType)) return 'checkbox';
     if (columnType.includes('int')) return 'number';
     if (columnType.includes('varchar') || columnType.includes('text')) return 'text';
     if (columnType.includes('date')) return 'date';
+    if (columnType.includes('time')) return 'time';
     return 'text';
   }
 
 
-  // Formateix de cada label per tal que sigui més llegible a la vista
+  // Formateo de cada label pera que sea más legible a la vista
   getLabel(field: string): string {
     return this.selectFields[field]?.label ?? this.fieldLabels[field] ?? field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   }

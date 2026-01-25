@@ -51,7 +51,7 @@ export class MuelleAddUpdateComponent implements OnInit {
       request.subscribe({
         next: () => {
           this.router.navigate(['muelles']);
-          this.method === 'update' ? this.toastr.success('Muelle añadido correctamente', 'Éxito') : this.toastr.success('Muelle modificado correctamente', 'Éxito');
+          this.method === 'update' ? this.toastr.success('Muelle modificado correctamente', 'Éxito') : this.toastr.success('Muelle modificado correctamente', 'Éxito');
           this.isLoading = false;
         },
         error: (err) => {
@@ -59,7 +59,9 @@ export class MuelleAddUpdateComponent implements OnInit {
             this.toastr.error('El número ya está en uso', 'Error');
           } else if (err.error.message.includes('nombre muelle')) {
             this.toastr.error('El nombre del muelle ya está en uso', 'Error');
-          } else {
+          } else if(err.error.message.includes('empresa lfycs')) {
+            this.toastr.error('El campo empresa no puede estar vacio', 'Error');
+          } else{
             console.error('Error al añadir o modificar muelle', err);
           }
           this.isLoading = false;
