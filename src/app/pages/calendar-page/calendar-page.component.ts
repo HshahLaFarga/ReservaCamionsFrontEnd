@@ -9,6 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CalendarPageService } from './calendar-page.service';
 import { Booking } from '../../core/models/reserva.model';
 import { Muelle } from '../../core/models/muelle.model';
+import { LoginService } from '../../features/auth/login/login.service';
 
 @Component({
   selector: 'app-calendar-page',
@@ -37,10 +38,17 @@ export class CalendarPageComponent implements OnInit {
   tooltipPos = { x: 0, y: 0 };
   tooltipData: any = {};
 
-  constructor(private _calendarPageService: CalendarPageService) {}
+  constructor(
+    private _calendarPageService: CalendarPageService,
+    private _loginService: LoginService
+  ) { }
 
   ngOnInit(): void {
     this.loadDefaultData();
+  }
+
+  get isExternalUser(): boolean {
+    return this._loginService.currentUser?.instance === 'entidad';
   }
 
   calendarOptions: CalendarOptions = {
@@ -62,6 +70,9 @@ export class CalendarPageComponent implements OnInit {
     // eventMouseEnter: this.handleEventMouseEnter.bind(this),
     // eventMouseLeave: this.handleEventMouseLeave.bind(this),
     eventMouseEnter: (info) => {
+      // Si es externo NO mostramos tooltip con detalles
+      if (this.isExternalUser) return;
+
       this.tooltipVisible = true;
 
       // 1. Cargamos los datos
@@ -113,8 +124,10 @@ export class CalendarPageComponent implements OnInit {
 
   getBookings() {
     this.isLoading = true;
+    console.log('Check isExternalUser:', this.isExternalUser);
     this._calendarPageService.getAllBookings().subscribe({
       next: (response) => {
+        console.log('Datos raw del backend (Reservas):', response);
         this.bookings = response;
         this.filterEventsBySelectedMuelles();
         this.isLoading = false;
@@ -133,15 +146,26 @@ export class CalendarPageComponent implements OnInit {
       if (this.bookings === null) return;
       this.events = this.bookings
         .filter((b) => this.selectedMuelles.includes(b.muelle!.muelle_id))
-        .map(({ proveedor, material1, material2, inicio, fin, muelle }) => {
-          const title = material2?.material_id
-            ? `${proveedor?.proveedor_id} - ${material1?.material_id} - ${material2?.material_id}`
-            : `${proveedor?.proveedor_id} - ${material1?.material_id}`;
+        .map((b) => {
+          const { proveedor, material1, material2, inicio, fin, muelle } = b;
+
+          let title = '';
+          if (this.isExternalUser) {
+            title = 'OCUPADO';
+          } else {
+            title = material2?.material_id
+              ? `${proveedor?.proveedor_id} - ${material1?.material_id} - ${material2?.material_id}`
+              : `${proveedor?.proveedor_id} - ${material1?.material_id}`;
+          }
+
+          // Pasamos toda la reserva en extendedProps por si se necesita
+          // (aunque si es externo, idealmente el backend no manda datos sensibles en 'b')
           return {
             title,
             start: inicio,
             end: fin,
             backgroundColor: muelle?.color,
+            extendedProps: b
           };
         });
     }
@@ -233,8 +257,7 @@ export class CalendarPageComponent implements OnInit {
     el.setAttribute('data-title', info.event.title);
     el.setAttribute(
       'data-date',
-      `${info.event.start?.toLocaleDateString()} - ${
-        info.event.end?.toLocaleDateString() || ''
+      `${info.event.start?.toLocaleDateString()} - ${info.event.end?.toLocaleDateString() || ''
       }`
     );
   }
