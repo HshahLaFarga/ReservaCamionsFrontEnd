@@ -20,20 +20,20 @@ export class SidebarService {
       label: 'Muelles',
       children: [
         { label: 'Muelles', route: '/muelles', icon: 'integration_instructions' },
-        { label: 'Horario Muelles', route: '/muelles/timing', icon : 'schedule' },
+        { label: 'Horario Muelles', route: '/muelles/timing', icon: 'schedule' },
       ],
       icon: 'warehouse'
     },
-    { label: 'Restricciones', route: '/restrictions', icon: 'block'  },
+    { label: 'Restricciones', route: '/restrictions', icon: 'block' },
 
     //------------------------------------------
     //ADMIN
     //------------------------------------------
 
-    { label: 'Empresas', route: '/companys', icon: 'apartment', admin: true  },
-    { label: 'Usuarios', route: '/users', icon: 'people', admin: true  },
-    { label: 'Rango KG', route: '/weight/range', icon: 'fitness_center', admin: true  },
-    { label: 'Estados', route: '/estados', icon: 'info', admin: true  },
+    { label: 'Empresas', route: '/companys', icon: 'apartment', admin: true },
+    { label: 'Usuarios', route: '/users', icon: 'people', admin: true },
+    { label: 'Rango KG', route: '/weight/range', icon: 'fitness_center', admin: true },
+    { label: 'Estados', route: '/estados', icon: 'info', admin: true },
     {
       label: 'Bloqueos',
       admin: true,
@@ -61,13 +61,50 @@ export class SidebarService {
       icon: 'event_available',
     },
     { label: 'CALENDARIO', route: '/calendar', icon: 'calendar_month', },
-  ]; 
+  ];
 
 
   // 🔹 Método principal
   getSidebarItems(user: LoggedUser | null): SidebarItem[] {
     if (!user) return []; // no hay usuario logueado
-    // console.log('user from SidebarService:', user);
-    return user.instance === 'entidad' ? this.EntidadItems : this.items;
+
+    // Si es entidad, retornamos sus ítems específicos
+    if (user.instance === 'entidad') {
+      return this.EntidadItems;
+    }
+
+    // Si es usuario
+    if (user.instance === 'usuario') {
+      const userProfile = user.user;
+
+      const roleId = userProfile.rol_id;
+      // Roles: 2 = View, 3 = Edit
+      const isViewRole = roleId === 2;
+      const isEditRole = roleId === 1;
+
+      if (isViewRole || isEditRole) {
+        // Base allowed items (for View role)
+        const allowedRoutes = ['/bookings', '/calendar', '/provider'];
+        const allowedLabels = ['Bloqueos'];
+
+        // Additional items for Edit role
+        if (isEditRole) {
+          allowedRoutes.push('/transportista', '/report');
+        }
+
+        return this.items.filter(item => {
+          if (item.route && allowedRoutes.includes(item.route)) {
+            return true;
+          }
+          if (allowedLabels.includes(item.label)) {
+            return true;
+          }
+          return false;
+        });
+      }
+    }
+
+    // Retorno por defecto para otros roles de usuario
+    return this.items;
   }
 }

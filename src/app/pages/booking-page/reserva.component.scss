@@ -1,0 +1,154 @@
+// Colores Corporativos
+$primary-color: #008c8c;
+$accent-color: #C45438;
+
+// Estilos solo para impresión
+@media print {
+  .print-container {
+    display: block !important;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #333;
+    line-height: 1.5;
+    background: #fff;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+  }
+
+  // Bandas Decorativas
+  .header-band {
+    background-color: $primary-color;
+    height: 20px;
+    width: 100%;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .footer-band {
+    background-color: $accent-color;
+    height: 10px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  // Contenedor Principal
+  .container {
+    padding: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  // Encabezado
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 20px;
+  }
+
+  .logo {
+    max-height: 60px;
+  }
+
+  .title {
+    font-size: 24px;
+    color: $primary-color;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  // Grid Layout
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+  }
+
+  // Secciones
+  .section {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid $primary-color;
+    break-inside: avoid;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .section-title {
+    color: $accent-color;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+  }
+
+  // Items de Información
+  .item {
+    margin-bottom: 15px;
+  }
+
+  .label {
+    display: block;
+    font-size: 11px;
+    color: #666;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .value {
+    font-size: 15px;
+    font-weight: 500;
+    color: #000;
+  }
+
+  // Utilidades
+  .description-box {
+    grid-column: span 2;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #eee;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 20px;
+    li {
+      margin-bottom: 4px;
+    }
+  }
+
+  // Pie de página
+  .footer {
+    margin-top: 50px;
+    text-align: center;
+    font-size: 12px;
+    color: #666;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+  }
+}
+
+// Ocultar en pantalla normal
+.print-container {
+  display: none;
+}

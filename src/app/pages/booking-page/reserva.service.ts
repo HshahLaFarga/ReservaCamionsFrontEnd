@@ -13,8 +13,26 @@ export class ReservaService {
     private http: HttpClient
   ) { }
 
-  getAllBookings(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/reserva`);
+  getAllBookings(
+    page: number = 1,
+    perPage: number = 10,
+    search: string = '',
+    statusFilter: string = 'pendientes',
+    sortField: string = 'inicio',
+    sortDir: string = 'desc'
+  ): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('per_page', perPage.toString())
+      .set('status_filter', statusFilter)
+      .set('sort', sortField)
+      .set('dir', sortDir);
+
+    if (search) {
+      params = params.set('search', search);
+    }
+
+    return this.http.get(`${environment.apiBaseUrl}/reserva`, { params });
   }
 
   deleteBooking(booking: Booking): Observable<any> {

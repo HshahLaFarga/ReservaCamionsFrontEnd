@@ -31,6 +31,7 @@ export class GenericFormComponent implements OnInit {
   } = {};
   @Input() fieldLabels: { [key: string]: string } = {};
   @Input() excludedFields: string[] = [];
+  @Input() optionalFields: string[] = []; // Campos que deben ser opcionales
   @Input() initialData: any | null = null;
   // @Input() requiredFields: string[] = [];
 

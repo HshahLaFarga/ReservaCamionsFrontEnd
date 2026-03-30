@@ -40,7 +40,7 @@ export class CompanyPageComponent implements OnInit {
     this._companyPageService.getCompanys().subscribe({
       next: (companys: Company[]) => {
         this.companys = companys.map((company) => {
-          if(company.muelles && company.muelles.length > 0) {
+          if (company.muelles && company.muelles.length > 0) {
             const nombresMuelles = company.muelles?.map((muelle: Muelle) => muelle.nombre) || [];
             company.conjuntoMuelles = nombresMuelles.join(', ');
           }
@@ -72,11 +72,12 @@ export class CompanyPageComponent implements OnInit {
     this._companyPageService.deleteCompany(company).subscribe({
       next: () => {
         this.loadDefaultData();
-        this.toastr.success('Empresa desactivada correctamente', 'Éxito');
+        this.toastr.success('Empresa eliminada correctamente', 'Éxito');
         this.isLoading = false;
       },
       error: (err) => {
         console.error('Error on delete company', err);
+        this.toastr.error(err.error.message, 'Error al eliminar la empresa');
         this.isLoading = false;
       }
     });

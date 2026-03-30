@@ -98,7 +98,7 @@ export class ReservaAddUpdateComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private _loginService: LoginService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadDefaultData();
@@ -130,7 +130,7 @@ export class ReservaAddUpdateComponent implements OnInit {
       fin: ['', Validators.required],
       estado: ['', Validators.required],
       proveedor: [null, Validators.required],
-      transportista: [null, Validators.required],
+      transportista: [null],
       pedido1: ['', Validators.required],
       pedido2: [''],
       usarMismoCodigo: [false],
@@ -207,17 +207,17 @@ export class ReservaAddUpdateComponent implements OnInit {
         );
 
         // 🔹 Bloquear campos según usuario
-        if (this.isProveedor && this.currentUser?.instance === 'entidad'  && this.currentUser?.proveedor) {
+        if (this.isProveedor && this.currentUser?.instance === 'entidad' && this.currentUser?.proveedor) {
           this.bookingform.get('proveedor')?.setValue(this.currentUser.proveedor.proveedor_id);
           this.bookingform.get('proveedor')?.disable();
         }
 
-        if (this.isTransportista && this.currentUser?.instance === 'entidad'  &&  this.currentUser?.transportista) {
+        if (this.isTransportista && this.currentUser?.instance === 'entidad' && this.currentUser?.transportista) {
           this.bookingform.get('transportista')?.setValue(this.currentUser.transportista.transportista_id);
           this.bookingform.get('transportista')?.disable();
         }
 
-         // 🔹 Aquí asignamos "Pendiente" si es proveedor o transportista
+        // 🔹 Aquí asignamos "Pendiente" si es proveedor o transportista
         if (this.isProveedor || this.isTransportista) {
           const pendiente = this.status.find(s => s.nombre.toLowerCase() === 'pendiente');
           if (pendiente) {
@@ -301,6 +301,7 @@ export class ReservaAddUpdateComponent implements OnInit {
       data: {
         muelles: this.itemsDisponible.muelles,
         duracionEntrega: camion?.tiempo_descarga_1,
+        material_id: +this.bookingform.get('material1')?.value, // Pass material_id
       },
       panelClass: 'custom-calendar-dialog',
     });
@@ -384,22 +385,29 @@ export class ReservaAddUpdateComponent implements OnInit {
     const formData = new FormData();
 
     const proveedorId = this.isProveedor && this.currentUser?.instance === 'entidad'
-    ? this.currentUser!.proveedor!.proveedor_id
-    : this.bookingform.get('proveedor')?.value;
+      ? this.currentUser!.proveedor!.proveedor_id
+      : this.bookingform.get('proveedor')?.value;
 
     const transportistaId = this.isTransportista && this.currentUser?.instance === 'entidad'
-    ? this.currentUser!.transportista!.transportista_id
-    : this.bookingform.get('transportista')?.value;
+      ? this.currentUser!.transportista!.transportista_id
+      : this.bookingform.get('transportista')?.value;
 
     formData.append('proveedor_id', String(proveedorId));
-    formData.append('transportista_id', String(transportistaId));
+
+    if (transportistaId) {
+      formData.append('transportista_id', String(transportistaId));
+    }
 
 
     formData.append('tipo_camion_id', String(form.get('tipo_camion')?.value));
     formData.append('material1_id', String(form.get('material1')?.value));
     formData.append('material2_id', String(form.get('material2')?.value) || '');
     formData.append('proveedor_id', String(form.get('proveedor')?.value));
-    formData.append('transportista_id', String(form.get('transportista')?.value));
+
+    if (form.get('transportista')?.value) {
+      formData.append('transportista_id', String(form.get('transportista')?.value));
+    }
+
     formData.append('muelle_id', String(form.get('muelle')?.value));
     formData.append('estado_id', String(form.get('estado')?.value));
     formData.append('empresa_lfycs_id', String('1')); // Fixa si cal canviar
@@ -447,28 +455,21 @@ export class ReservaAddUpdateComponent implements OnInit {
         this.isLoading = false;
         this.method === 'update'
           ? this.toastr.success(
-              'Reserva actualizada correctamente',
-              'Reserva Añadida'
-            )
+            'Reserva actualizada correctamente',
+            'Reserva Añadida'
+          )
           : this.toastr.success(
-              'Reserva creada correctamente',
-              'Reserva Modificada'
-            );
+            'Reserva creada correctamente',
+            'Reserva Modificada'
+          );
         this.router.navigate(['/bookings']);
       },
       error: (err) => {
         this.isLoading = false;
-        if (err.error.id === 1) {
-          this.toastr.error(
-            err.error.message,
-            `Error Reserva material ${err.error.material}`
-          );
-        }
-        if (err.error.id) {
-          this.toastr.error(err.error.message, `Error`);
-        } else {
-          console.error('Error saving booking:', err);
-        }
+        this.toastr.error(
+          err.error.message,
+          'Error'
+        );
       },
     });
   }
@@ -714,7 +715,7 @@ export class ReservaAddUpdateComponent implements OnInit {
             this.router.navigate(['bookings']);
           },
           error: (error) => {
-            console.error('Error deleteing file:', error);
+            console.error('Error eliminando archivo:', error);
           },
         });
       }

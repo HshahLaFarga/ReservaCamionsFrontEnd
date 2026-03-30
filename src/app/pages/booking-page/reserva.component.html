@@ -11,11 +11,28 @@
     </button>
   </div>
 
-  <table mat-table [dataSource]="pagedData" class="mat-elevation-z8 w-full">
+  <div class="flex gap-4 mb-4">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Filtrar por cualquier campo...</mat-label>
+      <input matInput [formControl]="searchControl" placeholder="Buscar reservas, matrículas, materiales, proveedores...">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-1/3 min-w-[200px]">
+      <mat-label>Mostrando</mat-label>
+      <mat-select [formControl]="statusFilterControl">
+        <mat-option value="pendientes">Reservas pendientes</mat-option>
+        <mat-option value="antiguas">Reservas antiguas</mat-option>
+        <mat-option value="todas">Todas las reservas</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <table mat-table [dataSource]="bookings" matSort class="mat-elevation-z8 w-full">
 
     <!-- Hora inicio -->
     <ng-container matColumnDef="hora_inicio">
-      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.HORA_INICIO' | translate }} </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="inicio"> {{ 'BOOKING_PAGE.HORA_INICIO' | translate }} </th>
       <td mat-cell *matCellDef="let booking"> {{ booking.inicio }} </td>
     </ng-container>
 
@@ -27,7 +44,7 @@
 
     <!-- Matrícula camión 1 -->
     <ng-container matColumnDef="matricula">
-      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.MATRICULA_CAMION' | translate }} </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="matricula_camion"> {{ 'BOOKING_PAGE.MATRICULA_CAMION' | translate }} </th>
       <td mat-cell *matCellDef="let booking"> {{ booking.matricula_camion }} </td>
     </ng-container>
 
@@ -37,21 +54,22 @@
         {{ 'BOOKING_PAGE.ID_MATERIALS' | translate }}
       </th>
       <td mat-cell *matCellDef="let booking">
-        {{ booking.material1 ? booking.material1.nombre: booking.material1?.nombre }} {{ booking.material2 ? ', ' + booking.material2.nombre : '' }}
+        {{ booking.material1 ? booking.material1.nombre: booking.material1?.nombre }} {{ booking.material2 ? ', ' +
+        booking.material2.nombre : '' }}
       </td>
     </ng-container>
 
     <!-- Muelle -->
     <ng-container matColumnDef="muelle">
       <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.MUELLE' | translate }} </th>
-      <td mat-cell *matCellDef="let booking"> 
-        {{ booking?.muelle?.nombre }} 
+      <td mat-cell *matCellDef="let booking">
+        {{ booking?.muelle?.nombre }}
       </td>
     </ng-container>
 
     <!-- Cantidad -->
     <ng-container matColumnDef="cantidad">
-      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.CANTIDAD' | translate }} </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="cantidad1"> {{ 'BOOKING_PAGE.CANTIDAD' | translate }} </th>
       <td mat-cell *matCellDef="let booking"> {{ booking.cantidad1 }} </td>
     </ng-container>
 
@@ -63,7 +81,7 @@
 
     <!-- Pedido -->
     <ng-container matColumnDef="pedido">
-      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.PEDIDO' | translate }} </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="pedido1"> {{ 'BOOKING_PAGE.PEDIDO' | translate }} </th>
       <td mat-cell *matCellDef="let booking"> {{ booking.pedido1 }} </td>
     </ng-container>
 
@@ -104,8 +122,149 @@
     <!-- Header and Row Definitions -->
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    
+    <!-- Fila cuando no hay datos -->
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell text-center py-4" [attr.colspan]="displayedColumns.length">
+        No se han encontrado resultados.
+      </td>
+    </tr>
   </table>
 
-  <mat-paginator [length]="pagedData.length" [pageSize]="10" [pageSizeOptions]="[20, 30]" (page)="onPageChange($event)">
+  <mat-paginator 
+    [length]="totalRecords" 
+    [pageSize]="pageSize" 
+    [pageIndex]="pageIndex"
+    [pageSizeOptions]="[10, 20, 30, 50]" 
+    (page)="onPageChange($event)">
   </mat-paginator>
+</div>
+
+<!-- Secció d'Impressió -->
+<div class="print-container" *ngIf="printingBooking && printData">
+  <div class="header-band"></div>
+
+  <div class="container">
+    <div class="header">
+      <img src="assets/img/LogoLaFarga.png" alt="La Farga" class="logo" onerror="this.style.display='none'">
+      <div class="title">Detalle de Reserva</div>
+    </div>
+
+    <div class="grid">
+      <!-- Información Principal -->
+      <div class="section">
+        <div class="section-title">Información General</div>
+
+        <div class="item">
+          <span class="label">Empresa LFYCS</span>
+          <div class="value">{{ printData.empresa?.nombre || '-' }}</div>
+        </div>
+
+        <div class="item">
+          <span class="label">ID Reserva</span>
+          <div class="value">#{{ printingBooking.reserva_id || '-' }}</div>
+        </div>
+
+        <div class="item">
+          <span class="label">Pedido</span>
+          <div class="value">{{ printingBooking.pedido1 || '-' }}</div>
+        </div>
+      </div>
+
+      <!-- Horarios y Ubicación -->
+      <div class="section">
+        <div class="section-title">Logística</div>
+
+        <div class="item">
+          <span class="label">Muelle Asignado</span>
+          <div class="value badge">{{ printingBooking.muelle?.nombre || 'Sin asignar' }}</div>
+        </div>
+
+        <div class="item">
+          <span class="label">Fecha y Hora Inicio</span>
+          <div class="value">{{ printingBooking.inicio | date:'dd/MM/yyyy HH:mm' }}</div>
+        </div>
+
+        <div class="item">
+          <span class="label">Fecha y Hora Fin</span>
+          <div class="value">{{ printingBooking.fin | date:'dd/MM/yyyy HH:mm' }}</div>
+        </div>
+
+        <div class="item">
+          <span class="label">Duración Estimada</span>
+          <div class="value">{{ printingBooking.duracion || '-' }} min</div>
+        </div>
+      </div>
+
+      <!-- Transporte -->
+      <div class="section">
+        <div class="section-title">Transporte</div>
+
+        <div class="item">
+          <span class="label">Proveedor</span>
+          <div class="value">{{ printData.provider?.nombre || '-' }}</div>
+        </div>
+
+        <div class="item">
+          <span class="label">Transportista (Carrier)</span>
+          <div class="value">{{ printData.Carrier?.nombre || '-' }}</div>
+        </div>
+
+        <div class="item">
+          <span class="label">Tipo Camión</span>
+          <div class="value">{{ printData.camion?.nombre || '-' }}</div>
+        </div>
+
+        <div class="item">
+          <span class="label">Matrícula</span>
+          <div class="value" style="font-family: monospace; font-size: 16px;">{{ printingBooking.matricula_camion || '-'
+            }}</div>
+        </div>
+      </div>
+
+      <!-- Materiales -->
+      <div class="section">
+        <div class="section-title">Carga</div>
+
+        <div class="item">
+          <span class="label">Materiales</span>
+          <div class="value">
+            <ul *ngIf="printData.materials?.length; else noMaterials">
+              <li *ngFor="let m of printData.materials">{{ m.nombre }}</li>
+            </ul>
+            <ng-template #noMaterials>Sin materiales</ng-template>
+          </div>
+        </div>
+
+        <div class="item">
+          <span class="label">Cantidades</span>
+          <div class="value">
+            <div *ngIf="printingBooking.cantidad1">{{ printingBooking.cantidad1 }} (Mat 1)</div>
+            <div *ngIf="printingBooking.cantidad2">{{ printingBooking.cantidad2 }} (Mat 2)</div>
+            <div *ngIf="!printingBooking.cantidad1 && !printingBooking.cantidad2">-</div>
+          </div>
+        </div>
+
+        <div class="item">
+          <span class="label">Aduana</span>
+          <div class="value">{{ printingBooking.aduana || 'No' }}</div>
+        </div>
+      </div>
+
+      <!-- Notas -->
+      <div class="section description-box" *ngIf="printingBooking.notas">
+        <div class="section-title">Notas Adicionales</div>
+        <div class="value" style="white-space: pre-wrap;">{{ printingBooking.notas }}</div>
+      </div>
+
+    </div>
+
+    <div class="footer">
+      <p>Este documento es un comprobante de reserva generado el {{ printData.today | date:'dd/MM/yyyy HH:mm:ss' }}.</p>
+      <p>Teléfono de incidencias cita previa: <strong>93 859 42 86</strong> - <strong>93 859 41 00</strong> ext:
+        <strong>329</strong></p>
+    </div>
+  </div>
+
+  <div class="footer-band"></div>
 </div>

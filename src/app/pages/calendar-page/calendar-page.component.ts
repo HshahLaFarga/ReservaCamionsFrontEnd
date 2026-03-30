@@ -10,6 +10,7 @@ import { CalendarPageService } from './calendar-page.service';
 import { Booking } from '../../core/models/reserva.model';
 import { Muelle } from '../../core/models/muelle.model';
 import { LoginService } from '../../features/auth/login/login.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-calendar-page',
@@ -20,7 +21,48 @@ import { LoginService } from '../../features/auth/login/login.service';
     div[fixed] {
       transition: opacity 0.1s ease-in-out;
       /* Evitamos que el tooltip parpadee si el ratón queda debajo */
-      pointer-events: none; 
+      pointer-events: none;
+    }
+
+    ::ng-deep .fc-event-main,
+    ::ng-deep .fc-event-title,
+    ::ng-deep .fc-event-time {
+      font-size: 11px !important;
+      color: black !important;
+    }
+
+    /* Indicador visual para las reservas partidas (2 materiales) */
+    ::ng-deep .split-event {
+      border-radius: 4px;
+    }
+    ::ng-deep .split-event-1 {
+      border-bottom: 2px dashed rgba(0, 0, 0, 0.5) !important;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    ::ng-deep .split-event-2 {
+      border-top: 0 !important;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+      opacity: 0.85; /* Un poco más transparente para diferenciarlo */
+    }
+    
+    /* Etiqueta de compra */
+    ::ng-deep .purchase-tag-icon {
+      position: absolute !important;
+      top: 2px !important;
+      right: 2px !important;
+      font-family: 'Material Icons' !important;
+      font-size: 14px !important;
+      line-height: 1 !important;
+      width: 14px !important;
+      height: 14px !important;
+      color: rgba(0,0,0,0.6) !important;
+      z-index: 10 !important;
+      display: inline-block !important;
+      background: rgba(255,255,255,0.3);
+      border-radius: 50%;
+      padding: 1px;
     }
   `,
 })
@@ -40,7 +82,8 @@ export class CalendarPageComponent implements OnInit {
 
   constructor(
     private _calendarPageService: CalendarPageService,
-    private _loginService: LoginService
+    private _loginService: LoginService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -61,14 +104,26 @@ export class CalendarPageComponent implements OnInit {
     slotMaxTime: '19:30:00',
     scrollTime: '07:00:00',
     businessHours: [],
+    displayEventTime: false, // Ocultar la hora en los eventos
     slotLabelFormat: {
       hour: '2-digit',
       minute: '2-digit',
       hour12: false,
     },
+    slotDuration: '00:10:00', // Cada slot de 30 minutos (hace que se vea más amplio)
     events: [],
     // eventMouseEnter: this.handleEventMouseEnter.bind(this),
     // eventMouseLeave: this.handleEventMouseLeave.bind(this),
+    eventClick: (info) => {
+      if (this.isExternalUser) return;
+      const bookData = info.event.extendedProps;
+      this.router.navigate(['/bookings/edit'], {
+        state: {
+          book: { ...bookData },
+          method: 'update',
+        },
+      });
+    },
     eventMouseEnter: (info) => {
       // Si es externo NO mostramos tooltip con detalles
       if (this.isExternalUser) return;
@@ -78,9 +133,10 @@ export class CalendarPageComponent implements OnInit {
       // 1. Cargamos los datos
       const props = info.event.extendedProps;
       this.tooltipData = {
-        title: info.event.title,
+        muelle: props['muelle']?.nombre || 'N/A',
+        pedido: props['displayPedido'] || props['pedido1'] || 'N/A',
         proveedor: props['proveedor']?.entidad?.nombre || 'N/A',
-        matricula: props['matricula'] || 'S/N',
+        matricula: props['matricula_camion'] || 'S/N',
       };
 
       // 2. Escuchamos el movimiento del ratón solo mientras estamos sobre el evento
@@ -101,6 +157,29 @@ export class CalendarPageComponent implements OnInit {
     eventMouseLeave: () => {
       this.tooltipVisible = false;
     },
+    eventContent: (arg) => {
+      // Intentamos recuperar la entidad de "Compra"
+      let isCompra = false;
+      const props = arg.event.extendedProps;
+
+      if (props['proveedor']?.tipo_proveedor?.nombre) {
+        isCompra = props['proveedor'].tipo_proveedor.nombre.toLowerCase() === 'compra';
+      } else if (props['proveedor']?.tipo_proveedor_id === 1) {
+        isCompra = true;
+      }
+
+      // Reconstruimos la estructura base de FullCalendar
+      let html = `<div class="fc-event-main-frame">`;
+      html += `<div class="fc-event-title-container"><div class="fc-event-title fc-sticky">${arg.event.title}</div></div>`;
+
+      if (isCompra && !this.isExternalUser) {
+        html += `<i class="material-icons purchase-tag-icon">sell</i>`;
+      }
+      html += `</div>`;
+
+      return { html };
+    },
+    height: '100%',
   };
 
   loadDefaultData() {
@@ -144,30 +223,79 @@ export class CalendarPageComponent implements OnInit {
       this.events = [];
     } else {
       if (this.bookings === null) return;
-      this.events = this.bookings
+
+      const newEvents: EventInput[] = [];
+
+      this.bookings
         .filter((b) => this.selectedMuelles.includes(b.muelle!.muelle_id))
-        .map((b) => {
+        .forEach((b) => {
           const { proveedor, material1, material2, inicio, fin, muelle } = b;
 
-          let title = '';
           if (this.isExternalUser) {
-            title = 'OCUPADO';
-          } else {
-            title = material2?.material_id
-              ? `${proveedor?.proveedor_id} - ${material1?.material_id} - ${material2?.material_id}`
-              : `${proveedor?.proveedor_id} - ${material1?.material_id}`;
+            newEvents.push({
+              title: 'OCUPADO',
+              start: inicio,
+              end: fin,
+              backgroundColor: muelle?.color,
+              extendedProps: { ...b, isSplit: false },
+            });
+            return;
           }
 
-          // Pasamos toda la reserva en extendedProps por si se necesita
-          // (aunque si es externo, idealmente el backend no manda datos sensibles en 'b')
-          return {
-            title,
-            start: inicio,
-            end: fin,
-            backgroundColor: muelle?.color,
-            extendedProps: b
-          };
+          const proveedorNombre = proveedor?.entidad?.nombre || 'Sin proveedor';
+          const titleMat1 = `${proveedorNombre} - ${material1?.nombre || 'Sin material'}`;
+
+          if (!material2) {
+            // Reserva normal de 1 material
+            newEvents.push({
+              title: titleMat1,
+              start: inicio,
+              end: fin,
+              backgroundColor: muelle?.color,
+              extendedProps: {
+                ...b,
+                displayMaterial: material1?.nombre,
+                displayPedido: b.pedido1,
+                isSplit: false,
+              },
+            });
+          } else {
+            // Reserva de 2 materiales -> Creamos 2 eventos separados visualmente
+            const titleMat2 = `${proveedorNombre} - ${material2.nombre}`;
+
+            // Evento 1
+            newEvents.push({
+              title: titleMat1,
+              start: inicio,
+              end: fin,
+              backgroundColor: muelle?.color,
+              classNames: ['split-event', 'split-event-1'],
+              extendedProps: {
+                ...b,
+                displayMaterial: material1?.nombre,
+                displayPedido: b.pedido1,
+                isSplit: true,
+              },
+            });
+
+            // Evento 2 (con un estilo ligeramente rayado o diferente en CSS)
+            newEvents.push({
+              title: titleMat2,
+              start: inicio,
+              end: fin,
+              backgroundColor: muelle?.color,
+              classNames: ['split-event', 'split-event-2'],
+              extendedProps: {
+                ...b,
+                displayMaterial: material2.nombre,
+                displayPedido: b.pedido2 || b.pedido1,
+                isSplit: true,
+              },
+            });
+          }
         });
+
+      this.events = newEvents;
     }
     this.calendarOptions = {
       ...this.calendarOptions,
@@ -178,7 +306,7 @@ export class CalendarPageComponent implements OnInit {
   toggleMuelleSelection(muelleId: number) {
     if (this.selectedMuelles.includes(muelleId)) {
       this.selectedMuelles = this.selectedMuelles.filter(
-        (id) => id !== muelleId
+        (id) => id !== muelleId,
       );
     } else {
       this.selectedMuelles.push(muelleId);
@@ -207,12 +335,12 @@ export class CalendarPageComponent implements OnInit {
 
     const start = horariosDia.reduce(
       (min, h) => (h.inicio < min ? h.inicio : min),
-      horariosDia[0].inicio
+      horariosDia[0].inicio,
     );
 
     const end = horariosDia.reduce(
       (max, h) => (h.fin > max ? h.fin : max),
-      horariosDia[0].fin
+      horariosDia[0].fin,
     );
 
     return { start, end };
@@ -231,11 +359,11 @@ export class CalendarPageComponent implements OnInit {
     const allRanges = businessHours.filter((bh) => bh.startTime && bh.endTime);
     const slotMinTime = allRanges.reduce(
       (min, bh) => (bh.startTime < min ? bh.startTime : min),
-      allRanges[0]?.startTime || '07:00:00'
+      allRanges[0]?.startTime || '07:00:00',
     );
     const slotMaxTime = allRanges.reduce(
       (max, bh) => (bh.endTime > max ? bh.endTime : max),
-      allRanges[0]?.endTime || '19:30:00'
+      allRanges[0]?.endTime || '19:30:00',
     );
 
     this.calendarOptions = {
@@ -258,7 +386,7 @@ export class CalendarPageComponent implements OnInit {
     el.setAttribute(
       'data-date',
       `${info.event.start?.toLocaleDateString()} - ${info.event.end?.toLocaleDateString() || ''
-      }`
+      }`,
     );
   }
 

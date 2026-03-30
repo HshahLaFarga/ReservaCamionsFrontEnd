@@ -1,10 +1,14 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { ReservaService } from './reserva.service';
 import { Router } from '@angular/router';
 import { Booking } from '../../core/models/reserva.model';
@@ -12,6 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmData, ConfirmModalComponent } from '../../shared/components/confirm-modal/confirm-modal.component';
 import { formatDate } from '../../shared/utils/date.utils';
 import { forkJoin, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Material } from '../../core/models/material.model';
 import { ToastrService } from 'ngx-toastr';
 
@@ -19,12 +24,27 @@ import { ToastrService } from 'ngx-toastr';
   selector: 'app-reservation-page',
   standalone: true,
   templateUrl: './reserva.component.html',
-  imports: [CommonModule, TranslateModule, ReactiveFormsModule, MatTableModule, MatPaginatorModule, MatIconModule]
+  styleUrl: './reserva.component.scss',
+  imports: [CommonModule, TranslateModule, ReactiveFormsModule, MatTableModule, MatPaginatorModule, MatIconModule, MatSelectModule, MatInputModule, MatFormFieldModule, MatSortModule],
+  providers: [DatePipe]
 })
-export class ReservaComponent implements OnInit {
+export class ReservaComponent implements OnInit, AfterViewInit {
 
   bookings: Booking[] = [];
-  bookingsFormated: any[] = [];
+
+  totalRecords: number = 0;
+  pageSize: number = 10;
+  pageIndex: number = 0;
+
+  searchControl = new FormControl('');
+  statusFilterControl = new FormControl('pendientes');
+
+  sortField: string = 'inicio';
+  sortDir: string = 'desc';
+
+  // Data for printing
+  printingBooking: any = null;
+  printData: any = null;
 
   constructor(
     private _bookingService: ReservaService,
@@ -46,32 +66,55 @@ export class ReservaComponent implements OnInit {
     'acciones'
   ];
 
-  pagedData: any[] = [];
-
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   ngOnInit() {
     this.getAllBookings();
+
+    this.searchControl.valueChanges.pipe(
+      debounceTime(400),
+      distinctUntilChanged()
+    ).subscribe(() => {
+      this.pageIndex = 0;
+      if (this.paginator) this.paginator.pageIndex = 0;
+      this.getAllBookings();
+    });
+
+    this.statusFilterControl.valueChanges.subscribe(() => {
+      this.pageIndex = 0;
+      if (this.paginator) this.paginator.pageIndex = 0;
+      this.getAllBookings();
+    });
+  }
+
+  ngAfterViewInit() {
+    this.sort.sortChange.subscribe((sortState: Sort) => {
+      this.sortField = sortState.active;
+      this.sortDir = sortState.direction || 'desc';
+      this.pageIndex = 0;
+      if (this.paginator) this.paginator.pageIndex = 0;
+      this.getAllBookings();
+    });
   }
 
   // Paginació
   onPageChange(event: PageEvent) {
-    this.updatePagedData(event.pageIndex, event.pageSize);
-  }
-
-  updatePagedData(pageIndex: number, pageSize: number) {
-    const startIndex = pageIndex * pageSize;
-    const endIndex = startIndex + pageSize;
-    this.pagedData = this.bookingsFormated.slice(startIndex, endIndex);
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.getAllBookings();
   }
 
   // Obtenir totes les reserves
   getAllBookings() {
-    this._bookingService.getAllBookings().subscribe({
+    const page = this.pageIndex + 1; // Laravel usa base-1
+    const search = this.searchControl.value || '';
+    const filter = this.statusFilterControl.value || 'pendientes';
+
+    this._bookingService.getAllBookings(page, this.pageSize, search, filter, this.sortField, this.sortDir).subscribe({
       next: (response) => {
-        this.bookings = response;
-        this.bookingsFormated = this.bookings;
-        this.updatePagedData(0, 10);
+        this.bookings = response.data; // Paginación de Laravel devuelve data i totals a part
+        this.totalRecords = response.total;
       },
       error: (err) => {
         console.error('Error obtenint bookings', err);
@@ -202,7 +245,7 @@ export class ReservaComponent implements OnInit {
   }
 
   onPrint(book: Booking) {
-    const materialsIds =  [
+    const materialsIds = [
       book?.material1?.material_id,
       book?.material2?.material_id
     ].filter((id): id is number => id !== undefined);
@@ -214,102 +257,23 @@ export class ReservaComponent implements OnInit {
       Carrier: book?.transportista?.transportista_id ? this._bookingService.getCarrier(book?.transportista?.transportista_id) : of(null),
       camion: book?.tipo_camion?.tipo_camion_id ? this._bookingService.getTruck(book?.tipo_camion?.tipo_camion_id) : of(null),
     }).subscribe(({ materials, provider, empresa, Carrier, camion }) => {
-      const materialsHtml = materials
-        .map((m: Material) => `<li>${m.nombre}</li>`)
-        .join('');
 
-      const html = `
-        <!DOCTYPE html>
-        <html lang="ca">
-        <head>
-          <meta charset="UTF-8" />
-          <title>Detalls Llibre</title>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              padding: 20px;
-              background: #fff;
-              color: #333;
-              margin: 0;
-            }
-            .logo-container {
-              text-align: center;
-              margin-bottom: 20px;
-            }
-            .logo-container img {
-              max-width: 100px;
-            }
-            .box {
-              background-color: #d3d3d3;
-              border: 2px solid #999;
-              border-radius: 8px;
-              padding: 15px 20px;
-              margin-bottom: 15px;
-              max-width: 100%;
-              box-sizing: border-box;
-            }
-            .box p {
-              margin: 6px 0;
-            }
-            .box strong {
-              display: inline;
-              margin-bottom: 6px;
-            }
-            ul {
-              margin: 0;
-              padding-left: 20px;
-            }
-            .footer-text {
-              text-align: center;
-              margin-top: 30px;
-              text-size: small;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="logo-container">
-            <img src="../../../assets/img/LogoLaFarga.png" alt="Logo Empresa">
-          </div>
+      this.printingBooking = book;
+      this.printData = {
+        materials,
+        provider,
+        empresa,
+        Carrier,
+        camion,
+        today: new Date()
+      };
 
-          <div class="box">
-            <p><strong>Empresa:</strong> ${empresa.nombre}</p>
-            <p><strong>Pedido:</strong> ${book.pedido1}</p>
-            <p><strong>Matricula Camión:</strong> ${book.matricula_camion}</p>
-          </div>
-
-          <div class="box">
-            <p><strong>Material:</strong></p>
-            <ul>${materialsHtml}</ul>
-            <p><strong>Tipo Camión:</strong> ${camion.nombre}</p>
-            <p><strong>Duracion Entrega:</strong> ${book.duracion}</p>
-            <p><strong>Muelle:</strong> ${book.muelle?.muelle_id}</p>
-            <p><strong>Hora Inicio:</strong> ${book.inicio}</p>
-            <p><strong>Hora Fin:</strong> ${book.fin}</p>
-          </div>
-
-          <div class="box">
-            <p><strong>Proveïdor:</strong> ${provider?.nombre || 'No disponible'}</p>
-            <p><strong>Carrier:</strong> ${Carrier.nombre || 'No disponible'}</p>
-            <p><strong>Notas:</strong> ${book.notas || 'No hay notas'}</p>
-            <p><strong>Aduana:</strong> ${book.aduana || 'No disponible'}</p>
-            <p><strong>Reserva:</strong> ${book.reserva_id || 'No disponible'}</p>
-          </div>
-          <p class="footer-text">
-            Teléfono de incidencias cita previa: 93 859 42 86 - 93 859 41 00 ext: <strong>329</strong>
-          </p>
-        </body>
-        </html>
-        `;
-
-      const novaFinestra = window.open('', '_blank');
-      if (novaFinestra) {
-        novaFinestra.document.write(html);
-        novaFinestra.document.close();
-        novaFinestra.focus();
-        novaFinestra.print();
-      } else {
-        alert('No s’ha pogut obrir la nova finestra. Revisa el bloquejador de finestres.');
-      }
+      // Wait for view update then print
+      setTimeout(() => {
+        window.print();
+        // Optional: clear after print dialog closes (though JS validation of print dialog close is tricky)
+        // this.printingBooking = null; 
+      }, 500);
     });
   }
 

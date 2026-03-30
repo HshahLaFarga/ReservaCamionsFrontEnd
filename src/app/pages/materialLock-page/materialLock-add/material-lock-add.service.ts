@@ -20,6 +20,10 @@ export class MaterialLockAddService {
   }
 
   storeMaterial(materialLock: any): Observable<any> {
-    return this.http.post(`${environment.apiBaseUrl}/bloqueo/grupos`, materialLock );
+    return this.http.post(`${environment.apiBaseUrl}/bloqueo/grupos`, materialLock);
+  }
+
+  updateMaterial(id: number, materialLock: any): Observable<any> {
+    return this.http.put(`${environment.apiBaseUrl}/bloqueo/grupos/${id}`, materialLock);
   }
 }

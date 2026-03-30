@@ -18,7 +18,7 @@ export class LockMuellePageService {
     return this.http.get(`${environment.apiBaseUrl}/muelle/bloqueos`);
   }
 
-  deleteLockMuelles(lockMuelle: Booking): Observable<any> {
-    return this.http.delete(`${environment.apiBaseUrl}/muelle/bloqueo/${lockMuelle.reserva_id}`);
+  deleteLockMuelles(lockMuelle: any): Observable<any> {
+    return this.http.delete(`${environment.apiBaseUrl}/muelle/bloqueos/${lockMuelle.bloqueo_muelle_id}`);
   }
 }

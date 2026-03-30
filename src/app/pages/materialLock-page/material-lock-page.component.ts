@@ -29,37 +29,37 @@ export class MaterialLockPageComponent implements OnInit {
   constructor(
     private _materialLockPageService: MaterialLockPageService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadDefaultData();
   }
 
-  loadDefaultData(){
+  loadDefaultData() {
     this.isLoading = true;
     this.getMaterials();
   }
 
-  getMaterials(){
+  getMaterials() {
     this._materialLockPageService.getMaterialLocks().subscribe({
-    next: (lockedMaterials: MaterialLock[]) => {
-      this.lockedMaterials = lockedMaterials.map((materialLock) => {
-        return {
-          nombre: materialLock.tipoproveedor.nombre,
-          materiales: materialLock.detalles.length === 0? 'No hi han materials assignats' : materialLock.detalles.map(({material}) => `${material.nombre}`).join('<br>'),
-          cantidad: materialLock.cantidad_total,
-          cantidadDisponible: materialLock.cantidad_disponible,
-          inicio: materialLock.inicio,
-          fin: materialLock.fin,
-          object: materialLock
-        }
-      });
-      this.isLoading = false;
-    },
-    error: err => {
-      console.error('Error getting providers ' + err);
-      this.isLoading = false;
-    }
+      next: (lockedMaterials: MaterialLock[]) => {
+        this.lockedMaterials = lockedMaterials.map((materialLock) => {
+          return {
+            nombre: materialLock.tipoproveedor.nombre,
+            materiales: materialLock.detalles.length === 0 ? 'No hi han materials assignats' : materialLock.detalles.map(({ material }) => `${material.nombre}`).join('<br>'),
+            cantidad: materialLock.cantidad_total,
+            cantidadDisponible: materialLock.cantidad_disponible,
+            inicio: materialLock.inicio,
+            fin: materialLock.fin,
+            object: materialLock
+          }
+        });
+        this.isLoading = false;
+      },
+      error: err => {
+        console.error('Error getting providers ' + err);
+        this.isLoading = false;
+      }
     })
   }
 
@@ -68,7 +68,12 @@ export class MaterialLockPageComponent implements OnInit {
   }
 
   onEdit(item: MaterialLock) {
-    console.log('Editar', item);
+    this.router.navigate(['/materials/lock/add'], {
+      state: {
+        data: item,
+        method: 'update'
+      }
+    });
   }
 
   onDelete(item: MaterialLock) {

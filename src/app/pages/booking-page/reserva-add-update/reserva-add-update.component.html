@@ -1,200 +1,262 @@
-<div class="p-8 max-w-5xl mx-auto bg-white rounded shadow space-y-6">
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-sm border border-gray-100">
+  <div class="border-b border-gray-100 pb-4 mb-8">
+    <h1 class="text-2xl font-semibold text-gray-800 tracking-tight">
+      {{method === 'update'? 'Modificar Pedido' : 'Nuevo Pedido'}}
+    </h1>
+    <p class="text-sm text-gray-500 mt-1">Completa o modifica la información de la reserva</p>
+  </div>
 
-  <h1 class="text-2xl font-bold text-gray-800 mb-4">{{method === 'update'? 'Modificar Pedido' : 'Nou Pedido'}}</h1>
+  <form [formGroup]="bookingform" (ngSubmit)="onSubmit()" class="space-y-8">
 
-  <form [formGroup]="bookingform" (ngSubmit)="onSubmit()" class="space-y-6">
-
-    <!-- Matrícula Camión -->
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Matrícula Camión</label>
-      <input type="text" formControlName="matricula_camion"
-        class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-    </div>
-
-    <!-- Número de descargas -->
-    <div class="p-4 border space-y-3">
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Número de descargas</label>
-        <select formControlName="numero_descargas"
-          class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
-          <option [value]="1">1</option>
-          <option [value]="2">2</option>
-        </select>
-      </div>
-
-      <!-- Pedido LF -->
-      <div class="flex flex-row space-x-2">
+    <!-- Sección: Identificación del Vehículo -->
+    <div class="space-y-4">
+      <h2 class="text-base font-medium text-gray-800">Identificación del Vehículo</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label class="block text-sm font-medium text-gray-700">Código Pedido LF 1</label>
+          <label
+            class="block text-sm font-medium text-gray-400 mb-1 after:content-['*'] after:ml-0.5 after:text-red-500">Matrícula
+            Camión</label>
+          <input type="text" formControlName="matricula_camion"
+            class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-gray-50 focus:bg-white"
+            placeholder="Ej: 1234ABC" />
+        </div>
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-400 mb-1 after:content-['*'] after:ml-0.5 after:text-red-500">Camión
+            Disponible</label>
+          <select formControlName="tipo_camion"
+            class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-gray-50 focus:bg-white appearance-none">
+            <option *ngFor="let camion of itemsDisponible.camiones" [value]="camion.tipo_camion_id">
+              {{ camion.nombre }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <!-- Sección: Configuración de Descargas -->
+    <div class="p-6 border border-gray-100 bg-gray-50/50 rounded-xl space-y-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-medium text-gray-800">Materiales y Descargas</h2>
+        <div class="w-64">
+          <label
+            class="block text-xs font-medium text-gray-400 mb-1 after:content-['*'] after:ml-0.5 after:text-red-500">Número
+            de descargas</label>
+          <select formControlName="numero_descargas"
+            class="w-full px-3 py-1.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white text-sm appearance-none">
+            <option [value]="1">1 Descarga</option>
+            <option [value]="2">2 Descargas</option>
+          </select>
+        </div>
+      </div>
+      <!-- Pedidos LF -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-400 mb-1 after:content-['*'] after:ml-0.5 after:text-red-500">Código
+            Pedido Material 1</label>
           <input type="text" formControlName="pedido1"
-            class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+            class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white" />
         </div>
 
-        <div *ngIf="bookingform.get('numeroDescargas')?.value == 2" class="space-x-2 flex flex-row">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Código Pedido LF 2</label>
-            <input type="text" formControlName="pedido2" [disabled]="bookingform.get('usarMismoCodigo')?.value"
-              class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-          </div>
-          <label class="inline-flex items-center">
-            <input type="checkbox" formControlName="usarMismoCodigo" class="mr-2">
-            Mismo código para las dos descargas
+        <div *ngIf="bookingform.get('numero_descargas')?.value == 2" class="space-y-2">
+          <label class="block text-sm font-medium text-gray-600 mb-1">Código Pedido Material 2</label>
+          <input type="text" formControlName="pedido2" [disabled]="bookingform.get('usarMismoCodigo')?.value"
+            class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white disabled:bg-gray-100 disabled:text-gray-400" />
+          <label class="inline-flex items-center mt-2 cursor-pointer group">
+            <input type="checkbox" formControlName="usarMismoCodigo"
+              class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer">
+            <span class="ml-2 text-sm text-gray-600 group-hover:text-gray-900 transition-colors">Usar mismo código para
+              ambas descargas</span>
           </label>
         </div>
       </div>
 
-      <!-- Inputs dinàmics -->
-      <div *ngFor="let i of [0, 1]; let idx = index" [hidden]="idx >= bookingform.get('numero_descargas')?.value">
-        <div class="grid grid-cols-2 gap-4">
+      <!-- Materiales -->
+      <div class="space-y-4 pt-4 border-t border-gray-200/60">
+        <div *ngFor="let i of [0, 1]; let idx = index" [hidden]="idx >= bookingform.get('numero_descargas')?.value">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-400 mb-1"
+                [ngClass]="{'after:content-[\'*\'] after:ml-0.5 after:text-red-500': idx === 0}">Material {{ idx + 1
+                }}</label>
+              <select [formControlName]="'material' + (idx+1)"
+                class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white appearance-none">
+                <option *ngFor="let mat of materials" [value]="mat.material_id">{{ mat.nombre }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-400 mb-1"
+                [ngClass]="{'after:content-[\'*\'] after:ml-0.5 after:text-red-500': idx === 0}">Cantidad (kg)</label>
+              <input type="number" [formControlName]="'cantidad' + (idx+1)"
+                class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección: Horarios y Muelle -->
+    <div class="space-y-4">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="text-base font-medium text-gray-800">Horario de Descarga</h2>
+        <button type="button" (click)="openCalendarModal()"
+          class="flex items-center px-4 py-2 bg-[#004b87] text-white text-sm font-medium rounded-lg hover:bg-[#003666] transition-colors shadow-sm">
+          <mat-icon class="mr-2 text-sm" style="font-size: 18px; width: 18px; height: 18px;">event</mat-icon>
+          Buscar Disponibilidad
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="col-span-1 border border-gray-200 rounded-lg p-3 bg-gray-50/50">
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide">Muelle</label>
+          <div class="mt-1 text-gray-800 font-medium">
+            {{ getMuelleNombre() || '—' }}
+          </div>
+        </div>
+
+        <div class="col-span-1 border border-gray-200 rounded-lg p-3 bg-gray-50/50">
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide">Duración</label>
+          <div class="mt-1 text-gray-800 font-medium whitespace-nowrap">
+            {{ bookingform.get('duracion_entrega')?.value }} <span class="text-gray-400 font-normal">min</span>
+          </div>
+        </div>
+
+        <div class="col-span-1 border border-gray-200 rounded-lg p-3 bg-blue-50/50 border-blue-100">
+          <label class="block text-xs font-semibold text-blue-600 uppercase tracking-wide">Hora Inicio</label>
+          <div class="mt-1 text-blue-900 font-medium">
+            {{ bookingform.get('inicio')?.value ? formatDate(bookingform.get('inicio')?.value) : '—'}}
+          </div>
+        </div>
+
+        <div class="col-span-1 border border-gray-200 rounded-lg p-3 bg-gray-50/50">
+          <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide">Hora Fin</label>
+          <div class="mt-1 text-gray-800 font-medium">
+            {{ bookingform.get('fin')?.value ? formatDate(bookingform.get('fin')?.value) : '—'}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección: Configuración Administrativa -->
+    <div class="space-y-4">
+      <h2 class="text-base font-medium text-gray-800 border-b border-gray-100 pb-2">Configuración Administrativa</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        <!-- Columna Izquierda -->
+        <div class="space-y-4">
+          <!-- Proveedor -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">Material {{ idx + 1 }}</label>
-            <select [formControlName]="'material' + (idx+1)"
-              class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
-              <option *ngFor="let mat of materials" [value]="mat.material_id">{{ mat.nombre }}</option>
+            <label
+              class="block text-sm font-medium text-gray-400 mb-1 after:content-['*'] after:ml-0.5 after:text-red-500">Proveedor</label>
+            <mat-form-field appearance="outline" class="w-full text-sm">
+              <input matInput formControlName="proveedor" [matAutocomplete]="autoProveedor" [disabled]="isProveedor"
+                placeholder="Buscar proveedor...">
+              <mat-autocomplete #autoProveedor="matAutocomplete" [displayWith]="displayFnProveedor">
+                <mat-option *ngFor="let provider of filteredProviders$ | async" [value]="provider.proveedor_id"
+                  class="text-sm">
+                  {{ provider?.entidad?.nombre }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+
+          <!-- Transportista -->
+          <div>
+            <label class="block text-sm font-medium text-gray-400 mb-1">Transportista</label>
+            <mat-form-field appearance="outline" class="w-full text-sm dark-autocomplete">
+              <input matInput formControlName="transportista" [matAutocomplete]="autoCarrier"
+                [disabled]="isTransportista" placeholder="Buscar transportista...">
+              <mat-autocomplete #autoCarrier="matAutocomplete" [displayWith]="displayFnCarrier">
+                <mat-option *ngFor="let Carrier of filteredCarriers$ | async" [value]="Carrier.transportista_id"
+                  class="text-sm">
+                  {{ Carrier.entidad.nombre }}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Columna Derecha -->
+        <div class="space-y-4">
+          <!-- Estado -->
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-400 mb-1 after:content-['*'] after:ml-0.5 after:text-red-500">Estado</label>
+            <select formControlName="estado"
+              class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white appearance-none">
+              <option *ngFor="let stat of status" [value]="stat.estado_id">
+                {{ stat.nombre }}
+              </option>
             </select>
           </div>
+
+          <!-- Aduana -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">Cantidad {{ idx + 1 }}</label>
-            <input type="number" [formControlName]="'cantidad' + (idx+1)"
-              class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+            <label class="block text-sm font-medium text-gray-600 mb-1">Gestión de Aduana</label>
+            <select formControlName="aduana"
+              class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white appearance-none">
+              <option value="si">Requiere trámite (Sí)</option>
+              <option value="no">No requiere (No)</option>
+            </select>
           </div>
         </div>
       </div>
-
-      <!-- Camió Disponible -->
-      <div class="mt-4">
-        <label class="block text-sm font-medium text-gray-700">Camión disponible</label>
-        <select formControlName="tipo_camion"
-          class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
-          <option *ngFor="let camion of itemsDisponible.camiones" [value]="camion.tipo_camion_id">
-            {{ camion.nombre }}
-          </option>
-        </select>
-      </div>
     </div>
 
-    <!-- Càrrega horaris -->
-    <div>
-      <div class="flex gap-2 items-center">
-        <button type="button" (click)="openCalendarModal()"
-          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-          Buscar Hora
-        </button>
-      </div>
-    </div>
-
-    <!-- Duració entrega -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Notas y Archivos -->
+    <div class="space-y-6">
       <div>
-        <label class="block text-sm font-medium text-gray-700">Duración Entrega (min)</label>
-        <div class="mt-1 block w-full rounded border border-gray-300 bg-gray-100 px-3 py-2">
-          {{ bookingform.get('duracion_entrega')?.value }}
+        <label class="block text-sm font-medium text-gray-600 mb-1">Notas u Observaciones</label>
+        <textarea formControlName="notas" rows="3"
+          class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-gray-50 focus:bg-white resize-none"
+          placeholder="Escribe aquí cualquier consideración especial para la recepción..."></textarea>
+      </div>
+
+      <!-- Archivos -->
+      <div class="bg-gray-50/50 border border-gray-200 border-dashed rounded-lg p-5">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Documentación Adjunta</label>
+
+        <div class="flex items-center gap-4">
+          <label for="archivos"
+            class="cursor-pointer px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm inline-flex items-center">
+            <mat-icon class="mr-2 text-gray-500"
+              style="font-size: 18px; width: 18px; height: 18px;">cloud_upload</mat-icon>
+            Seleccionar archivos
+          </label>
+          <input type="file" id="archivos" (change)="onFileSelected($event)" multiple class="hidden" />
+          <span class="text-sm text-gray-500" id="file-help-text">Puedes subir CMR, albaranes, etc.</span>
+        </div>
+
+        <!-- Lista de archivos existentes (modo edición) -->
+        <div *ngIf="method === 'update' && existingFiles.length > 0" class="mt-4 pt-4 border-t border-gray-200">
+          <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Archivos ya subidos</h3>
+          <div class="flex flex-wrap gap-2">
+            <div *ngFor="let file of existingFiles"
+              class="flex items-center gap-2 bg-white border border-gray-200 rounded-md px-3 py-1.5 text-sm shadow-sm group">
+              <mat-icon class="text-gray-400" style="font-size: 16px; width: 16px; height: 16px;">description</mat-icon>
+              <span class="text-gray-700 truncate max-w-[200px]">{{ file.name }}</span>
+              <button type="button" (click)="deleteFile(file)"
+                class="text-gray-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 ml-1">
+                <mat-icon style="font-size: 16px; width: 16px; height: 16px;">close</mat-icon>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-
-      <!-- Moll -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Muelle</label>
-        <div class="mt-1 block w-full rounded border border-gray-300 bg-gray-100 px-3 py-2">
-            {{ getMuelleNombre() || '—' }}
-        </div>
-      </div>
-
-      <!-- Hora Inici -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Hora Inicio</label>
-        <div class="mt-1 block w-full rounded border border-gray-300 bg-gray-100 px-3 py-2">
-          {{ bookingform.get('inicio')?.value ? formatDate(bookingform.get('inicio')?.value) : ''}}
-        </div>
-      </div>
-
-      <!-- Hora Final -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Hora Fin</label>
-        <div class="mt-1 block w-full rounded border border-gray-300 bg-gray-100 px-3 py-2">
-          {{ bookingform.get('fin')?.value ? formatDate(bookingform.get('fin')?.value) : ''}}
-        </div>
-      </div>
-
-      <!-- Status -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Estado</label>
-        <select formControlName="estado"
-          class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
-          <option *ngFor="let stat of status" [value]="stat.estado_id">
-            {{ stat.nombre }}
-          </option>
-        </select>
-      </div>
-
-      <!-- Proveedor -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Proveedor</label>
-      <mat-form-field class="w-full">
-        <input matInput formControlName="proveedor" [matAutocomplete]="autoProveedor" [disabled]="isProveedor">
-        <mat-autocomplete #autoProveedor="matAutocomplete" [displayWith]="displayFnProveedor">
-          <mat-option *ngFor="let provider of filteredProviders$ | async" [value]="provider.proveedor_id">
-            {{ provider?.entidad?.nombre }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      </div>
-
-      <!-- Carrier -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Transportista</label>
-
-      <mat-form-field class="w-full">
-        <input matInput formControlName="transportista" [matAutocomplete]="autoCarrier" [disabled]="isTransportista">
-        <mat-autocomplete #autoCarrier="matAutocomplete" [displayWith]="displayFnCarrier">
-          <mat-option *ngFor="let Carrier of filteredCarriers$ | async" [value]="Carrier.transportista_id">
-            {{ Carrier.entidad.nombre }}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      </div>
-
-      <!-- Aduana -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Aduana</label>
-        <select formControlName="aduana"
-          class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
-          <option value="si">Sí</option>
-          <option value="no">No</option>
-        </select>
-      </div>
     </div>
 
-    <!-- Notas -->
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Notas</label>
-      <textarea formControlName="notas"
-        class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
-    </div>
-
-    <!-- Archivos -->
-    <div class="mb-4">
-      <label for="archivos">Adjuntar arxius:</label>
-      <input type="file" id="archivos" (change)="onFileSelected($event)" multiple class="block w-full mt-2" />
-    </div>
-
-    <!-- Botó Enviar -->
-    <div class="text-right pt-4">
-      <button type="submit" [disabled]="bookingform.invalid || isLoading" [ngClass]="{
-    'bg-green-600 hover:bg-green-700': bookingform.valid,
-    'bg-green-800 opacity-65 cursor-not-allowed': bookingform.invalid
-  }" class="px-6 py-2 text-white rounded transition">
-        {{method === 'update'? 'Modificar Pedido' : 'Enviar Pedido'}}
+    <!-- Acciones Finales -->
+    <div class="pt-6 border-t border-gray-100 flex justify-end gap-3">
+      <button type="button"
+        class="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
+        Cancelar
       </button>
-    </div>
-    <div *ngIf="method === 'update'">
-      <h2 class="text-lg font-semibold text-gray-800 mb-4">Archivos existentes en esta reserva</h2>
-      <div *ngFor="let file of existingFiles" class="flex items-center gap-2">
-        <span>{{ file.name }}</span>
-        <button type="button" (click)="deleteFile(file)" class="text-red-600 hover:text-red-800">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </div>
+      <button type="submit" [disabled]="bookingform.invalid || isLoading" [ngClass]="{
+          'bg-[#004b87] hover:bg-[#003666] text-white shadow-sm': bookingform.valid,
+          'bg-gray-300 text-gray-500 cursor-not-allowed': bookingform.invalid
+        }" class="px-6 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        {{method === 'update'? 'Guardar Cambios' : 'Confirmar Pedido'}}
+      </button>
     </div>
   </form>
 </div>

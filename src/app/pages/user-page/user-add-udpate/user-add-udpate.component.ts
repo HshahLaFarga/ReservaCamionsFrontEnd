@@ -30,7 +30,7 @@ export class UserAddUdpateComponent implements OnInit {
     const state = history.state
     if (state.method === 'update') {
       this.method = state.method;
-      const {rol, ...resto} = state.user;
+      const { rol, ...resto } = state.user;
       console.log('Usurio a editar:', state.user);
       this.initialUserData = { ...rol, ...resto };
     }
@@ -50,12 +50,16 @@ export class UserAddUdpateComponent implements OnInit {
     request.subscribe({
       next: () => {
         this.router.navigate(['users']);
-        this.method === 'post'? this.toastr.success('Usuario añadido correctamente', 'Èxito') : this.toastr.success('Usuario actualizado correctamente', 'Èxito');
+        this.method === 'post' ?
+          this.toastr.success('Usuario añadido correctamente', 'Èxito') :
+          this.toastr.success('Usuario actualizado correctamente', 'Èxito');
         this.isLoading = false;
+
       },
       error: (err) => {
-        console.error('Error creating or updating users',err);
+        console.error(err.error.message || 'Ha ocurrido un error', err);
         this.isLoading = false;
+        this.toastr.error(err.error.message || 'Ha ocurrido un error', 'Error');
       }
     })
   }

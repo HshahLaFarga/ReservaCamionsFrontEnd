@@ -9,12 +9,20 @@ import { environment } from '../../../core/envoirment/envoirment';
 export class CalendarModalService {
   constructor(
     private http: HttpClient
-  ) {}
+  ) { }
 
   getAllBookings(): Observable<any> {
     return this.http.get(`${environment.apiBaseUrl}/reserva`);
   }
   getTimingMuelle(): Observable<any> {
     return this.http.get(`${environment.apiBaseUrl}/muelle/horarios`);
+  }
+
+  getDockBlockages(): Observable<any> {
+    return this.http.get(`${environment.apiBaseUrl}/muelle/bloqueos`);
+  }
+
+  getRestrictions(): Observable<any> {
+    return this.http.get(`${environment.apiBaseUrl}/restricciones`);
   }
 }

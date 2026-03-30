@@ -1,28 +1,16 @@
-<app-generic-form *ngIf="method === 'update'"
-  formTitle="Editar Usuarios"
-  tableName="users"
-  [selectFields]="{
-    rol: { api: 'roles', labelField: 'nombre', valueField: 'rol_id', label: 'Rol' }
-  }"
-  [excludedFields]="['created_at','updated_at','email_verified_at','remember_token', 'contraseña_antigua']"
-  [initialData]="initialUserData"
+<app-generic-form *ngIf="method === 'update'" formTitle="Editar Usuarios" tableName="users" [selectFields]="{
+    rol_id: { api: 'roles', labelField: 'nombre', valueField: 'rol_id', label: 'Rol' }
+  }" [excludedFields]="['created_at','updated_at','email_verified_at','remember_token', 'contraseña_antigua']"
+  [optionalFields]="['contraseña']" [initialData]="initialUserData" (submitForm)="onSubmit($event)">
+</app-generic-form>
+
+<app-generic-form *ngIf="method === 'post'" formTitle="Añadir Usuarios" tableName="users" [selectFields]="{
+    rol_id: { api: 'roles', labelField: 'nombre', valueField: 'rol_id', label: 'Rol' }
+  }" [excludedFields]="['created_at','updated_at','email_verified_at','remember_token', 'contraseña_antigua']"
   (submitForm)="onSubmit($event)">
 </app-generic-form>
 
-<app-generic-form *ngIf="method === 'post'"
-  formTitle="Añadir Usuarios"
-  tableName="users"
-  [selectFields]="{
-    rol: { api: 'roles', labelField: 'nombre', valueField: 'rol_id', label: 'Rol' }
-  }"
-  [excludedFields]="['created_at','updated_at','email_verified_at','remember_token', 'contraseña_antigua']"
-  (submitForm)="onSubmit($event)">
-</app-generic-form>
-
-<div
-  *ngIf="isLoading"
-  class="absolute inset-0 bg-white/60 flex items-center justify-center z-20"
->
+<div *ngIf="isLoading" class="absolute inset-0 bg-white/60 flex items-center justify-center z-20">
   <div class="flex text-center items-center gap-3">
     <div class="loader animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mb-2"></div>
     <p class="text-gray-700">Carregant...</p>

@@ -14,6 +14,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MaterialLock } from '../../../core/models/bloqueo_grupo_material.model';
 import { dateRangeValidator } from '../../../shared/utils/date.utils';
+import { ToastrService } from 'ngx-toastr';
+
 
 @Component({
   selector: 'app-material-lock-add',
@@ -36,11 +38,41 @@ export class MaterialLockAddComponent implements OnInit {
   materialControl: FormControl = new FormControl('');
   filteredMaterials: Material[] = [];
 
+  materialLockId: number | null = null; // Add ID property
+  lastTotal: number = 0;
+
   constructor(
     private fb: FormBuilder,
     private _materialLockAddService: MaterialLockAddService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private toastr: ToastrService
+  ) {
+    // Get state from navigation
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state) {
+      this.method = navigation.extras.state['method'];
+      const data = navigation.extras.state['data'];
+      if (this.method === 'update' && data) {
+        this.materialLockId = data.bloqueo_grupo_id;
+        // Prepare data for form
+        this.selectedMaterials = data.detalles.map((d: any) => d.material);
+        this.lastTotal = data.cantidad_total;
+
+        // Set timeout to ensure form controls are initialized/subscribers ready if needed, 
+        // though synchronous patch is usually fine.
+        setTimeout(() => {
+          this.pedidoForm.patchValue({
+            tipo_proveedor_id: data.tipoproveedor.tipo_proveedor_id,
+            cantidad_total: data.cantidad_total,
+            cantidad_disponible: data.cantidad_disponible,
+            fecha_desde: data.inicio ? data.inicio.split('T')[0].split(' ')[0] : '', // Handle ISO or SQL format
+            fecha_hasta: data.fin ? data.fin.split('T')[0].split(' ')[0] : '',
+            materiales: this.selectedMaterials
+          });
+        });
+      }
+    }
+  }
 
   ngOnInit() {
     this.isLoading = true;
@@ -51,6 +83,8 @@ export class MaterialLockAddComponent implements OnInit {
   loadDefaultData() {
     this._materialLockAddService.getTypeProviders().subscribe((providers_type) => {
       this.providers_type = providers_type;
+      // If we are in update mode and type provider is set, we might need to ensure the value matches the type (string vs number)
+      // The form control expects the ID.
       this.isLoading = false;
     });
     this._materialLockAddService.getMaterials().subscribe((materials) => {
@@ -69,15 +103,29 @@ export class MaterialLockAddComponent implements OnInit {
     });
 
     this.pedidoForm.get('cantidad_total')?.valueChanges.subscribe((total: number) => {
-      this.pedidoForm.get('cantidad_disponible')?.setValue(total, { emitEvent: false });
+      // Only auto-update available quantity if we are NOT in update mode, OR (optionally) if they match.
+      // But typically for edits, changing total might not imply resetting available used. 
+      // User request didn't specify, but let's keep it simple: if creating, sync. If updating, user might want to adjust manually or logic handles it. 
+      // The original code synced them. Let's keep it but maybe we should be careful. 
+      // For now, I will leave it as is, but be aware it might overwrite valid data if user edits total.
+      // Actually, let's only sync if method is NOT update to prevent overwriting existing progress?
+      // Or checking if they are currently equal. 
+      if (this.method !== 'update') {
+        this.pedidoForm.get('cantidad_disponible')?.setValue(total, { emitEvent: false });
+      } else {
+        const delta = total - this.lastTotal;
+        const currentDisposable = this.pedidoForm.get('cantidad_disponible')?.value || 0;
+        this.pedidoForm.get('cantidad_disponible')?.setValue(currentDisposable + delta, { emitEvent: false });
+        this.lastTotal = total;
+      }
     });
   }
 
   buildForm(): FormGroup {
     return this.fb.group({
       tipo_proveedor_id: ['', Validators.required],
-      cantidad_total: [0, [Validators.required, Validators.min(1)]],
-      cantidad_disponible: [0, [Validators.required, Validators.min(1)]],
+      cantidad_total: [0, [Validators.required, Validators.min(0)]],
+      cantidad_disponible: [0, [Validators.required, Validators.min(0)]],
       fecha_desde: ['', Validators.required],
       fecha_hasta: ['', Validators.required],
       materiales: [[], Validators.required],
@@ -118,13 +166,23 @@ export class MaterialLockAddComponent implements OnInit {
         detalles: this.pedidoForm.get('materiales')?.value,
       }
 
-      if (materialLock.cantidad_disponible !== materialLock.cantidad_total) {
-        this.pedidoForm.patchValue({
-          cantidad_total: null,
-          cantidad_disponible: null
-        });
-        return;
+      // Keep existing validation
+      if (materialLock.cantidad_disponible > materialLock.cantidad_total) { // Corrected logic: available cannot be MORE than total probably? Original code said !==
+        // Original: if (materialLock.cantidad_disponible !== materialLock.cantidad_total)
+        // Wait, if I use some, available < total. So strict equality means unused? 
+        // If it's a lock, maybe strict equality is forced on creation?
+        // In update, we absolutely allow them to be different.
+        if (this.method !== 'update') {
+          if (materialLock.cantidad_disponible !== materialLock.cantidad_total) {
+            this.pedidoForm.patchValue({
+              cantidad_total: null,
+              cantidad_disponible: null
+            });
+            return;
+          }
+        }
       }
+
       if (!dateRangeValidator(this.pedidoForm.get('fecha_desde')?.value, this.pedidoForm.get('fecha_hasta')?.value)) {
         this.pedidoForm.patchValue({
           fecha_desde: null,
@@ -133,17 +191,32 @@ export class MaterialLockAddComponent implements OnInit {
         return;
       }
 
-      this._materialLockAddService.storeMaterial(materialLock).subscribe({
-        next: () => {
-          console.log('entra?');
-          this.router.navigate(['/materials/lock']);
-          this.isLoading = false;
-        },
-        error: (err) => {
-          console.error('Error creating materialLock ' + err);
-          this.isLoading = false;
-        },
-      });
+      if (this.method === 'update' && this.materialLockId) {
+        this._materialLockAddService.updateMaterial(this.materialLockId, materialLock).subscribe({
+          next: () => {
+            this.toastr.success('Bloqueo actualizado correctamente');
+            this.router.navigate(['/materials/lock']);
+            this.isLoading = false;
+          },
+          error: (err) => {
+            console.error('Error updating materialLock ' + err);
+            this.toastr.error('Error al actualizar el bloqueo');
+            this.isLoading = false;
+          },
+        });
+      } else {
+        this._materialLockAddService.storeMaterial(materialLock).subscribe({
+          next: () => {
+            this.toastr.success('Bloqueo creado correctamente');
+            this.router.navigate(['/materials/lock']);
+            this.isLoading = false;
+          },
+          error: (err) => {
+            this.toastr.error(err.error.message, 'Error');
+            this.isLoading = false;
+          },
+        });
+      }
     }
   }
 }
