@@ -1,53 +1,65 @@
 <form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()"
-  class="space-y-6 max-w-5xl mx-auto p-6 bg-white rounded shadow">
-  <h2 *ngIf="formTitle" class="text-2xl font-semibold text-gray-800 mb-4">{{ formTitle }}</h2>
-
-  <div *ngFor="let col of columns" class="mb-4">
-
-    <ng-container *ngIf="col.Field !== 'id' && !col.Extra.includes('auto_increment')">
-
-      <!-- Cas checkbox: input i label alineats en horitzontal -->
-      <ng-container *ngIf="getInputType(col.Type) === 'checkbox'; else otherInputs">
-        <div class="flex items-center space-x-2">
-          <input type="checkbox" [formControlName]="col.Field" [id]="col.Field"
-            class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
-          <label class="text-gray-700 font-medium select-none" [for]="col.Field">
-            {{ getLabel(col.Field) }}
-          </label>
-        </div>
-      </ng-container>
-
-      <!-- Altres inputs (text, select, etc.) -->
-      <ng-template #otherInputs>
-        <label class="block mb-1 text-gray-700 font-medium" [for]="col.Field">
-          {{ getLabel(col.Field) }}
-          <span *ngIf="col.Null === 'NO' && !optionalFields.includes(col.Field)" class="text-red-500">*</span>
-        </label>
-
-        <ng-container *ngIf="selectFields[col.Field]; else normalInput">
-          <select [formControlName]="col.Field"
-            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            [id]="col.Field" [required]="col.Null === 'NO' && !optionalFields.includes(col.Field)">
-            <option value="">-- Selecciona {{ getLabel(col.Field) }} --</option>
-            <option *ngFor="let opt of selectOptions[col.Field]" [value]="opt[selectFields[col.Field].valueField]">
-              {{ opt[selectFields[col.Field].labelField] }}
-            </option>
-          </select>
-        </ng-container>
-
-        <ng-template #normalInput>
-          <input [type]="getInputType(col.Type)" [formControlName]="col.Field" [id]="col.Field"
-            class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            [required]="col.Null === 'NO' && !optionalFields.includes(col.Field)" />
-        </ng-template>
-      </ng-template>
-
-    </ng-container>
-
+  class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 max-w-5xl mx-auto space-y-8 mt-4 mb-8">
+  
+  <div *ngIf="formTitle" class="border-b border-gray-100 pb-5">
+    <h2 class="text-3xl font-bold text-gray-800 tracking-tight">{{ formTitle }}</h2>
+    <p class="text-sm text-gray-500 mt-2">Completa la informació dels camps a continuació per procedir.</p>
   </div>
 
-  <button type="submit" [disabled]="form.invalid"
-    class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition">
-    Guardar
-  </button>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+    <ng-container *ngFor="let col of columns">
+      <div *ngIf="col.Field !== 'id' && !col.Extra.includes('auto_increment')" class="relative group">
+
+        <!-- Cas checkbox: input i label alineats en horitzontal -->
+        <ng-container *ngIf="getInputType(col.Type) === 'checkbox'; else otherInputs">
+          <div class="flex items-center space-x-3 p-4 mt-2 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-gray-50 transition-colors duration-200">
+            <input type="checkbox" [formControlName]="col.Field" [id]="col.Field"
+              class="w-5 h-5 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500 focus:ring-2 focus:ring-offset-1 cursor-pointer transition-shadow" />
+            <label class="text-sm font-semibold text-gray-700 select-none cursor-pointer w-full" [for]="col.Field">
+              {{ getLabel(col.Field) }}
+            </label>
+          </div>
+        </ng-container>
+
+        <!-- Altres inputs (text, select, etc.) -->
+        <ng-template #otherInputs>
+          <label class="block mb-2 text-sm font-semibold text-gray-700 transition-colors group-focus-within:text-blue-600" [for]="col.Field">
+            {{ getLabel(col.Field) }}
+            <span *ngIf="col.Null === 'NO' && !optionalFields.includes(col.Field)" class="text-rose-500 ml-1" title="Camp obligatori">*</span>
+          </label>
+
+          <ng-container *ngIf="selectFields[col.Field]; else normalInput">
+            <div class="relative">
+              <select [formControlName]="col.Field"
+                class="w-full bg-gray-50/50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 cursor-pointer shadow-sm hover:border-gray-300"
+                [id]="col.Field" [required]="col.Null === 'NO' && !optionalFields.includes(col.Field)">
+                <option value="">-- Selecciona {{ getLabel(col.Field) }} --</option>
+                <option *ngFor="let opt of selectOptions[col.Field]" [value]="opt[selectFields[col.Field].valueField]">
+                  {{ opt[selectFields[col.Field].labelField] }}
+                </option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path></svg>
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-template #normalInput>
+            <input [type]="getInputType(col.Type)" [formControlName]="col.Field" [id]="col.Field"
+              class="w-full bg-gray-50/50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm placeholder-gray-400 hover:border-gray-300"
+              [required]="col.Null === 'NO' && !optionalFields.includes(col.Field)" />
+          </ng-template>
+        </ng-template>
+
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="pt-6 mt-4 border-t border-gray-100 flex justify-end">
+    <button type="submit" [disabled]="form.invalid"
+      class="inline-flex items-center justify-center bg-blue-600 text-white font-semibold px-8 py-3 rounded-xl shadow-md hover:bg-blue-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95 transition-all duration-200">
+      <svg class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+      Guardar
+    </button>
+  </div>
 </form>

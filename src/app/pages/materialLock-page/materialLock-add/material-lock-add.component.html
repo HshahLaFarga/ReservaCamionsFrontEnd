@@ -1,96 +1,107 @@
-<div class="p-8 max-w-5xl mx-auto bg-white rounded shadow space-y-6">
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-xl border border-gray-100 mt-6 mb-12">
+  <div class="border-b border-gray-100 pb-5 mb-8">
+    <h2 class="text-3xl font-bold text-gray-800 tracking-tight">
+      {{ method === 'update' ? 'Modificar Bloqueo' : 'Nuevo Bloqueo' }}
+    </h2>
+    <p class="text-sm text-gray-500 mt-2">Configura un bloqueo para un grupo de materiales, un transportista o un proveedor.</p>
+  </div>
 
-  <h1 class="text-2xl font-bold text-gray-800 mb-4">
-    {{ method === 'update' ? 'Modificar Bloqueo' : 'Nuevo Bloqueo' }}
-  </h1>
+  <form [formGroup]="pedidoForm" (ngSubmit)="onSubmit()" class="space-y-8">
+    
+    <div class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Tipo Proveedor -->
+        <div>
+          <label class="block mb-2 text-sm font-semibold text-gray-700">Tipo Proveedor</label>
+          <div class="relative">
+            <select formControlName="tipo_proveedor_id"
+              class="w-full bg-gray-50/50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200 shadow-sm hover:border-gray-300 cursor-pointer">
+              <option *ngFor="let provider_type of providers_type" [value]="provider_type.tipo_proveedor_id">
+                {{ provider_type.nombre }}
+              </option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+              <span class="material-icons text-sm">expand_more</span>
+            </div>
+          </div>
+        </div>
 
-  <form [formGroup]="pedidoForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Cantidad Total -->
+        <div>
+          <label class="block mb-2 text-sm font-semibold text-gray-700">Cantidad Total</label>
+          <input type="number" formControlName="cantidad_total"
+            class="w-full bg-gray-50/50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm hover:border-gray-300"
+            min="0" />
+        </div>
 
-    <!-- Tipo Proveedor -->
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Tipo Proveedor</label>
-      <select formControlName="tipo_proveedor_id"
-        class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
-        <option *ngFor="let provider_type of providers_type" [value]="provider_type.tipo_proveedor_id">
-          {{ provider_type.nombre }}
-        </option>
-      </select>
+        <!-- Cantidad Disponible -->
+        <div>
+          <label class="block mb-2 text-sm font-semibold text-gray-700">Cantidad Disponible</label>
+          <div class="w-full bg-gray-100/50 border border-gray-200 text-gray-500 font-semibold rounded-xl px-4 py-3 shadow-inner cursor-not-allowed">
+            {{ pedidoForm.get('cantidad_disponible')?.value || '0' }}
+          </div>
+        </div>
+
+        <!-- Fecha Desde -->
+        <div>
+          <label class="block mb-2 text-sm font-semibold text-gray-700">Fecha Desde</label>
+          <input type="date" formControlName="fecha_desde"
+            class="w-full bg-gray-50/50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm hover:border-gray-300" />
+        </div>
+
+        <!-- Fecha Hasta -->
+        <div>
+          <label class="block mb-2 text-sm font-semibold text-gray-700">Fecha Hasta</label>
+          <input type="date" formControlName="fecha_hasta"
+            class="w-full bg-gray-50/50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm hover:border-gray-300" />
+        </div>
+      </div>
     </div>
 
-    <!-- Cantidad Total -->
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Cantidad Total</label>
-      <input type="number" formControlName="cantidad_total"
-        class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
-        min="0" />
-    </div>
+    <!-- Materiales Autocomplete -->
+    <div class="pt-4 border-t border-gray-100">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4">Materiales Bloqueados</h3>
+      <div class="bg-gray-50 p-5 rounded-xl border border-gray-100">
+        <mat-form-field class="w-full" appearance="fill">
+          <mat-label>Busca y añade un material al grupo</mat-label>
+          <input type="text" matInput [formControl]="materialControl" [matAutocomplete]="auto"
+            [ngModel]="materialControl.value?.nombre || materialControl.value" />
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onMaterialSelected($event.option.value)">
+            <mat-option *ngFor="let material of filteredMaterials" [value]="material">
+              {{ material.nombre }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
 
-
-    <!-- Cantidad Disponible -->
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Cantidad Disponible</label>
-      <p class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
-        {{ pedidoForm.get('cantidad_disponible')?.value}}
-      </p>
-    </div>
-
-    <!-- Fecha Desde -->
-    <div>
-      <label class="block font-medium text-gray-700">Fecha Desde</label>
-      <input type="date" formControlName="fecha_desde"
-        class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-    </div>
-
-    <!-- Fecha Hasta -->
-    <div>
-      <label class="block text-sm font-medium text-gray-700">Fecha Hasta</label>
-      <input type="date" formControlName="fecha_hasta"
-        class="mt-1 block w-full rounded border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-    </div>
-
-    <!-- Materiales -->
-    <mat-form-field class="w-full" appearance="fill">
-      <mat-label>Añade un material al grupo</mat-label>
-      <input type="text" matInput [formControl]="materialControl" [matAutocomplete]="auto"
-        [ngModel]="materialControl.value?.nombre || materialControl.value" />
-
-      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onMaterialSelected($event.option.value)">
-        <mat-option *ngFor="let material of filteredMaterials" [value]="material">
-          {{ material.nombre }}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-
-    <!-- Materials seleccionats -->
-    <div *ngIf="selectedMaterials.length > 0" class="mt-4">
-      <p class="font-semibold text-gray-700">Materiales en el grupo:</p>
-      <div class="flex flex-wrap gap-2 border p-4 rounded bg-gray-50">
-        <div *ngFor="let material of selectedMaterials; let i = index"
-          class="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-          {{ material.nombre }}
-          <button (click)="deleteMaterialFromArray(i)" class="ml-2 text-red-500 hover:text-red-700 focus:outline-none"
-            title="Eliminar material">
-            ✖
-          </button>
+        <!-- Materials seleccionats -->
+        <div *ngIf="selectedMaterials.length > 0" class="mt-2">
+          <div class="flex flex-wrap gap-2">
+            <div *ngFor="let material of selectedMaterials; let i = index"
+              class="flex items-center bg-blue-50 text-blue-700 border border-blue-200 shadow-sm px-3 py-1.5 rounded-full text-sm font-medium transition-all group hover:bg-blue-100">
+              {{ material.nombre }}
+              <button type="button" (click)="deleteMaterialFromArray(i)" class="ml-2 text-blue-400 group-hover:text-red-500 focus:outline-none transition-colors mt-0.5"
+                title="Eliminar material">
+                <span class="material-icons text-[16px] leading-[16px]">close</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Botó Enviar -->
-    <div class="text-right pt-4">
-      <button type="submit" [disabled]="pedidoForm.invalid" [ngClass]="{
-        'bg-green-600 hover:bg-green-700': pedidoForm.valid,
-        'bg-green-800 opacity-65 cursor-not-allowed': pedidoForm.invalid
-      }" class="px-6 py-2 text-white rounded transition">
-        {{ method === 'update' ? 'Modificar bloqueo' : 'Crear bloqueo' }}
+    <div class="pt-6 mt-4 border-t border-gray-100 flex justify-end">
+      <button type="submit" [disabled]="pedidoForm.invalid" 
+        class="inline-flex items-center justify-center bg-blue-600 text-white font-semibold px-8 py-3 rounded-xl shadow-md hover:bg-blue-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95 transition-all duration-200">
+        {{ method === 'update' ? 'Modificar Bloqueo' : 'Crear Bloqueo' }}
       </button>
     </div>
   </form>
 </div>
 
-<div *ngIf="isLoading" class="absolute inset-0 bg-white/60 flex items-center justify-center z-20">
-  <div class="flex text-center items-center gap-3">
-    <div class="loader animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mb-2"></div>
-    <p class="text-gray-700">Carregant...</p>
+<div *ngIf="isLoading" class="absolute inset-0 bg-white/60 backdrop-blur-sm flex items-center justify-center z-20 transition-all">
+  <div class="flex flex-col text-center items-center gap-3 bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
+    <div class="loader animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+    <p class="text-gray-700 font-semibold tracking-wide">Cargando...</p>
   </div>
 </div>
