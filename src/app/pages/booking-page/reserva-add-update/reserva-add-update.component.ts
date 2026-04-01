@@ -730,4 +730,8 @@ export class ReservaAddUpdateComponent implements OnInit {
     const muelle = muelles.find((m: any) => m.muelle_id == id);
     return muelle ? muelle.nombre : '';
   }
+
+  onCancel(): void {
+    this.router.navigate(['/bookings']);
+  }
 }

@@ -146,33 +146,38 @@
         <div class="space-y-4">
           <!-- Proveedor -->
           <div>
-            <label
-              class="block text-sm font-medium text-gray-400 mb-1 after:content-['*'] after:ml-0.5 after:text-red-500">Proveedor</label>
-            <mat-form-field appearance="outline" class="w-full text-sm">
-              <input matInput formControlName="proveedor" [matAutocomplete]="autoProveedor" [disabled]="isProveedor"
-                placeholder="Buscar proveedor...">
+            <label class="block text-sm font-medium text-gray-400 mb-1 after:content-['*'] after:ml-0.5 after:text-red-500">Proveedor</label>
+            <div class="relative group">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                <mat-icon class="text-gray-400 group-focus-within:text-blue-500 transition-colors" style="font-size: 20px; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;">search</mat-icon>
+              </div>
+              <input type="text" formControlName="proveedor" [matAutocomplete]="autoProveedor" [disabled]="isProveedor"
+                placeholder="Buscar proveedor..."
+                class="w-full pl-11 pr-4 py-2.5 bg-gray-50/50 hover:bg-gray-50 border border-gray-200 focus:border-blue-500 focus:bg-white text-gray-800 rounded-lg outline-none focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 placeholder:text-gray-400 font-medium shadow-sm disabled:bg-gray-100 disabled:text-gray-400" />
               <mat-autocomplete #autoProveedor="matAutocomplete" [displayWith]="displayFnProveedor">
-                <mat-option *ngFor="let provider of filteredProviders$ | async" [value]="provider.proveedor_id"
-                  class="text-sm">
+                <mat-option *ngFor="let provider of filteredProviders$ | async" [value]="provider.proveedor_id" class="text-sm">
                   {{ provider?.entidad?.nombre }}
                 </mat-option>
               </mat-autocomplete>
-            </mat-form-field>
+            </div>
           </div>
 
           <!-- Transportista -->
           <div>
             <label class="block text-sm font-medium text-gray-400 mb-1">Transportista</label>
-            <mat-form-field appearance="outline" class="w-full text-sm dark-autocomplete">
-              <input matInput formControlName="transportista" [matAutocomplete]="autoCarrier"
-                [disabled]="isTransportista" placeholder="Buscar transportista...">
+            <div class="relative group">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                <mat-icon class="text-gray-400 group-focus-within:text-blue-500 transition-colors" style="font-size: 20px; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;">search</mat-icon>
+              </div>
+              <input type="text" formControlName="transportista" [matAutocomplete]="autoCarrier" [disabled]="isTransportista"
+                placeholder="Buscar transportista..."
+                class="w-full pl-11 pr-4 py-2.5 bg-gray-50/50 hover:bg-gray-50 border border-gray-200 focus:border-blue-500 focus:bg-white text-gray-800 rounded-lg outline-none focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 placeholder:text-gray-400 font-medium shadow-sm disabled:bg-gray-100 disabled:text-gray-400" />
               <mat-autocomplete #autoCarrier="matAutocomplete" [displayWith]="displayFnCarrier">
-                <mat-option *ngFor="let Carrier of filteredCarriers$ | async" [value]="Carrier.transportista_id"
-                  class="text-sm">
+                <mat-option *ngFor="let Carrier of filteredCarriers$ | async" [value]="Carrier.transportista_id" class="text-sm">
                   {{ Carrier.entidad.nombre }}
                 </mat-option>
               </mat-autocomplete>
-            </mat-form-field>
+            </div>
           </div>
         </div>
 
@@ -247,7 +252,7 @@
 
     <!-- Acciones Finales -->
     <div class="pt-6 border-t border-gray-100 flex justify-end gap-3">
-      <button type="button"
+      <button type="button" (click)="onCancel()"
         class="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
         Cancelar
       </button>

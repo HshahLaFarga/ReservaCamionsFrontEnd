@@ -22,6 +22,7 @@ export class NavbarComponent implements OnInit {
   langs: string[] = ['ca', 'es', 'en', 'fr'];
 
   sidebarItems: SidebarItem[] = [];
+  currentUser: LoggedUser | null = null;
 
   constructor(
     private translate: TranslateService,
@@ -34,6 +35,7 @@ export class NavbarComponent implements OnInit {
   }
   ngOnInit(): void {
     this._loginService.authState$.subscribe((user: LoggedUser | null) => {
+      this.currentUser = user;
       this.sidebarItems = this._sidebarService.getSidebarItems(user);
       console.log('Navbar - sidebarItems:', this.sidebarItems);
     });

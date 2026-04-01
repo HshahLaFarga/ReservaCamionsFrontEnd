@@ -1,53 +1,89 @@
-<div class="flex flex-col overflow-y-auto bg-gradient-to-br p-4 items-center">
-  <form [formGroup]="form" (ngSubmit)="updateUser()" class="max-w-lg w-full font-sans space-y-6">
-    <h2 class="text-2xl font-extrabold text-gray-800 mb-6">
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-xl border border-gray-100 mt-6 mb-12">
+  <div class="border-b border-gray-100 pb-5 mb-8">
+    <h2 class="text-3xl font-bold text-gray-800 tracking-tight">
       {{ 'USER_PAGE.TITLE' | translate }}
     </h2>
+    <p class="text-sm text-gray-500 mt-2">Gestiona tu información personal y credenciales de acceso.</p>
+  </div>
 
-    <div>
-      <label for="name" class="block mb-1 text-gray-700">
-        {{ 'FORM.CONTACT_NAME' | translate }}
-      </label>
-      <input id="name" type="text" formControlName="name"
-        class="w-full p-2 bg-transparent border-b border-gray-400 focus:outline-none focus:ring-0 focus:border-blue-500 transition" />
+  <form [formGroup]="form" (ngSubmit)="updateUser()" class="space-y-8">
+    
+    <!-- Sección: Datos Personales -->
+    <div class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-800">Datos Personales</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="nombre" class="block mb-2 text-sm font-semibold text-gray-700">Nombre <span class="text-rose-500">*</span></label>
+          <input id="nombre" type="text" formControlName="nombre"
+            class="w-full bg-gray-50/50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm hover:border-gray-300" />
+        </div>
+        <div>
+          <label for="apellidos" class="block mb-2 text-sm font-semibold text-gray-700">Apellidos <span class="text-rose-500">*</span></label>
+          <input id="apellidos" type="text" formControlName="apellidos"
+            class="w-full bg-gray-50/50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm hover:border-gray-300" />
+        </div>
+        <div>
+          <label for="username" class="block mb-2 text-sm font-semibold text-gray-700">Nombre de Usuario <span class="text-rose-500">*</span></label>
+          <input id="username" type="text" formControlName="username"
+            class="w-full bg-gray-50/50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm hover:border-gray-300" />
+        </div>
+        <div>
+          <label for="email" class="block mb-2 text-sm font-semibold text-gray-700">{{ 'FORM.EMAIL' | translate }} <span class="text-rose-500">*</span></label>
+          <input id="email" type="email" formControlName="email"
+            class="w-full bg-gray-50/50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm hover:border-gray-300" />
+        </div>
+        <div>
+          <label for="NIF" class="block mb-2 text-sm font-semibold text-gray-700">NIF / DNI</label>
+          <input id="NIF" type="text" formControlName="NIF"
+            class="w-full bg-gray-50/50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm hover:border-gray-300 placeholder-gray-400" placeholder="Opcional" />
+        </div>
+        <div>
+          <label for="tel1" class="block mb-2 text-sm font-semibold text-gray-700">{{ 'FORM.TEL1' | translate }}</label>
+          <input id="tel1" type="tel" formControlName="tel1"
+            class="w-full bg-gray-50/50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm hover:border-gray-300 placeholder-gray-400" placeholder="Ej: 600123456" />
+        </div>
+      </div>
     </div>
 
-    <div>
-      <label for="email" class="block mb-1 text-gray-700">
-        {{ 'FORM.EMAIL' | translate }}
-      </label>
-      <input id="email" type="email" formControlName="email"
-        class="w-full p-2 bg-transparent border-b border-gray-400 focus:outline-none focus:ring-0 focus:border-blue-500 transition" />
+    <!-- Sección: Accesos y Preferencias -->
+    <div class="space-y-4 pt-6 border-t border-gray-100">
+      <h3 class="text-lg font-semibold text-gray-800">Credenciales y Preferencias</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        <div>
+          <label for="idioma" class="block mb-2 text-sm font-semibold text-gray-700">Idioma Preferido <span class="text-rose-500">*</span></label>
+          <div class="relative">
+            <select id="idioma" formControlName="idioma" class="w-full bg-gray-50/50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200 shadow-sm hover:border-gray-300 cursor-pointer">
+              <option value="es">Español</option>
+              <option value="en">English</option>
+              <option value="fr">Français</option>
+              <option value="cat">Català</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path></svg>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label for="password" class="block mb-2 text-sm font-semibold text-gray-700">
+            Nueva Contraseña
+            <span class="text-xs font-normal text-gray-500 ml-2">(Dejar en blanco para no cambiarla)</span>
+          </label>
+          <input id="password" type="password" formControlName="password" autocomplete="new-password"
+            class="w-full bg-gray-50/50 border border-gray-200 text-gray-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-transparent transition-all duration-200 shadow-sm hover:border-gray-300 placeholder-gray-400" placeholder="••••••••" />
+          <p class="text-xs text-gray-500 mt-2" *ngIf="form.get('password')?.value">Mínimo 8 caracteres</p>
+        </div>
+      </div>
     </div>
 
-    <div>
-      <label for="pin" class="block mb-1 text-gray-700">
-        {{ 'FORM.PIN' | translate }}
-      </label>
-      <input id="pin" type="password" formControlName="pin"
-        class="w-full p-2 bg-transparent border-b border-gray-400 focus:outline-none focus:ring-0 focus:border-blue-500 transition" />
+    <div class="pt-6 mt-4 border-t border-gray-100 flex justify-end">
+      <button type="submit" [disabled]="form.invalid || isLoading"
+        class="inline-flex items-center justify-center bg-blue-600 text-white font-semibold px-8 py-3 rounded-xl shadow-md hover:bg-blue-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95 transition-all duration-200">
+        <svg *ngIf="!isLoading" class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+        <svg *ngIf="isLoading" class="animate-spin w-5 h-5 mr-2 -ml-1 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+        {{ isLoading ? 'Guardando...' : ('FORM.SUBMIT' | translate) }}
+      </button>
     </div>
-
-    <div>
-      <label for="tel1" class="block mb-1 text-gray-700">
-        {{ 'FORM.TEL1' | translate }}
-      </label>
-      <input id="tel1" type="tel" formControlName="tel1"
-        class="w-full p-2 bg-transparent border-b border-gray-400 focus:outline-none focus:ring-0 focus:border-blue-500 transition" />
-    </div>
-
-    <div>
-      <label for="password" class="block mb-1 text-gray-700">
-        {{ 'FORM.PASSWORD' | translate }}
-      </label>
-      <input id="password" type="password" formControlName="password"
-        class="w-full p-2 bg-transparent border-b border-gray-400 focus:outline-none focus:ring-0 focus:border-blue-500 transition" />
-    </div>
-
-    <button type="submit"
-    class="py-2 px-6 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-300">
-      {{ 'FORM.SUBMIT' | translate }}
-    </button>
 
   </form>
 </div>

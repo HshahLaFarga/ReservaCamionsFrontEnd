@@ -11,21 +11,28 @@
     </button>
   </div>
 
-  <div class="flex gap-4 mb-4">
-    <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Filtrar por cualquier campo...</mat-label>
-      <input matInput [formControl]="searchControl" placeholder="Buscar reservas, matrículas, materiales, proveedores...">
-      <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+  <div class="flex flex-col md:flex-row gap-4 mb-6 relative">
+    <div class="w-full md:w-2/3 relative group">
+      <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+        <mat-icon class="text-gray-400 group-focus-within:text-blue-600 transition-colors">search</mat-icon>
+      </div>
+      <input type="text" [formControl]="searchControl" placeholder="Buscar reservas, matrículas, materiales, proveedores..." 
+        class="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 focus:border-blue-500 text-gray-800 rounded-xl outline-none focus:ring-4 focus:ring-blue-500/15 transition-all duration-300 placeholder:text-gray-400 font-medium shadow-sm hover:border-gray-300">
+    </div>
 
-    <mat-form-field appearance="outline" class="w-1/3 min-w-[200px]">
-      <mat-label>Mostrando</mat-label>
-      <mat-select [formControl]="statusFilterControl">
-        <mat-option value="pendientes">Reservas pendientes</mat-option>
-        <mat-option value="antiguas">Reservas antiguas</mat-option>
-        <mat-option value="todas">Todas las reservas</mat-option>
-      </mat-select>
-    </mat-form-field>
+    <div class="w-full md:w-1/3 min-w-[200px]">
+      <div class="relative h-full">
+        <select [formControl]="statusFilterControl"
+          class="w-full h-full pl-4 pr-10 py-3 bg-white border border-gray-200 focus:border-blue-500 text-gray-800 rounded-xl outline-none focus:ring-4 focus:ring-blue-500/15 transition-all duration-300 font-medium shadow-sm hover:border-gray-300 appearance-none cursor-pointer">
+          <option value="pendientes">Reservas pendientes</option>
+          <option value="antiguas">Reservas antiguas</option>
+          <option value="todas">Todas las reservas</option>
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path></svg>
+        </div>
+      </div>
+    </div>
   </div>
 
   <table mat-table [dataSource]="bookings" matSort class="mat-elevation-z8 w-full">

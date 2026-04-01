@@ -1,6 +1,6 @@
 <app-generic-form *ngIf="method === 'update'"
   formTitle="Editar Status"
-  tableName="status"
+  tableName="estados"
   [excludedFields]="['created_at','updated_at']"
   [initialData]="initialStatusData"
   (submitForm)="onSubmit($event)">
@@ -8,7 +8,7 @@
 
 <app-generic-form *ngIf="method === 'post'"
   formTitle="Añadir Status"
-  tableName="status"
+  tableName="estados"
   [excludedFields]="['created_at','updated_at']"
   (submitForm)="onSubmit($event)">
 </app-generic-form>

@@ -49,11 +49,11 @@ export class StatusPageComponent implements OnInit {
   }
 
   onAdd() {
-    this.router.navigate(['status/add']);
+    this.router.navigate(['estado/add']);
   }
 
   onEdit(status: Status) {
-    this.router.navigate(['status/edit'], {
+    this.router.navigate(['estado/edit'], {
       state: {
         status: { ...status },
         method: 'update'
