@@ -7,6 +7,7 @@ import { ProviderPageComponent } from './pages/provider-page/provider-page.compo
 import { MaterialLockPageComponent } from './pages/materialLock-page/material-lock-page.component';
 import { MaterialLockAddComponent } from './pages/materialLock-page/materialLock-add/material-lock-add.component';
 import { authGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 import { ProviderAddUpdateComponent } from './pages/provider-page/provider-add-update/provider-add-update.component';
 import { CarrierPageComponent } from './pages/carrier-page/carrier-page.component';
 import { CarrierAddUpdateComponent } from './pages/carrier-page/carrier-add-update/carrier-add-update.component';
@@ -41,67 +42,66 @@ export const routes: Routes = [
 
     children: [
 
-      { path: 'calendar', component: CalendarPageComponent},
-
-      
+      // ✅ Rutas accesibles por todos los usuarios autenticados (internos + externos)
+      { path: 'calendar', component: CalendarPageComponent },
       { path: 'profile', component: ProfilePageComponent },
+      { path: 'bookings', loadChildren: () => import('./pages/booking-page/reserva.routes') },
+      { path: '', redirectTo: 'calendar', pathMatch: 'full' },
 
-      { path: 'report', component: ReportComponent },
+      // 🔒 Rutas solo para usuarios internos (adminGuard bloquea a entidades externas)
+      { path: 'report', component: ReportComponent, canActivate: [adminGuard] },
 
-      { path: 'provider', component: ProviderPageComponent },
-      { path: 'provider/add', component: ProviderAddUpdateComponent },
-      { path: 'provider/edit', component: ProviderAddUpdateComponent },
-      { path: 'provider/type', component: ProviderTypeComponent },
-      { path: 'provider/type/add', component: ProviderTypeAddUpdateComponent },
-      { path: 'provider/type/edit', component: ProviderTypeAddUpdateComponent },
+      { path: 'provider', component: ProviderPageComponent, canActivate: [adminGuard] },
+      { path: 'provider/add', component: ProviderAddUpdateComponent, canActivate: [adminGuard] },
+      { path: 'provider/edit', component: ProviderAddUpdateComponent, canActivate: [adminGuard] },
+      { path: 'provider/type', component: ProviderTypeComponent, canActivate: [adminGuard] },
+      { path: 'provider/type/add', component: ProviderTypeAddUpdateComponent, canActivate: [adminGuard] },
+      { path: 'provider/type/edit', component: ProviderTypeAddUpdateComponent, canActivate: [adminGuard] },
 
-      { path: 'transportista', component: CarrierPageComponent },
-      { path: 'transportista/add', component: CarrierAddUpdateComponent },
-      { path: 'transportista/edit', component: CarrierAddUpdateComponent },
+      { path: 'transportista', component: CarrierPageComponent, canActivate: [adminGuard] },
+      { path: 'transportista/add', component: CarrierAddUpdateComponent, canActivate: [adminGuard] },
+      { path: 'transportista/edit', component: CarrierAddUpdateComponent, canActivate: [adminGuard] },
 
-      { path: 'materials', component: MaterialPageComponent },
-      { path: 'materials/add', component: MaterialAddUpdateComponent },
-      { path: 'materials/edit', component: MaterialAddUpdateComponent },
-      { path: 'materials/lock', component: MaterialLockPageComponent },
-      { path: 'materials/lock/add', component: MaterialLockAddComponent },
+      { path: 'materials', component: MaterialPageComponent, canActivate: [adminGuard] },
+      { path: 'materials/add', component: MaterialAddUpdateComponent, canActivate: [adminGuard] },
+      { path: 'materials/edit', component: MaterialAddUpdateComponent, canActivate: [adminGuard] },
+      { path: 'materials/lock', component: MaterialLockPageComponent, canActivate: [adminGuard] },
+      { path: 'materials/lock/add', component: MaterialLockAddComponent, canActivate: [adminGuard] },
 
-      { path: 'muelles', component: MuellePageComponent},
-      { path: 'muelles/add', component: MuelleAddUpdateComponent},
-      { path: 'muelles/edit', component: MuelleAddUpdateComponent},
+      { path: 'muelles', component: MuellePageComponent, canActivate: [adminGuard] },
+      { path: 'muelles/add', component: MuelleAddUpdateComponent, canActivate: [adminGuard] },
+      { path: 'muelles/edit', component: MuelleAddUpdateComponent, canActivate: [adminGuard] },
 
-      { path: 'muelles/timing', component: TimingMuellePageComponent},
-      { path: 'muelles/timing/add', component: TimingMuelleAddUpdateComponent},
-      { path: 'muelles/timing/edit', component: TimingMuelleAddUpdateComponent},
+      { path: 'muelles/timing', component: TimingMuellePageComponent, canActivate: [adminGuard] },
+      { path: 'muelles/timing/add', component: TimingMuelleAddUpdateComponent, canActivate: [adminGuard] },
+      { path: 'muelles/timing/edit', component: TimingMuelleAddUpdateComponent, canActivate: [adminGuard] },
 
-      { path: 'companys', component: CompanyPageComponent},
-      { path: 'companys/add', component: CompanyAddUpdateComponent},
-      { path: 'companys/edit', component: CompanyAddUpdateComponent},
+      { path: 'companys', component: CompanyPageComponent, canActivate: [adminGuard] },
+      { path: 'companys/add', component: CompanyAddUpdateComponent, canActivate: [adminGuard] },
+      { path: 'companys/edit', component: CompanyAddUpdateComponent, canActivate: [adminGuard] },
 
-      { path: 'users', component: UserPageComponent},
-      { path: 'users/add', component: UserAddUdpateComponent},
-      { path: 'users/edit', component: UserAddUdpateComponent},
-      { path: 'users/type', component: UserAddUdpateComponent},
-      { path: 'users/role', component: UserAddUdpateComponent},
+      { path: 'users', component: UserPageComponent, canActivate: [adminGuard] },
+      { path: 'users/add', component: UserAddUdpateComponent, canActivate: [adminGuard] },
+      { path: 'users/edit', component: UserAddUdpateComponent, canActivate: [adminGuard] },
+      { path: 'users/type', component: UserAddUdpateComponent, canActivate: [adminGuard] },
+      { path: 'users/role', component: UserAddUdpateComponent, canActivate: [adminGuard] },
 
-      { path: 'trucks/type', component: TruckTypePageComponent},
-      { path: 'trucks/type/add', component: TruckTypeAddUpdateComponent},
-      { path: 'trucks/type/edit', component: TruckTypeAddUpdateComponent},
+      { path: 'trucks/type', component: TruckTypePageComponent, canActivate: [adminGuard] },
+      { path: 'trucks/type/add', component: TruckTypeAddUpdateComponent, canActivate: [adminGuard] },
+      { path: 'trucks/type/edit', component: TruckTypeAddUpdateComponent, canActivate: [adminGuard] },
 
-      { path: 'estados', component: StatusPageComponent},
-      { path: 'estado/add', component: StatusAddUpdateComponent},
-      { path: 'estado/edit', component: StatusAddUpdateComponent},
+      { path: 'estados', component: StatusPageComponent, canActivate: [adminGuard] },
+      { path: 'estado/add', component: StatusAddUpdateComponent, canActivate: [adminGuard] },
+      { path: 'estado/edit', component: StatusAddUpdateComponent, canActivate: [adminGuard] },
 
-      { path: 'weight/range', component: WeightRangePageComponent},
+      { path: 'weight/range', component: WeightRangePageComponent, canActivate: [adminGuard] },
 
-      { path: 'lock/muelles', component: LockMuellePageComponent},
-      { path: 'lock/muelles/add', component: LockMuelleAddUpdateComponent},
-      { path: 'lock/muelles/edit', component: LockMuelleAddUpdateComponent},
+      { path: 'lock/muelles', component: LockMuellePageComponent, canActivate: [adminGuard] },
+      { path: 'lock/muelles/add', component: LockMuelleAddUpdateComponent, canActivate: [adminGuard] },
+      { path: 'lock/muelles/edit', component: LockMuelleAddUpdateComponent, canActivate: [adminGuard] },
 
-      { path: 'restrictions', component: RestrictionPageComponent},
-
-      { path: 'bookings', loadChildren: () => import('./pages/booking-page/reserva.routes')},
-
-      { path: '', redirectTo: 'calendar', pathMatch: 'full'},
+      { path: 'restrictions', component: RestrictionPageComponent, canActivate: [adminGuard] },
     ]
   }
 ];
+
