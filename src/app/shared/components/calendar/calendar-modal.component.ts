@@ -60,7 +60,6 @@ export class CalendarModalComponent implements OnInit {
     selectable: true,
     selectAllow: this.isTimeSlotAllowed.bind(this),
     datesSet: (info) => {
-      console.log('Cambio de fecha:', info.start);
       this.updateBusinessHoursAndResources(info.start);
     }
   };
@@ -80,7 +79,6 @@ export class CalendarModalComponent implements OnInit {
       this.loadTimingsAndBookings();
       this.loadDockBlockages();
     });
-    console.log('Data: ', this.data);
   }
 
   private loadTimingsAndBookings() {
@@ -92,7 +90,6 @@ export class CalendarModalComponent implements OnInit {
         this.getAllBookings();
       },
       error: (err) => {
-        console.error(err);
         this.isLoading = false;
       }
     });
@@ -116,11 +113,6 @@ export class CalendarModalComponent implements OnInit {
         // Combine both sets of muelle IDs
         const allRelevantMuelleIds = [...new Set([...materialMuelleIds, ...restrictedMuelleIds])];
 
-        console.log('📊 Muelles relevantes para validación:', {
-          materialMuelles: materialMuelleIds,
-          restrictedMuelles: restrictedMuelleIds,
-          allRelevant: allRelevantMuelleIds
-        });
 
         // Filter bookings to include material muelles AND restricted muelles
         this.bookings = response.filter(b => {
@@ -141,17 +133,6 @@ export class CalendarModalComponent implements OnInit {
             end: new Date(b.fin),
           }));
 
-        console.log('🔍 Debug restricted events:', {
-          materialMuelleIds,
-          restrictedMuelleIds,
-          allBookings: response.length,
-          bookingsInRestrictedDocks: response.filter(b => {
-            const muelleId = b.muelle?.muelle_id;
-            return muelleId !== undefined &&
-              restrictedMuelleIds.includes(muelleId) &&
-              !materialMuelleIds.includes(muelleId);
-          }).map(b => ({ id: b.reserva_id, muelle: b.muelle?.muelle_id, inicio: b.inicio }))
-        });
 
         // Show bookings from restricted docks as background events
         // These will appear on the material's docks to indicate restriction conflicts
@@ -179,7 +160,6 @@ export class CalendarModalComponent implements OnInit {
             // This prevents duplicating regular events as background events
             const docksToShowRestriction = affectedMaterialDocks.filter(dockId => dockId !== bookingDockId);
 
-            console.log(`  📍 Booking ${b.reserva_id} en muelle ${bookingDockId}: afecta a muelles`, docksToShowRestriction);
 
             // Create a background event for each affected material dock
             return docksToShowRestriction.map(dockId => ({
@@ -196,27 +176,12 @@ export class CalendarModalComponent implements OnInit {
         // Combine regular events and restricted events
         this.events = [...regularEvents, ...restrictedEvents];
 
-        console.log('📊 Eventos generados:', {
-          regularEvents: regularEvents.length,
-          restrictedEvents: restrictedEvents.length,
-          totalEvents: this.events.length,
-          restrictedEventsSample: restrictedEvents.slice(0, 5).map(e => ({
-            dock: e.resourceId,
-            title: e.title,
-            start: e.start,
-            display: e.display,
-            bgColor: e.backgroundColor
-          }))
-        });
-
-        console.log(`📅 Bookings cargados: ${this.bookings.length} (para validación), Events mostrados: ${this.events.length}`);
 
         this.setupCalendarOptions();
 
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error obteniendo reservas', err);
         this.isLoading = false;
       }
     });
@@ -246,7 +211,6 @@ export class CalendarModalComponent implements OnInit {
         this.setupCalendarOptions();
       },
       error: (err) => {
-        console.error('Error cargando bloqueos de muelles', err);
       }
     });
   }
@@ -255,14 +219,12 @@ export class CalendarModalComponent implements OnInit {
     this._calendarModalService.getRestrictions().subscribe({
       next: (restrictions: any[]) => {
         this.restrictions = restrictions;
-        console.log('Restricciones cargadas:', restrictions);
         // Execute callback after restrictions are loaded
         if (callback) {
           callback();
         }
       },
       error: (err) => {
-        console.error('Error cargando restricciones', err);
         // Execute callback even on error to prevent blocking
         if (callback) {
           callback();
@@ -280,15 +242,8 @@ export class CalendarModalComponent implements OnInit {
     const selectedStart = new Date(selectInfo.start);
     const selectedEnd = new Date(selectInfo.end);
 
-    console.log('🔍 Validando selección:', {
-      selectedDockId,
-      selectedStart: selectedStart.toISOString(),
-      selectedEnd: selectedEnd.toISOString(),
-      totalBookings: this.bookings.length
-    });
 
     if (!selectedDockId) {
-      console.log('⚠️ No hay dock seleccionado, permitiendo');
       return true;
     }
 
@@ -301,10 +256,8 @@ export class CalendarModalComponent implements OnInit {
         r.muelle_id === selectedDockId ? r.muelle_restringido_id : r.muelle_id
       );
 
-    console.log('🚫 Muelles restringidos para muelle', selectedDockId, ':', restrictedDockIds);
 
     if (restrictedDockIds.length === 0) {
-      console.log('✅ No hay restricciones, permitiendo');
       return true;
     }
 
@@ -312,13 +265,6 @@ export class CalendarModalComponent implements OnInit {
     const hasConflict = this.bookings.some(booking => {
       const bookingDockId = booking.muelle?.muelle_id;
 
-      console.log('  Checking booking:', {
-        bookingId: booking.reserva_id,
-        bookingDockId,
-        isRestricted: restrictedDockIds.includes(bookingDockId),
-        inicio: booking.inicio,
-        fin: booking.fin
-      });
 
       // Check if this booking is on a restricted dock
       if (!restrictedDockIds.includes(bookingDockId)) return false;
@@ -329,29 +275,9 @@ export class CalendarModalComponent implements OnInit {
       const bookingEnd = new Date(booking.fin.replace(' ', 'T'));
 
       const overlaps = selectedStart < bookingEnd && selectedEnd > bookingStart;
-
-      console.log('  Comparación de tiempos:', {
-        selectedStart: selectedStart.toISOString(),
-        selectedEnd: selectedEnd.toISOString(),
-        bookingStart: bookingStart.toISOString(),
-        bookingEnd: bookingEnd.toISOString(),
-        overlaps
-      });
-
-      if (overlaps) {
-        console.log('❌ CONFLICTO encontrado:', {
-          bookingDockId,
-          bookingStart: bookingStart.toISOString(),
-          bookingEnd: bookingEnd.toISOString()
-        });
-      }
-
       return overlaps;
     });
 
-    console.log(hasConflict ? '❌ BLOQUEANDO selección' : '✅ PERMITIENDO selección');
-
-    // Return false to block selection if there's a conflict
     return !hasConflict;
   }
 
@@ -406,7 +332,6 @@ export class CalendarModalComponent implements OnInit {
 
   private updateBusinessHoursAndResources(currentDate: Date) {
     if (!this.timingMuelles || this.timingMuelles.length === 0) {
-      console.warn('⏳ timingMuelles aún no cargado, se omite updateBusinessHoursAndResources');
       return;
     }
 

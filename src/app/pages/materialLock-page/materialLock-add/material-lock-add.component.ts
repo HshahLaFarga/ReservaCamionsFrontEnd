@@ -199,7 +199,6 @@ export class MaterialLockAddComponent implements OnInit {
             this.isLoading = false;
           },
           error: (err) => {
-            console.error('Error updating materialLock ' + err);
             this.toastr.error('Error al actualizar el bloqueo');
             this.isLoading = false;
           },

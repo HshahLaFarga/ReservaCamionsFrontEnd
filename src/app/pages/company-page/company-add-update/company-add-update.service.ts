@@ -19,7 +19,6 @@ export class CompanyAddUpdateService {
   }
 
   updateCompany(company: Company, Company_id: number): Observable<any> {
-    console.log(company, Company_id);
     return this.http.put(`${environment.apiBaseUrl}/empresas_lfycs/${Company_id}`,company);
   }
 }

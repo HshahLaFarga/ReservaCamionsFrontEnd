@@ -44,7 +44,6 @@ export class LockMuellePageComponent implements OnInit {
         this.lockMuelles = lockMuelles;
       },
       error: (err) => {
-        console.error(err);
       }
     });
   }
@@ -87,7 +86,6 @@ export class LockMuellePageComponent implements OnInit {
           },
           error: (err) => {
             this.toastr.error('Error eliminando el bloqueo', 'Error');
-            console.error('Error deleting lockMuelle', err);
             this.isLoading = false;
           }
         });

@@ -56,7 +56,6 @@ export class TimingMuelleAddUpdateComponent implements OnInit {
         error: (err) => {
           this.isLoading = false;
           this.toastr.error(err.error.message,'Error');
-          console.error(err);
         }
     });
   }

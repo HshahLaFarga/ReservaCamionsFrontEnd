@@ -58,5 +58,5 @@ export interface BookingDocument {
   documento_reserva_id?: number,
   reserva_id?: number,
   url?: string,
-  name: string
+  nombre: string
 }

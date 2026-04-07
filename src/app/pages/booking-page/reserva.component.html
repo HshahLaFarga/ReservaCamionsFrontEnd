@@ -35,71 +35,84 @@
     </div>
   </div>
 
-  <table mat-table [dataSource]="bookings" matSort class="mat-elevation-z8 w-full">
+  <div class="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-100">
+    <table mat-table [dataSource]="bookings" matSort class="w-full text-xs">
 
-    <!-- Hora inicio -->
     <ng-container matColumnDef="hora_inicio">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header="inicio"> {{ 'BOOKING_PAGE.HORA_INICIO' | translate }} </th>
-      <td mat-cell *matCellDef="let booking"> {{ booking.inicio }} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="inicio" class="px-2 py-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]"> {{ 'BOOKING_PAGE.HORA_INICIO' | translate }} </th>
+      <td mat-cell *matCellDef="let booking" class="px-2 py-3 whitespace-nowrap"> {{ booking.inicio | date:'dd/MM HH:mm' }} </td>
+    </ng-container>
+
+    <!-- Hora fin -->
+    <ng-container matColumnDef="fin">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="fin" class="px-2 py-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]"> {{ 'BOOKING_PAGE.HORA_FIN' | translate }} </th>
+      <td mat-cell *matCellDef="let booking" class="px-2 py-3 whitespace-nowrap"> {{ booking.fin | date:'dd/MM HH:mm' }} </td>
     </ng-container>
 
     <!-- Tipo de camión 1 -->
     <ng-container matColumnDef="tipo_camion">
-      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.TIPO_CAMION' | translate }} </th>
-      <td mat-cell *matCellDef="let booking"> {{ booking.tipo_camion.nombre }} </td>
+      <th mat-header-cell *matHeaderCellDef class="px-2 py-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]"> {{ 'BOOKING_PAGE.TIPO_CAMION' | translate }} </th>
+      <td mat-cell *matCellDef="let booking" class="px-2 py-3 whitespace-nowrap"> {{ booking.tipo_camion.nombre }} </td>
     </ng-container>
 
     <!-- Matrícula camión 1 -->
     <ng-container matColumnDef="matricula">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header="matricula_camion"> {{ 'BOOKING_PAGE.MATRICULA_CAMION' | translate }} </th>
-      <td mat-cell *matCellDef="let booking"> {{ booking.matricula_camion }} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="matricula_camion" class="px-2 py-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]"> {{ 'BOOKING_PAGE.MATRICULA_CAMION' | translate }} </th>
+      <td mat-cell *matCellDef="let booking" class="px-2 py-3 font-mono font-medium"> {{ booking.matricula_camion }} </td>
     </ng-container>
 
     <!-- ID materials -->
     <ng-container matColumnDef="id_materials">
-      <th mat-header-cell *matHeaderCellDef>
+      <th mat-header-cell *matHeaderCellDef class="px-2 py-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]">
         {{ 'BOOKING_PAGE.ID_MATERIALS' | translate }}
       </th>
-      <td mat-cell *matCellDef="let booking">
-        {{ booking.material1 ? booking.material1.nombre: booking.material1?.nombre }} {{ booking.material2 ? ', ' +
-        booking.material2.nombre : '' }}
+      <td mat-cell *matCellDef="let booking" class="px-2 py-3">
+        <div class="max-w-[120px] truncate" [title]="(booking.material1?.nombre || '') + (booking.material2 ? ', ' + booking.material2.nombre : '')">
+          {{ booking.material1 ? booking.material1.nombre: booking.material1?.nombre }} {{ booking.material2 ? ', ' +
+          booking.material2.nombre : '' }}
+        </div>
       </td>
     </ng-container>
 
     <!-- Muelle -->
     <ng-container matColumnDef="muelle">
-      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.MUELLE' | translate }} </th>
-      <td mat-cell *matCellDef="let booking">
-        {{ booking?.muelle?.nombre }}
+      <th mat-header-cell *matHeaderCellDef class="px-2 py-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]"> {{ 'BOOKING_PAGE.MUELLE' | translate }} </th>
+      <td mat-cell *matCellDef="let booking" class="px-2 py-3 whitespace-nowrap">
+        <span class="px-2 py-1 bg-gray-100 rounded text-[10px] font-bold text-gray-700">{{ booking?.muelle?.nombre }}</span>
       </td>
     </ng-container>
 
     <!-- Cantidad -->
     <ng-container matColumnDef="cantidad">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header="cantidad1"> {{ 'BOOKING_PAGE.CANTIDAD' | translate }} </th>
-      <td mat-cell *matCellDef="let booking"> {{ booking.cantidad1 }} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="cantidad1" class="px-2 py-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]"> {{ 'BOOKING_PAGE.CANTIDAD' | translate }} </th>
+      <td mat-cell *matCellDef="let booking" class="px-2 py-3 whitespace-nowrap text-right pr-4"> {{ booking.cantidad1 | number }} <span class="text-gray-400">kg</span> </td>
     </ng-container>
 
     <!-- ID Proveedor -->
     <ng-container matColumnDef="id_proveedor">
-      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.ID_PROVEEDOR' | translate }} </th>
-      <td mat-cell *matCellDef="let booking"> {{ booking.proveedor.entidad.nombre }} </td>
+      <th mat-header-cell *matHeaderCellDef class="px-2 py-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]"> {{ 'BOOKING_PAGE.ID_PROVEEDOR' | translate }} </th>
+      <td mat-cell *matCellDef="let booking" class="px-2 py-3 font-medium">
+        <div class="max-w-[110px] truncate" [title]="booking.proveedor.entidad.nombre">
+          {{ booking.proveedor.entidad.nombre }}
+        </div>
+      </td>
     </ng-container>
 
     <!-- Pedido -->
     <ng-container matColumnDef="pedido">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header="pedido1"> {{ 'BOOKING_PAGE.PEDIDO' | translate }} </th>
-      <td mat-cell *matCellDef="let booking"> {{ booking.pedido1 }} </td>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="pedido1" class="px-2 py-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]"> {{ 'BOOKING_PAGE.PEDIDO' | translate }} </th>
+      <td mat-cell *matCellDef="let booking" class="px-2 py-3 whitespace-nowrap font-mono"> {{ booking.pedido1 }} </td>
     </ng-container>
 
-    <!-- Documentos -->
     <ng-container matColumnDef="documentos">
-      <th mat-header-cell *matHeaderCellDef> {{ 'BOOKING_PAGE.DOCUMENTOS' | translate }} </th>
-      <td mat-cell *matCellDef="let booking">
-        <div *ngFor="let doc of booking.documentos">
-          <button (click)="getFile(doc.url)" class="text-blue-600 underline hover:text-blue-800">
-            {{ doc.name }}
-          </button>
+      <th mat-header-cell *matHeaderCellDef class="px-2 py-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]"> {{ 'BOOKING_PAGE.DOCUMENTOS' | translate }} </th>
+      <td mat-cell *matCellDef="let booking" class="px-2 py-3">
+        <div class="flex justify-center">
+          <div *ngIf="booking.documentos?.length" class="flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-600 rounded-md border border-gray-200 h-5">
+            <mat-icon class="flex items-center justify-center" style="font-size: 14px; width: 14px; height: 14px;">description</mat-icon>
+            <span class="text-[10px] font-bold leading-none">{{ booking.documentos.length }}</span>
+          </div>
+          <span *ngIf="!booking.documentos?.length" class="text-[10px] text-gray-300">—</span>
         </div>
       </td>
     </ng-container>
@@ -107,36 +120,37 @@
 
     <!-- Accions -->
     <ng-container matColumnDef="acciones">
-      <th mat-header-cell *matHeaderCellDef class="text-center">
+      <th mat-header-cell *matHeaderCellDef class="text-center px-2 py-3 text-gray-500 font-semibold uppercase tracking-wider text-[10px]">
         {{ 'BOOKING_PAGE.ACCIONES' | translate }}
       </th>
-      <td mat-cell *matCellDef="let booking">
-        <div class="flex items-center justify-center gap-2">
-          <button mat-icon-button color="primary" (click)="onEdit(booking)">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button color="warn" (click)="onDelete(booking)">
-            <mat-icon>delete</mat-icon>
-          </button>
-          <button mat-icon-button (click)="onPrint(booking)">
-            <mat-icon>print</mat-icon>
-          </button>
-        </div>
-      </td>
+        <td mat-cell *matCellDef="let booking" class="px-2 py-3">
+          <div class="flex items-center justify-center gap-0.5">
+            <button mat-icon-button (click)="onEdit(booking)" class="text-blue-600 hover:bg-blue-50 transition-colors" [title]="'Editar'">
+              <mat-icon class="text-lg" style="font-size: 20px;">edit</mat-icon>
+            </button>
+            <button mat-icon-button (click)="onDelete(booking)" class="text-red-600 hover:bg-red-50 transition-colors" [title]="'Eliminar'">
+              <mat-icon class="text-lg" style="font-size: 20px;">delete</mat-icon>
+            </button>
+            <button mat-icon-button (click)="onPrint(booking)" class="text-gray-600 hover:bg-gray-100 transition-colors" [title]="'Imprimir'">
+              <mat-icon class="text-lg" style="font-size: 20px;">print</mat-icon>
+            </button>
+          </div>
+        </td>
     </ng-container>
 
 
     <!-- Header and Row Definitions -->
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-gray-50/80 border-b border-gray-100"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50/50 transition-colors border-b border-gray-50 last:border-0 h-12"></tr>
     
     <!-- Fila cuando no hay datos -->
     <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell text-center py-4" [attr.colspan]="displayedColumns.length">
+      <td class="mat-cell text-center py-8 text-gray-400 italic" [attr.colspan]="displayedColumns.length">
         No se han encontrado resultados.
       </td>
     </tr>
   </table>
+</div>
 
   <mat-paginator 
     [length]="totalRecords" 

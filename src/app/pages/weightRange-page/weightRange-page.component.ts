@@ -45,7 +45,6 @@ export class WeightRangePageComponent implements OnInit {
             this.isEditing = false;
           },
           error: (err) => {
-              console.error(err);
               this.isEditing = false;
               this.isLoading = false;
           }
@@ -76,7 +75,6 @@ export class WeightRangePageComponent implements OnInit {
         this.buildForm();
       },
       error: (err) => {
-        console.error(err);
         this.isLoading = false;
       }
     });

@@ -30,7 +30,6 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {
     this._loginService.authState$.subscribe((user: LoggedUser | null) => {
       this.sidebarItems = this._sidebarService.getSidebarItems(user);
-      console.log('user', user);
     });
   }
 
@@ -48,7 +47,7 @@ export class SidebarComponent implements OnInit {
         // Redirigir a login
         this.router.navigate(['/login']);
       },
-      error: (err: any) => console.error('Error al cerrar sesión', err),
+      error: (err: any) => {},
     });
   }
 }

@@ -48,7 +48,6 @@ export class UserPageComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error getting users', err);
         this.isLoading = false;
       }
     })
@@ -76,7 +75,6 @@ export class UserPageComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error deleting user', err);
         this.isLoading = false;
       }
     })

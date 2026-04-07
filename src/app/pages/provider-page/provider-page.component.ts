@@ -47,7 +47,6 @@ export class ProviderPageComponent implements OnInit {
       this.isLoading = false;
     },
     error: err => {
-      console.error('Error getting providers ' + err);
       this.isLoading = false;
     }
     })
@@ -78,7 +77,6 @@ export class ProviderPageComponent implements OnInit {
         if (err.error.id === 1) {
           this.toastr.error(err.error.message, 'Error');
         } else  {
-          console.error('Error getting providers ', err);
         }
         this.isLoading = false;
       }

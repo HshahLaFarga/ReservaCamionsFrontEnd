@@ -12,7 +12,7 @@ export class CalendarModalService {
   ) { }
 
   getAllBookings(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/reserva`);
+    return this.http.get(`${environment.apiBaseUrl}/reservas/calendar`);
   }
   getTimingMuelle(): Observable<any> {
     return this.http.get(`${environment.apiBaseUrl}/muelle/horarios`);

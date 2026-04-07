@@ -18,8 +18,6 @@ export class AppComponent {
     this.translate.setDefaultLang('es');
     this.translate.use('es');
 
-    console.warn('DEBUG: Current Browser Origin:', window.location.origin);
-    console.warn('DEBUG: API Base URL:', (environment as any).apiBaseUrl); // Cast to any to avoid strict type checks if needed
     this.loginService.checkAuth().subscribe();
   }
 }

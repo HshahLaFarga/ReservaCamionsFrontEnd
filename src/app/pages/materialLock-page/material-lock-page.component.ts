@@ -57,7 +57,6 @@ export class MaterialLockPageComponent implements OnInit {
         this.isLoading = false;
       },
       error: err => {
-        console.error('Error getting providers ' + err);
         this.isLoading = false;
       }
     })
@@ -83,7 +82,6 @@ export class MaterialLockPageComponent implements OnInit {
         this.loadDefaultData();
       },
       error: (err) => {
-        console.error(err);
         this.isLoading = false;
       }
     })

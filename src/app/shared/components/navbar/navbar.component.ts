@@ -37,7 +37,6 @@ export class NavbarComponent implements OnInit {
     this._loginService.authState$.subscribe((user: LoggedUser | null) => {
       this.currentUser = user;
       this.sidebarItems = this._sidebarService.getSidebarItems(user);
-      console.log('Navbar - sidebarItems:', this.sidebarItems);
     });
   }
 
@@ -68,14 +67,11 @@ export class NavbarComponent implements OnInit {
   }
   // ############################
   logout() {
-    console.log('Logout clicked');
     this._loginService.logout().subscribe({
       next: () => {
-        console.log('Logout successful');
         document.location.reload();
       },
       error: (err) => {
-        console.error('Error during logout:', err);
       },
     });
   }

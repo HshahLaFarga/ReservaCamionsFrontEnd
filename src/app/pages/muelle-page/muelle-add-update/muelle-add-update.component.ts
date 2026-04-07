@@ -62,7 +62,6 @@ export class MuelleAddUpdateComponent implements OnInit {
           } else if(err.error.message.includes('empresa lfycs')) {
             this.toastr.error('El campo empresa no puede estar vacio', 'Error');
           } else{
-            console.error('Error al añadir o modificar muelle', err);
           }
           this.isLoading = false;
         }

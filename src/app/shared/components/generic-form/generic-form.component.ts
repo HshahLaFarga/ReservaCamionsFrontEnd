@@ -61,7 +61,6 @@ export class GenericFormComponent implements OnInit {
         }
       });
 
-      console.log(patchedData);
 
       this.form.patchValue(patchedData);
     }
@@ -83,7 +82,6 @@ export class GenericFormComponent implements OnInit {
         this.loadSelectOptions();
       },
       error: (err) => {
-        console.error('Error loading columns', err);
       },
     });
   }
@@ -112,7 +110,6 @@ export class GenericFormComponent implements OnInit {
           this.selectOptions[field] = data;
         },
         error: (err) => {
-          console.error(`Error loading select options for ${field}`, err);
           this.selectOptions[field] = [];
         },
       });

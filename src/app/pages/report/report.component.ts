@@ -29,12 +29,10 @@ export class ReportComponent {
 
   generateReport(): void {
     if (this.from && this.to) {
-      console.log('Generating report from', this.from, 'to', this.to);
       this.toastr.success('Generando informe', 'Éxito');
       // Aquí puedes agregar la lógica para generar el reporte
       this._reportService.getReport(this.from, this.to).subscribe({
         next: (report) => {
-          console.log('Report data:', report);
           const url = window.URL.createObjectURL(report);
           const a = document.createElement('a');
           a.href = url;
@@ -43,12 +41,10 @@ export class ReportComponent {
           window.URL.revokeObjectURL(url);
         },
         error: (err) => {
-          console.error('Error fetching report:', err);
           this.toastr.error('Error al generar el informe', 'Error');
         }
       });
     } else {
-      console.log('Please select both from and to dates.');
     }
   }
 }

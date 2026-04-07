@@ -15,7 +15,6 @@ export class LockMuelleAddUpdateService {
   ) { }
 
   addLockMuelle(lockMuelle: BloqueoMuelle): Observable<any> {
-    console.log(lockMuelle);
     return this.http.post(`${environment.apiBaseUrl}/muelle/bloqueos`, lockMuelle);
   }
 

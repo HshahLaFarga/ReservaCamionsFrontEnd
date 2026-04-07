@@ -65,7 +65,6 @@ export class ProviderTypeAddUpdateComponent {
           if (err.error.id === 1) {
             this.toastr.error(err.error.message, 'Error');
           } else {
-            console.error(err);
           }
           this.isLoading = false;
         },

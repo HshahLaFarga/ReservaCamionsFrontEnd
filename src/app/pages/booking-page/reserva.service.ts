@@ -64,7 +64,7 @@ export class ReservaService {
   }
 
   getCompany(company_id: number): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/empresas/${company_id}`);
+    return this.http.get(`${environment.apiBaseUrl}/empresas_lfycs/${company_id}`);
   }
   getTruck(truck_id: number): Observable<any> {
     return this.http.get(`${environment.apiBaseUrl}/tipocamiones/${truck_id}`);

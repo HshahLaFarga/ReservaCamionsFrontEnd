@@ -51,7 +51,6 @@ export class StatusAddUpdateComponent implements OnInit {
           this.router.navigate(['status']);
         },
         error: (err) => {
-            console.error(err);
             this.isLoading = false;
         }
     });

@@ -10,8 +10,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { ReservaService } from './reserva.service';
-import { Router } from '@angular/router';
 import { Booking } from '../../core/models/reserva.model';
+import { LoginService } from '../../features/auth/login/login.service';
+import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmData, ConfirmModalComponent } from '../../shared/components/confirm-modal/confirm-modal.component';
 import { formatDate } from '../../shared/utils/date.utils';
@@ -48,28 +49,19 @@ export class ReservaComponent implements OnInit, AfterViewInit {
 
   constructor(
     private _bookingService: ReservaService,
+    private _loginService: LoginService,
     private router: Router,
     private dialog: MatDialog,
     private toastr: ToastrService
   ) { }
 
-  displayedColumns: string[] = [
-    'hora_inicio',
-    'tipo_camion',
-    'matricula',
-    'id_materials',
-    'muelle',
-    'cantidad',
-    'id_proveedor',
-    'pedido',
-    'documentos',
-    'acciones'
-  ];
+  displayedColumns: string[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   ngOnInit() {
+    this.setDisplayedColumns();
     this.getAllBookings();
 
     this.searchControl.valueChanges.pipe(
@@ -117,7 +109,6 @@ export class ReservaComponent implements OnInit, AfterViewInit {
         this.totalRecords = response.total;
       },
       error: (err) => {
-        console.error('Error obtenint bookings', err);
       }
     });
   }
@@ -127,9 +118,37 @@ export class ReservaComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/bookings/add']);
   }
 
-  // Quan seleccionar editar reserva
+  setDisplayedColumns() {
+    const user = this._loginService.currentUser;
+    if (user && user.instance === 'entidad') {
+      this.displayedColumns = [
+        'pedido',
+        'id_materials',
+        'cantidad',
+        'hora_inicio',
+        'fin',
+        'documentos',
+        'acciones'
+      ];
+    } else {
+      // ADMIN o USUARIO (Vista completa)
+      this.displayedColumns = [
+        'hora_inicio',
+        'tipo_camion',
+        'matricula',
+        'id_materials',
+        'muelle',
+        'cantidad',
+        'id_proveedor',
+        'pedido',
+        'documentos',
+        'acciones'
+      ];
+    }
+  }
+
+  // Quan determinar editar reserva
   onEdit(book: Booking) {
-    console.log('Editing booking', book);
     this.router.navigate(['/bookings/edit'], {
       state: {
         book: { ...book },
@@ -209,13 +228,12 @@ export class ReservaComponent implements OnInit, AfterViewInit {
                 next: (file) => {
                   const a = document.createElement('a');
                   a.href = fileURL;
-                  a.download = file.name;
+                  a.download = file.nombre;
                   document.body.appendChild(a);
                   a.click();
                   a.remove();
                 },
                 error: (err) => {
-                  console.error('Error obtenint el nom del fitxer', err);
                 }
               });
             }
@@ -227,19 +245,17 @@ export class ReservaComponent implements OnInit, AfterViewInit {
             next: (file) => {
               const a = document.createElement('a');
               a.href = fileURL;
-              a.download = file.name;
+              a.download = file.nombre;
               document.body.appendChild(a);
               a.click();
               a.remove();
             },
             error: (err) => {
-              console.error('Error getting NAME', err);
             },
           });
         }
       },
       error: (err) => {
-        console.error('Error obtenint fitxer', err);
       }
     });
   }

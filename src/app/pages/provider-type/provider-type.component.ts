@@ -45,7 +45,6 @@ export class ProviderTypeComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error(err);
         this.isLoading = false;
       },
     });
@@ -95,7 +94,6 @@ export class ProviderTypeComponent {
             if (err.error.id === 1) {
               this.toastr.error(err.error.message, 'Error');
             } else {
-              console.error(err);
             }
           },
         });

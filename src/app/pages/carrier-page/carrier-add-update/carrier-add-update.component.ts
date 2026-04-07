@@ -101,7 +101,6 @@ export class CarrierAddUpdateComponent implements OnInit {
           } else if (err.error.message.includes('n i f')) {
             this.toastr.error('El NIF ya esta en uso', 'Error');
           } else {
-            console.error('Error al añadir o modificar transportista', err);
           }
           this.isLoading = false;
         }

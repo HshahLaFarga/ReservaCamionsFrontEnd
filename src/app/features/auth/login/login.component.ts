@@ -39,7 +39,6 @@ export class LoginComponent{
         this.loading = false;
         this.errorMessage = 'Credenciales incorrectas.';
         this.toastr.error(this.errorMessage, 'Error');
-        console.error(err);
       }
     });
   }

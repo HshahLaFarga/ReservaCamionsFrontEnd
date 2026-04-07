@@ -32,7 +32,6 @@ export class BookingAddUpdateService {
   }
 
   createBooking(booking: any): Observable<any> {
-    console.log('Booking to store', booking);
     return this.http.post(`${environment.apiBaseUrl}/reserva`,booking);
   }
 
@@ -50,6 +49,14 @@ export class BookingAddUpdateService {
       .append('keys[]', 'min_kg')
       .append('keys[]', 'max_kg');
     
-      return this.http.get(`${environment.apiBaseUrl}/config/claves`, { params });
-    }
+    return this.http.get(`${environment.apiBaseUrl}/config/claves`, { params });
+  }
+
+  getFile(path: string): Observable<Blob> {
+    return this.http.get(`${environment.apiBaseUrl}/getFile/${encodeURIComponent(path)}`, { responseType: 'blob' });
+  }
+
+  getFileName(url: string): Observable<any> {
+    return this.http.get(`${environment.apiBaseUrl}/file/name/${url}`);
+  }
 }

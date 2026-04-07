@@ -46,7 +46,6 @@ export class TimingMuellePageComponent implements OnInit {
           this.isLoading = false;
         },
         error: (err) => {
-            console.error(err);
             this.isLoading = false;
         }
     });
@@ -87,7 +86,6 @@ export class TimingMuellePageComponent implements OnInit {
                   this.toastr.success('Horario del muelle eliminado correctamente.','Éxito');
                 },
                 error: (err) => {
-                  console.error(err);
                   this.toastr.success('Error al eliminar el horario del muelle','Error');
                 }
             });;

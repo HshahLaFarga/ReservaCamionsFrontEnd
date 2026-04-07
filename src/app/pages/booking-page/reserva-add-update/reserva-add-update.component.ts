@@ -117,7 +117,7 @@ export class ReservaAddUpdateComponent implements OnInit {
   buildForm(): FormGroup {
     return this.fb.group({
       matricula_camion: ['', Validators.required],
-      tipo_camion: ['', Validators.required],
+      tipo_camion: [{ value: '', disabled: true }, Validators.required],
       numero_descargas: [1, [Validators.required, Validators.min(1)]],
       material1: ['', Validators.required],
       cantidad1: [0, [Validators.required]],
@@ -141,21 +141,29 @@ export class ReservaAddUpdateComponent implements OnInit {
   }
 
   setupValueChangeSubscriptions(): void {
-    this.bookingform.get('numero_escargas')?.valueChanges.subscribe(() => {
-      if (!this.disableCleanMaterials) {
+    this.bookingform.get('numero_descargas')?.valueChanges.subscribe((val) => {
+      // Si pasa a 1, nos aseguramos de que material2 y cantidad2 estén limpios
+      if (val == 1) {
         this.bookingform.patchValue({
-          material1: null,
-          cantidad1: null,
-          tipo_camion: null,
-          hora: null,
-          duracion_entrega: null,
-          muelle: null,
-          inicio: null,
-          fin: null,
-          pedidio2: null,
-        });
+          material2: '',
+          cantidad2: 0,
+          pedido2: '',
+          usarMismoCodigo: false
+        }, { emitEvent: false });
       }
-      this.disableCleanMaterials = false;
+      // Trigger recalculation of trucks in case material1 was already selected
+      const mat1 = this.bookingform.get('material1')?.value;
+      if (mat1) {
+        this.actualizarCamionesYMuelles(mat1);
+      }
+    });
+
+    // También reaccionar a cambios en material2
+    this.bookingform.get('material2')?.valueChanges.subscribe(() => {
+      const mat1 = this.bookingform.get('material1')?.value;
+      if (mat1) {
+        this.actualizarCamionesYMuelles(mat1);
+      }
     });
 
     // Actualizamos camiones/muelles según el material seleccionado
@@ -245,29 +253,57 @@ export class ReservaAddUpdateComponent implements OnInit {
 
   // 🔹 NUEVA FUNCIÓN: obtiene camiones/muelles del material cargado
   private actualizarCamionesYMuelles(materialId: number): void {
-    const material = this.materials.find(
+    const material1 = this.materials.find(
       (m) => m.material_id === Number(materialId)
     );
 
-    if (material && material.tipo_camiones && material.muelles) {
-      this.itemsDisponible = {
-        camiones: material.tipo_camiones,
-        muelles: material.muelles,
-      };
-
-      // Asignación automática si hay un solo camión
-      if (
-        this.method !== 'update' &&
-        this.itemsDisponible.camiones.length === 1 &&
-        !this.bookingform.get('tipo_camion')?.value
-      ) {
-        const unicoCamion = this.itemsDisponible.camiones[0];
-        this.bookingform
-          .get('tipo_camion')
-          ?.setValue(unicoCamion.tipo_camion_id);
-      }
-    } else {
+    if (!material1) {
       this.itemsDisponible = { camiones: [], muelles: [] };
+      this.bookingform.get('tipo_camion')?.disable();
+      return;
+    }
+
+    this.bookingform.get('tipo_camion')?.enable();
+
+    // Camiones compatibles con material 1
+    let camionesCompatibles = material1.tipo_camiones || [];
+    let muellesCompatibles = material1.muelles || [];
+
+    // Si hay un segundo material, buscamos la intersección
+    const numDescargas = this.bookingform.get('numero_descargas')?.value;
+    const material2Id = this.bookingform.get('material2')?.value;
+
+    if (numDescargas == 2 && material2Id) {
+      const material2 = this.materials.find(m => m.material_id === Number(material2Id));
+      if (material2) {
+        // Intersección de camiones
+        const camiones2Ids = (material2.tipo_camiones || []).map(c => c.tipo_camion_id);
+        camionesCompatibles = camionesCompatibles.filter(c => camiones2Ids.includes(c.tipo_camion_id));
+
+        // Intersección de muelles
+        const muelles2Ids = (material2.muelles || []).map(m => m.muelle_id);
+        muellesCompatibles = muellesCompatibles.filter(m => muelles2Ids.includes(m.muelle_id));
+      }
+    }
+
+    this.itemsDisponible = {
+      camiones: camionesCompatibles,
+      muelles: muellesCompatibles,
+    };
+
+    // Si el camión actualmente seleccionado ya no es válido, lo limpiamos
+    const currentTruckId = this.bookingform.get('tipo_camion')?.value;
+    if (currentTruckId && !camionesCompatibles.some(c => c.tipo_camion_id === Number(currentTruckId))) {
+      this.bookingform.get('tipo_camion')?.setValue('');
+    }
+
+    // Asignación automática si hay un solo camión
+    if (
+      this.method !== 'update' &&
+      camionesCompatibles.length === 1 &&
+      !this.bookingform.get('tipo_camion')?.value
+    ) {
+      this.bookingform.get('tipo_camion')?.setValue(camionesCompatibles[0].tipo_camion_id);
     }
   }
 
@@ -481,19 +517,19 @@ export class ReservaAddUpdateComponent implements OnInit {
       const maxSizePerFileMB = 5;
       const maxTotalSizeMB = 20;
 
-      let totalSize = 0;
+      let totalSize = this.selectedFiles.reduce((acc, f) => acc + (f.size / (1024 * 1024)), 0);
       const validFiles: File[] = [];
 
       for (const file of files) {
         const fileSizeMB = file.size / (1024 * 1024);
 
-        // Arxiu massa pesat
         if (fileSizeMB > maxSizePerFileMB) {
+          this.toastr.warning(`El archivo ${file.name} supera el límite de ${maxSizePerFileMB}MB`);
           continue;
         }
 
-        // S'ha escedit el limit de pes
         if (totalSize + fileSizeMB > maxTotalSizeMB) {
+          this.toastr.warning(`Se ha alcanzado el límite total de ${maxTotalSizeMB}MB`);
           break;
         }
 
@@ -501,7 +537,8 @@ export class ReservaAddUpdateComponent implements OnInit {
         totalSize += fileSizeMB;
       }
 
-      this.selectedFiles = validFiles;
+      this.selectedFiles = [...this.selectedFiles, ...validFiles];
+      input.value = ''; // Reset input to allow re-selection of the same file if deleted
     }
   }
 
@@ -697,7 +734,7 @@ export class ReservaAddUpdateComponent implements OnInit {
   deleteFile(file: BookingDocument) {
     const modalInformation: ConfirmData = {
       title: 'Eliminación de Documento',
-      message: `¿Está seguro de que desea eliminar el documento ${file.name}?, una vez eliminado no se podrá recuperar`,
+      message: `¿Está seguro de que desea eliminar el documento ${file.nombre}?, una vez eliminado no se podrá recuperar`,
     };
 
     const dialogRef = this.dialog.open(ConfirmModalComponent, {
@@ -712,12 +749,86 @@ export class ReservaAddUpdateComponent implements OnInit {
       if (result === true && file.documento_reserva_id) {
         this._bookingService.deleteFile(file.documento_reserva_id).subscribe({
           next: () => {
-            this.router.navigate(['bookings']);
+            // Refrescar lista local en lugar de navegar
+            this.existingFiles = this.existingFiles.filter(f => f.documento_reserva_id !== file.documento_reserva_id);
+            this.toastr.success('Documento eliminado correctamente');
           },
           error: (error) => {
-            console.error('Error eliminando archivo:', error);
+            this.toastr.error('Error al eliminar el documento');
           },
         });
+      }
+    });
+  }
+
+  removeSelectedFile(index: number): void {
+    this.selectedFiles.splice(index, 1);
+  }
+
+  getFile(url: string) {
+    this._bookingService.getFile(url).subscribe({
+      next: (response) => {
+        let mimeType = 'application/octet-stream';
+        if (url.endsWith('.pdf')) {
+          mimeType = 'application/pdf';
+        } else if (url.endsWith('.docx')) {
+          mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        }
+
+        const blob = new Blob([response], { type: mimeType });
+        const fileURL = URL.createObjectURL(blob);
+
+        if (url.endsWith('.pdf')) {
+          const modalInformation: ConfirmData = {
+            title: 'Previsualicación de PDF',
+            message: `¿Quieres ver una vista prévia del PDF?`,
+            cancelText: 'Previsualitza i descarrega',
+            confirmText: 'Vista prèvia'
+          };
+
+          const dialogRef = this.dialog.open(ConfirmModalComponent, {
+            maxWidth: '95vw',
+            width: '65%',
+            maxHeight: '90vh',
+            data: modalInformation,
+            panelClass: 'app-confirm-modal',
+          });
+
+          dialogRef.afterClosed().subscribe((result: boolean) => {
+            if (result) {
+              window.open(fileURL, '_blank');
+            } else {
+              this._bookingService.getFileName(url).subscribe({
+                next: (file) => {
+                  const a = document.createElement('a');
+                  a.href = fileURL;
+                  a.download = file.nombre;
+                  document.body.appendChild(a);
+                  a.click();
+                  a.remove();
+                },
+                error: (err) => {
+                }
+              });
+            }
+          });
+
+        } else {
+          this._bookingService.getFileName(url).subscribe({
+            next: (file) => {
+              const a = document.createElement('a');
+              a.href = fileURL;
+              a.download = file.nombre;
+              document.body.appendChild(a);
+              a.click();
+              a.remove();
+            },
+            error: (err) => {
+            },
+          });
+        }
+      },
+      error: (err) => {
       }
     });
   }

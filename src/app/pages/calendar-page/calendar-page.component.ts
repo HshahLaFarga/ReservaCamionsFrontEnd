@@ -196,23 +196,19 @@ export class CalendarPageComponent implements OnInit {
         this.filterEventsBySelectedMuelles();
       },
       error: (err) => {
-        console.error(err);
       },
     });
   }
 
   getBookings() {
     this.isLoading = true;
-    console.log('Check isExternalUser:', this.isExternalUser);
     this._calendarPageService.getAllBookings().subscribe({
       next: (response) => {
-        console.log('Datos raw del backend (Reservas):', response);
         this.bookings = response;
         this.filterEventsBySelectedMuelles();
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error obtenint bookings', err);
         this.isLoading = false;
       },
     });
@@ -376,7 +372,6 @@ export class CalendarPageComponent implements OnInit {
 
   /*Hover Effect on Full Calendar event */
   handleEventMouseEnter(info: any) {
-    console.log('Info hover evento: ', info);
 
     const el = info.el as HTMLElement;
     el.classList.add('show-tooltip');

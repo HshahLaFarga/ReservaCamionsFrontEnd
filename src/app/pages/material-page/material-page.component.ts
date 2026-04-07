@@ -43,7 +43,6 @@ export class MaterialPageComponent implements OnInit {
     // Obtenim la info i la formatem acord perquè la puguem passar correctament al genèric list
     this._materialPageService.getMaterials().subscribe({
       next: (materials) => {
-        console.log('Materials loaded: ', materials);
         this.materials = materials.map((material: Material) => {
           // Formatem el camp d'estat
           
@@ -62,7 +61,6 @@ export class MaterialPageComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error getting materials', err);
         this.isLoading = true;
       }
     })
@@ -90,7 +88,6 @@ export class MaterialPageComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error eliminando material',  err);
         this.isLoading = false;
       }
     });

@@ -102,6 +102,7 @@ export const routes: Routes = [
 
       { path: 'restrictions', component: RestrictionPageComponent, canActivate: [adminGuard] },
     ]
-  }
+  },
+  { path: '**', redirectTo: '' }
 ];
 

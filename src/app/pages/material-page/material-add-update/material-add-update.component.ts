@@ -187,7 +187,6 @@ export class MaterialAddUpdateComponent implements OnInit {
       return;
     }
     const materialData = this.form.value;
-    console.log('Material data to submit: ', materialData);
 
     let response: Observable<any>;
 
@@ -204,7 +203,6 @@ export class MaterialAddUpdateComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error storing or updating material ', err);
         this.isLoading = false;
       }
     });

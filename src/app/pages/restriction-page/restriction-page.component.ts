@@ -141,8 +141,6 @@ export class RestrictionPageComponent {
     });
   });
 
-  console.log("Añadir:", toAdd);
-  console.log("Eliminar:", toDelete);
 
   // Aquí llamas al service
   if (toAdd.length) {
@@ -173,6 +171,5 @@ export class RestrictionPageComponent {
   onCheckboxChange(rowId: number, colId: number, checked: boolean) {
     // Marcar espejo si es bidireccional
     this.matrix[colId][rowId] = checked;
-    console.log('changed: ' + colId, rowId, checked);
   }
 }

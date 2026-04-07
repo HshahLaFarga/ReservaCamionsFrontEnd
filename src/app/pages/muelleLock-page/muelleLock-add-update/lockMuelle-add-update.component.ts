@@ -54,7 +54,6 @@ export class LockMuelleAddUpdateComponent implements OnInit {
       },
       error: (err) => {
         this.toastr.error(err.error.message, 'Error');
-        console.error('Error adding or updating lockMuelles ', err);
         this.isLoading = false;
       }
     });

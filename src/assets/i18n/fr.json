@@ -32,13 +32,14 @@
   "BOOKING_PAGE": {
     "TITLE": "Réservations",
     "HORA_INICIO": "Heure de début",
+    "HORA_FIN": "Heure de fin",
     "TIPO_CAMION": "Type de camion 1",
     "MATRICULA_CAMION": "Plaque du camion 1",
     "ID_MATERIALS": "ID matériaux",
     "MUELLE": "Quai",
     "CANTIDAD": "Quantité",
     "ID_PROVEEDOR": "ID fournisseur",
-    "PEDIDO": "Commande",
+    "PEDIDO": "Commande SAP",
     "DOCUMENTOS": "Documents",
     "ACCIONES": "Actions",
     "ANADIR": "Ajouter une réservation"

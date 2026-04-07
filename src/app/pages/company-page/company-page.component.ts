@@ -48,9 +48,6 @@ export class CompanyPageComponent implements OnInit {
         });
         this.isLoading = false;
       },
-      error: (err) => {
-        console.error('Error getting companys ', err);
-      }
     })
   }
 
@@ -76,7 +73,6 @@ export class CompanyPageComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error on delete company', err);
         this.toastr.error(err.error.message, 'Error al eliminar la empresa');
         this.isLoading = false;
       }

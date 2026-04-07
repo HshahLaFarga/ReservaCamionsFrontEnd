@@ -31,7 +31,6 @@ export class UserAddUdpateComponent implements OnInit {
     if (state.method === 'update') {
       this.method = state.method;
       const { rol, ...resto } = state.user;
-      console.log('Usurio a editar:', state.user);
       this.initialUserData = { ...rol, ...resto };
     }
   }
@@ -57,7 +56,6 @@ export class UserAddUdpateComponent implements OnInit {
 
       },
       error: (err) => {
-        console.error(err.error.message || 'Ha ocurrido un error', err);
         this.isLoading = false;
         this.toastr.error(err.error.message || 'Ha ocurrido un error', 'Error');
       }

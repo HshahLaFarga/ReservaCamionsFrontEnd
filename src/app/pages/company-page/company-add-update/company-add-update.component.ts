@@ -54,7 +54,6 @@ export class CompanyAddUpdateComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error creating on updating company ', err)
         this.isLoading = false;
       }
     });
