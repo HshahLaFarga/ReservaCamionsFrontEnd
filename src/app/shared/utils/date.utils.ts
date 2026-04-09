@@ -4,6 +4,12 @@ export const mysqlToDateInput = (mysqlDate: string): string | null => {
   return mysqlDate.split(" ")[0]; // talla l'hora i es queda amb "2025-08-30"
 };
 
+// Converteix una data de MySQL ("2025-08-30 15:30:00") a "YYYY-MM-DDTHH:mm" per a l'input type="datetime-local"
+export const mysqlToDatetimeInput = (mysqlDate: string): string | null => {
+  if (!mysqlDate) return null;
+  return mysqlDate.replace(" ", "T").substring(0, 16);
+};
+
 // Converteix ISO format més llegible per UI (p. ex. "30/08/2025 00:00")
 export const formatDate = (isoString: string): string => {
   const date = new Date(isoString);

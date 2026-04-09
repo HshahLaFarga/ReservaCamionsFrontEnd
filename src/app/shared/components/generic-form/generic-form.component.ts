@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule, NgClass } from '@angular/common';
 import { GenericFormService } from './generic-from.service';
-import { mysqlToDateInput } from '../../utils/date.utils';
+import { mysqlToDateInput, mysqlToDatetimeInput, formatDateToMySQL } from '../../utils/date.utils';
 
 @Component({
   selector: 'app-generic-form',
@@ -56,7 +56,9 @@ export class GenericFormComponent implements OnInit {
       const patchedData: any = { ...this.initialData };
 
       this.columns.forEach((col) => {
-        if (col.Type.includes('date') && patchedData[col.Field]) {
+        if (col.Type.includes('datetime') && patchedData[col.Field]) {
+          patchedData[col.Field] = mysqlToDatetimeInput(patchedData[col.Field]);
+        } else if (col.Type.includes('date') && patchedData[col.Field]) {
           patchedData[col.Field] = mysqlToDateInput(patchedData[col.Field]);
         }
       });
@@ -92,7 +94,9 @@ export class GenericFormComponent implements OnInit {
       let initialValue = this.initialData ? this.initialData[col.Field] : '';
 
       // Formatejar les dates perquè es puguin interpretar
-      if (col.Type.includes('date') && initialValue) {
+      if (col.Type.includes('datetime') && initialValue) {
+        initialValue = mysqlToDatetimeInput(initialValue);
+      } else if (col.Type.includes('date') && initialValue) {
         initialValue = mysqlToDateInput(initialValue);
       }
 
@@ -121,6 +125,7 @@ export class GenericFormComponent implements OnInit {
     if (/^tinyint\(1\)/.test(columnType)) return 'checkbox';
     if (columnType.includes('int')) return 'number';
     if (columnType.includes('varchar') || columnType.includes('text')) return 'text';
+    if (columnType.includes('datetime')) return 'datetime-local';
     if (columnType.includes('date')) return 'date';
     if (columnType.includes('time')) return 'time';
     return 'text';
@@ -147,6 +152,11 @@ export class GenericFormComponent implements OnInit {
         const col = this.columns.find(c => c.Field === key);
 
         if (col) {
+          // Si és datetime formatem la data perquè a API arribi ben per defecte a MYSQL format (amb timestamp ISO a local pot fallar depenent del timezone back vs front)
+          if (col.Type.includes('datetime') && value) {
+            value = formatDateToMySQL(value);
+          }
+
           // Si és date convertir a format MySQL
           // if (col.Type.includes('date') && value) {
           //   const [yyyy, mm, dd] = value.split('-');

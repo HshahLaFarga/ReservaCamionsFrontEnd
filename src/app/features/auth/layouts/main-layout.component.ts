@@ -7,14 +7,13 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, SidebarComponent, NavbarComponent, TranslateModule], 
+  imports: [RouterOutlet, SidebarComponent, NavbarComponent, TranslateModule],
   templateUrl: 'main-layout.component.html',
   styles: []
 })
 export class MainLayoutComponent {
   constructor(private translate: TranslateService) {
-    translate.addLangs(['en', 'es', 'fr']);
-    const browserLang = translate.getBrowserLang() || 'en';
-    translate.use(translate.getLangs().includes(browserLang) ? browserLang : 'en');
+    translate.addLangs(['en', 'es', 'ca', 'fr']);
+    translate.use(translate.getDefaultLang() || 'es');
   }
 }
