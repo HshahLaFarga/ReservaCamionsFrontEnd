@@ -9,13 +9,17 @@ import { environment } from '../../core/envoirment/envoirment';
 export class CalendarPageService {
   constructor(
     private http: HttpClient
-  ) {}
+  ) { }
 
   getAllBookings(): Observable<any> {
     return this.http.get(`${environment.apiBaseUrl}/reservas/calendar`);
   }
 
-  getMuelles(): Observable<any>{
+  getMuelles(): Observable<any> {
     return this.http.get(`${environment.apiBaseUrl}/muelles`);
+  }
+
+  updateBookingTime(id: number, payload: { inicio: string, fin: string, muelle_id: number }): Observable<any> {
+    return this.http.patch(`${environment.apiBaseUrl}/reserva/${id}`, payload);
   }
 }

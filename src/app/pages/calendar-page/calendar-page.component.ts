@@ -11,6 +11,7 @@ import { Booking } from '../../core/models/reserva.model';
 import { Muelle } from '../../core/models/muelle.model';
 import { LoginService } from '../../features/auth/login/login.service';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-calendar-page',
@@ -84,10 +85,13 @@ export class CalendarPageComponent implements OnInit {
     private _calendarPageService: CalendarPageService,
     private _loginService: LoginService,
     private router: Router,
+    private toastr: ToastrService,
   ) { }
 
   ngOnInit(): void {
     this.loadDefaultData();
+    this.calendarOptions.editable = !this.isExternalUser;
+    this.calendarOptions.eventDrop = this.handleEventDrop.bind(this);
   }
 
   get isExternalUser(): boolean {
@@ -111,6 +115,7 @@ export class CalendarPageComponent implements OnInit {
       hour12: false,
     },
     slotDuration: '00:10:00', // Cada slot de 30 minutos (hace que se vea más amplio)
+    eventDurationEditable: false, // Bloquear la redimensión (sólo permite mover)
     events: [],
     // eventMouseEnter: this.handleEventMouseEnter.bind(this),
     // eventMouseLeave: this.handleEventMouseLeave.bind(this),
@@ -229,6 +234,8 @@ export class CalendarPageComponent implements OnInit {
 
           if (this.isExternalUser) {
             newEvents.push({
+              groupId: String(b.reserva_id),
+              id: `${b.reserva_id}`,
               title: 'OCUPADO',
               start: inicio,
               end: fin,
@@ -244,6 +251,8 @@ export class CalendarPageComponent implements OnInit {
           if (!material2) {
             // Reserva normal de 1 material
             newEvents.push({
+              groupId: String(b.reserva_id),
+              id: `${b.reserva_id}`,
               title: titleMat1,
               start: inicio,
               end: fin,
@@ -261,6 +270,8 @@ export class CalendarPageComponent implements OnInit {
 
             // Evento 1
             newEvents.push({
+              groupId: String(b.reserva_id),
+              id: `${b.reserva_id}-1`,
               title: titleMat1,
               start: inicio,
               end: fin,
@@ -276,6 +287,8 @@ export class CalendarPageComponent implements OnInit {
 
             // Evento 2 (con un estilo ligeramente rayado o diferente en CSS)
             newEvents.push({
+              groupId: String(b.reserva_id),
+              id: `${b.reserva_id}-2`,
               title: titleMat2,
               start: inicio,
               end: fin,
@@ -390,5 +403,49 @@ export class CalendarPageComponent implements OnInit {
     el.classList.remove('show-tooltip');
     el.removeAttribute('data-title');
     el.removeAttribute('data-date');
+  }
+
+  handleEventDrop(info: any) {
+    if (this.isExternalUser) {
+      info.revert();
+      return;
+    }
+
+    const event = info.event;
+    const reserva_id = event.extendedProps['reserva_id'];
+    const muelle_id = event.extendedProps['muelle']?.muelle_id || event.extendedProps['muelle_id'];
+    
+    const startObj = event.start;
+    const endObj = event.end;
+    
+    if (!startObj || !endObj) {
+      info.revert();
+      return;
+    }
+
+    const inicioStr = this.formatDateToMySQL(startObj);
+    const finStr = this.formatDateToMySQL(endObj);
+
+    this._calendarPageService.updateBookingTime(reserva_id, {
+      inicio: inicioStr,
+      fin: finStr,
+      muelle_id: muelle_id
+    }).subscribe({
+      next: (res) => {
+        this.toastr.success('Reserva reprogramada exitosamente', 'Actualizada');
+      },
+      error: (err) => {
+        // Revert FullCalendar visually (rollback optimista)
+        info.revert();
+        const errorMessage = err.error?.message || 'Error al reprogramar la reserva';
+        this.toastr.error(errorMessage, 'Movimiento revertido');
+      }
+    });
+  }
+
+  private formatDateToMySQL(date: Date): string {
+    const pad = (num: number) => num.toString().padStart(2, '0');
+    // Fullcalendar usa fechas locales, así que getFullYear etc devuelve local, coincidiendo visualmente.
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:00`;
   }
 }
