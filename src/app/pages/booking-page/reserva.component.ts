@@ -1,7 +1,7 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { ReactiveFormsModule, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,6 +9,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { ReservaService } from './reserva.service';
 import { Booking } from '../../core/models/reserva.model';
 import { LoginService } from '../../features/auth/login/login.service';
@@ -26,8 +28,22 @@ import { ToastrService } from 'ngx-toastr';
   standalone: true,
   templateUrl: './reserva.component.html',
   styleUrl: './reserva.component.scss',
-  imports: [CommonModule, TranslateModule, ReactiveFormsModule, MatTableModule, MatPaginatorModule, MatIconModule, MatSelectModule, MatInputModule, MatFormFieldModule, MatSortModule],
-  providers: [DatePipe]
+  imports: [
+    CommonModule, 
+    TranslateModule, 
+    ReactiveFormsModule, 
+    MatTableModule, 
+    MatPaginatorModule, 
+    MatIconModule, 
+    MatSelectModule, 
+    MatInputModule, 
+    MatFormFieldModule, 
+    MatSortModule,
+    MatDatepickerModule,
+    MatNativeDateModule
+  ],
+  providers: [DatePipe],
+  encapsulation: ViewEncapsulation.None
 })
 export class ReservaComponent implements OnInit, AfterViewInit {
 
@@ -43,6 +59,11 @@ export class ReservaComponent implements OnInit, AfterViewInit {
   sortField: string = 'inicio';
   sortDir: string = 'desc';
 
+  dateRange = new FormGroup({
+    start: new FormControl<Date | null>(null),
+    end: new FormControl<Date | null>(null)
+  });
+
   // Data for printing
   printingBooking: any = null;
   printData: any = null;
@@ -52,7 +73,8 @@ export class ReservaComponent implements OnInit, AfterViewInit {
     private _loginService: LoginService,
     private router: Router,
     private dialog: MatDialog,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private datePipe: DatePipe
   ) { }
 
   displayedColumns: string[] = [];
@@ -78,6 +100,19 @@ export class ReservaComponent implements OnInit, AfterViewInit {
       if (this.paginator) this.paginator.pageIndex = 0;
       this.getAllBookings();
     });
+
+    this.dateRange.valueChanges.subscribe((value: { start?: Date | null, end?: Date | null }) => {
+      if ((value.start && value.end) || (!value.start && !value.end)) {
+        this.pageIndex = 0;
+        if (this.paginator) this.paginator.pageIndex = 0;
+        this.getAllBookings();
+      }
+    });
+  }
+
+  clearDateRange(event: Event) {
+    event.stopPropagation();
+    this.dateRange.reset();
   }
 
   ngAfterViewInit() {
@@ -102,8 +137,23 @@ export class ReservaComponent implements OnInit, AfterViewInit {
     const page = this.pageIndex + 1; // Laravel usa base-1
     const search = this.searchControl.value || '';
     const filter = this.statusFilterControl.value || 'pendientes';
+    
+    // Formatear fechas para la API (YYYY-MM-DD) respetando la zona horaria local
+    const startDate = this.dateRange.value.start ? 
+      this.datePipe.transform(this.dateRange.value.start, 'yyyy-MM-dd') || undefined : undefined;
+    const endDate = this.dateRange.value.end ? 
+      this.datePipe.transform(this.dateRange.value.end, 'yyyy-MM-dd') || undefined : undefined;
 
-    this._bookingService.getAllBookings(page, this.pageSize, search, filter, this.sortField, this.sortDir).subscribe({
+    this._bookingService.getAllBookings(
+      page, 
+      this.pageSize, 
+      search, 
+      filter, 
+      this.sortField, 
+      this.sortDir,
+      startDate,
+      endDate
+    ).subscribe({
       next: (response) => {
         this.bookings = response.data; // Paginación de Laravel devuelve data i totals a part
         this.totalRecords = response.total;

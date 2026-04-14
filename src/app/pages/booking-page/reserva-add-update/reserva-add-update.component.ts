@@ -570,7 +570,7 @@ export class ReservaAddUpdateComponent implements OnInit {
       muelle: this.booking?.muelle?.muelle_id,
       inicio: this.booking.inicio,
       fin: this.booking.fin,
-      estado: this.booking?.estado?.estado_id,
+      estado: this.booking?.estado_id || this.booking?.estado?.estado_id,
       proveedor: this.booking?.proveedor?.proveedor_id,
       transportista: this.booking?.transportista?.transportista_id,
       pedido1: this.booking.pedido1 || '',

@@ -11,21 +11,52 @@
     </button>
   </div>
 
-  <div class="flex flex-col md:flex-row gap-4 mb-6 relative">
-    <div class="w-full md:w-2/3 relative group">
+  <div class="flex flex-col lg:flex-row gap-4 mb-6 relative items-center">
+    <!-- Buscador -->
+    <div class="w-full lg:flex-1 relative group">
       <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
         <mat-icon class="text-gray-400 group-focus-within:text-blue-600 transition-colors">search</mat-icon>
       </div>
       <input type="text" [formControl]="searchControl" placeholder="Buscar reservas, matrículas, materiales, proveedores..." 
-        class="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 focus:border-blue-500 text-gray-800 rounded-xl outline-none focus:ring-4 focus:ring-blue-500/15 transition-all duration-300 placeholder:text-gray-400 font-medium shadow-sm hover:border-gray-300">
+        class="w-full h-[52px] pl-12 pr-4 bg-white border border-gray-200 focus:border-blue-500 text-gray-800 rounded-xl outline-none focus:ring-4 focus:ring-blue-500/15 transition-all duration-300 placeholder:text-gray-400 font-medium shadow-sm hover:border-gray-300">
     </div>
 
-    <div class="w-full md:w-1/3 min-w-[200px]">
-      <div class="relative h-full">
+    <!-- Filtro de Fechas -->
+    <div class="w-full lg:w-80 relative group">
+      <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none z-10">
+        <mat-icon class="text-gray-400 group-focus-within:text-blue-600 transition-colors !text-[20px]">calendar_today</mat-icon>
+      </div>
+
+      <mat-form-field appearance="outline" 
+        class="w-full [&_.mat-mdc-form-field-subscript-wrapper]:hidden 
+               [&_.mat-mdc-text-field-wrapper]:h-[52px] [&_.mat-mdc-text-field-wrapper]:bg-white [&_.mat-mdc-text-field-wrapper]:rounded-xl [&_.mat-mdc-text-field-wrapper]:transition-all [&_.mat-mdc-text-field-wrapper]:duration-300
+               [&_.mdc-notched-outline__leading]:border-gray-200 [&_.mdc-notched-outline__notch]:border-gray-200 [&_.mdc-notched-outline__trailing]:border-gray-200 
+               [&.mat-focused_.mdc-notched-outline__leading]:border-blue-500/50 [&.mat-focused_.mdc-notched-outline__notch]:border-blue-500/50 [&.mat-focused_.mdc-notched-outline__trailing]:border-blue-500/50
+               [&.mat-focused_.mat-mdc-text-field-wrapper]:ring-4 [&.mat-focused_.mat-mdc-text-field-wrapper]:ring-blue-500/15
+               [&_.mat-mdc-form-field-flex]:h-[52px] [&_.mat-mdc-form-field-flex]:items-center [&_.mat-mdc-form-field-infix]:py-0 [&_.mat-mdc-form-field-infix]:pl-10 [&_.mat-mdc-form-field-infix]:flex [&_.mat-mdc-form-field-infix]:items-center [&_.mat-mdc-form-field-infix]:min-h-full">
+        
+        <mat-date-range-input [formGroup]="dateRange" [rangePicker]="picker" class="font-medium text-sm">
+          <input matStartDate formControlName="start" placeholder="Desde">
+          <input matEndDate formControlName="end" placeholder="Hasta">
+        </mat-date-range-input>
+
+        <button mat-icon-button matSuffix *ngIf="dateRange.value.start || dateRange.value.end" 
+          (click)="clearDateRange($event)" class="text-gray-400 hover:text-red-500 transition-colors mr-1">
+          <mat-icon style="font-size: 18px;">close</mat-icon>
+        </button>
+        <mat-datepicker-toggle matIconSuffix [for]="picker" class="text-gray-400"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </div>
+
+    <!-- Filtro de Estado -->
+    <div class="w-full lg:w-60 min-w-[200px]">
+      <div class="relative h-[52px]">
         <select [formControl]="statusFilterControl"
-          class="w-full h-full pl-4 pr-10 py-3 bg-white border border-gray-200 focus:border-blue-500 text-gray-800 rounded-xl outline-none focus:ring-4 focus:ring-blue-500/15 transition-all duration-300 font-medium shadow-sm hover:border-gray-300 appearance-none cursor-pointer">
+          class="w-full h-full pl-4 pr-10 bg-white border border-gray-200 focus:border-blue-500 text-gray-800 rounded-xl outline-none focus:ring-4 focus:ring-blue-500/15 transition-all duration-300 font-medium shadow-sm hover:border-gray-300 appearance-none cursor-pointer">
           <option value="pendientes">Reservas pendientes</option>
           <option value="antiguas">Reservas antiguas</option>
+          <option value="no_asistidos">Reservas no asistidas</option>
           <option value="todas">Todas las reservas</option>
         </select>
         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
@@ -162,130 +193,130 @@
 </div>
 
 <!-- Secció d'Impressió -->
-<div class="print-container" *ngIf="printingBooking && printData">
-  <div class="header-band"></div>
+<div class="print-container hidden print:block print:font-sans print:text-gray-800 print:leading-relaxed print:bg-white print:w-full print:absolute print:top-0 print:left-0 print:z-[9999]" *ngIf="printingBooking && printData">
+  <div class="header-band bg-[#008c8c] h-5 w-full print:[print-color-adjust:exact]"></div>
 
-  <div class="container">
-    <div class="header">
-      <img src="assets/img/LogoLaFarga.png" alt="La Farga" class="logo" onerror="this.style.display='none'">
-      <div class="title">Detalle de Reserva</div>
+  <div class="container p-10 max-w-[800px] mx-auto">
+    <div class="header flex justify-between items-center mb-10 border-b-2 border-gray-100 pb-5">
+      <img src="assets/img/LogoLaFarga.png" alt="La Farga" class="logo max-h-[60px]" onerror="this.style.display='none'">
+      <div class="title text-2xl text-[#008c8c] font-semibold uppercase tracking-wider">Detalle de Reserva</div>
     </div>
 
-    <div class="grid">
+    <div class="grid grid-cols-2 gap-[30px] mb-[30px]">
       <!-- Información Principal -->
-      <div class="section">
-        <div class="section-title">Información General</div>
+      <div class="section bg-gray-50 p-5 rounded-lg border-l-4 border-[#008c8c] break-inside-avoid print:[print-color-adjust:exact]">
+        <div class="section-title text-[#C45438] text-sm uppercase font-bold mb-[15px] tracking-wide">Información General</div>
 
-        <div class="item">
-          <span class="label">Empresa LFYCS</span>
-          <div class="value">{{ printData.empresa?.nombre || '-' }}</div>
+        <div class="item mb-[15px]">
+          <span class="label block text-[11px] text-gray-500 uppercase mb-0.5">Empresa LFYCS</span>
+          <div class="value text-[15px] font-medium text-black">{{ printData.empresa?.nombre || '-' }}</div>
         </div>
 
-        <div class="item">
-          <span class="label">ID Reserva</span>
-          <div class="value">#{{ printingBooking.reserva_id || '-' }}</div>
+        <div class="item mb-[15px]">
+          <span class="label block text-[11px] text-gray-500 uppercase mb-0.5">ID Reserva</span>
+          <div class="value text-[15px] font-medium text-black">#{{ printingBooking.reserva_id || '-' }}</div>
         </div>
 
-        <div class="item">
-          <span class="label">Pedido</span>
-          <div class="value">{{ printingBooking.pedido1 || '-' }}</div>
+        <div class="item mb-[15px]">
+          <span class="label block text-[11px] text-gray-500 uppercase mb-0.5">Pedido</span>
+          <div class="value text-[15px] font-medium text-black">{{ printingBooking.pedido1 || '-' }}</div>
         </div>
       </div>
 
       <!-- Horarios y Ubicación -->
-      <div class="section">
-        <div class="section-title">Logística</div>
+      <div class="section bg-gray-50 p-5 rounded-lg border-l-4 border-[#008c8c] break-inside-avoid print:[print-color-adjust:exact]">
+        <div class="section-title text-[#C45438] text-sm uppercase font-bold mb-[15px] tracking-wide">Logística</div>
 
-        <div class="item">
-          <span class="label">Muelle Asignado</span>
-          <div class="value badge">{{ printingBooking.muelle?.nombre || 'Sin asignar' }}</div>
+        <div class="item mb-[15px]">
+          <span class="label block text-[11px] text-gray-500 uppercase mb-0.5">Muelle Asignado</span>
+          <div class="value badge inline-block px-2 py-1 rounded bg-gray-200 text-xs font-bold print:[print-color-adjust:exact]">{{ printingBooking.muelle?.nombre || 'Sin asignar' }}</div>
         </div>
 
-        <div class="item">
-          <span class="label">Fecha y Hora Inicio</span>
-          <div class="value">{{ printingBooking.inicio | date:'dd/MM/yyyy HH:mm' }}</div>
+        <div class="item mb-[15px]">
+          <span class="label block text-[11px] text-gray-500 uppercase mb-0.5">Fecha y Hora Inicio</span>
+          <div class="value text-[15px] font-medium text-black">{{ printingBooking.inicio | date:'dd/MM/yyyy HH:mm' }}</div>
         </div>
 
-        <div class="item">
-          <span class="label">Fecha y Hora Fin</span>
-          <div class="value">{{ printingBooking.fin | date:'dd/MM/yyyy HH:mm' }}</div>
+        <div class="item mb-[15px]">
+          <span class="label block text-[11px] text-gray-500 uppercase mb-0.5">Fecha y Hora Fin</span>
+          <div class="value text-[15px] font-medium text-black">{{ printingBooking.fin | date:'dd/MM/yyyy HH:mm' }}</div>
         </div>
 
-        <div class="item">
-          <span class="label">Duración Estimada</span>
-          <div class="value">{{ printingBooking.duracion || '-' }} min</div>
+        <div class="item mb-[15px]">
+          <span class="label block text-[11px] text-gray-500 uppercase mb-0.5">Duración Estimada</span>
+          <div class="value text-[15px] font-medium text-black">{{ printingBooking.duracion || '-' }} min</div>
         </div>
       </div>
 
       <!-- Transporte -->
-      <div class="section">
-        <div class="section-title">Transporte</div>
+      <div class="section bg-gray-50 p-5 rounded-lg border-l-4 border-[#008c8c] break-inside-avoid print:[print-color-adjust:exact]">
+        <div class="section-title text-[#C45438] text-sm uppercase font-bold mb-[15px] tracking-wide">Transporte</div>
 
-        <div class="item">
-          <span class="label">Proveedor</span>
-          <div class="value">{{ printData.provider?.nombre || '-' }}</div>
+        <div class="item mb-[15px]">
+          <span class="label block text-[11px] text-gray-500 uppercase mb-0.5">Proveedor</span>
+          <div class="value text-[15px] font-medium text-black">{{ printData.provider?.nombre || '-' }}</div>
         </div>
 
-        <div class="item">
-          <span class="label">Transportista (Carrier)</span>
-          <div class="value">{{ printData.Carrier?.nombre || '-' }}</div>
+        <div class="item mb-[15px]">
+          <span class="label block text-[11px] text-gray-500 uppercase mb-0.5">Transportista (Carrier)</span>
+          <div class="value text-[15px] font-medium text-black">{{ printData.Carrier?.nombre || '-' }}</div>
         </div>
 
-        <div class="item">
-          <span class="label">Tipo Camión</span>
-          <div class="value">{{ printData.camion?.nombre || '-' }}</div>
+        <div class="item mb-[15px]">
+          <span class="label block text-[11px] text-gray-500 uppercase mb-0.5">Tipo Camión</span>
+          <div class="value text-[15px] font-medium text-black">{{ printData.camion?.nombre || '-' }}</div>
         </div>
 
-        <div class="item">
-          <span class="label">Matrícula</span>
-          <div class="value" style="font-family: monospace; font-size: 16px;">{{ printingBooking.matricula_camion || '-'
+        <div class="item mb-[15px]">
+          <span class="label block text-[11px] text-gray-500 uppercase mb-0.5">Matrícula</span>
+          <div class="value text-base font-mono text-black">{{ printingBooking.matricula_camion || '-'
             }}</div>
         </div>
       </div>
 
       <!-- Materiales -->
-      <div class="section">
-        <div class="section-title">Carga</div>
+      <div class="section bg-gray-50 p-5 rounded-lg border-l-4 border-[#008c8c] break-inside-avoid print:[print-color-adjust:exact]">
+        <div class="section-title text-[#C45438] text-sm uppercase font-bold mb-[15px] tracking-wide">Carga</div>
 
-        <div class="item">
-          <span class="label">Materiales</span>
-          <div class="value">
-            <ul *ngIf="printData.materials?.length; else noMaterials">
-              <li *ngFor="let m of printData.materials">{{ m.nombre }}</li>
+        <div class="item mb-[15px]">
+          <span class="label block text-[11px] text-gray-500 uppercase mb-0.5">Materiales</span>
+          <div class="value text-[15px] font-medium text-black">
+            <ul class="m-0 pl-5 list-disc" *ngIf="printData.materials?.length; else noMaterials">
+              <li class="mb-1" *ngFor="let m of printData.materials">{{ m.nombre }}</li>
             </ul>
             <ng-template #noMaterials>Sin materiales</ng-template>
           </div>
         </div>
 
-        <div class="item">
-          <span class="label">Cantidades</span>
-          <div class="value">
+        <div class="item mb-[15px]">
+          <span class="label block text-[11px] text-gray-500 uppercase mb-0.5">Cantidades</span>
+          <div class="value text-[15px] font-medium text-black">
             <div *ngIf="printingBooking.cantidad1">{{ printingBooking.cantidad1 }} (Mat 1)</div>
             <div *ngIf="printingBooking.cantidad2">{{ printingBooking.cantidad2 }} (Mat 2)</div>
             <div *ngIf="!printingBooking.cantidad1 && !printingBooking.cantidad2">-</div>
           </div>
         </div>
 
-        <div class="item">
-          <span class="label">Aduana</span>
-          <div class="value">{{ printingBooking.aduana || 'No' }}</div>
+        <div class="item mb-[15px]">
+          <span class="label block text-[11px] text-gray-500 uppercase mb-0.5">Aduana</span>
+          <div class="value text-[15px] font-medium text-black">{{ printingBooking.aduana || 'No' }}</div>
         </div>
       </div>
 
       <!-- Notas -->
-      <div class="section description-box" *ngIf="printingBooking.notas">
-        <div class="section-title">Notas Adicionales</div>
-        <div class="value" style="white-space: pre-wrap;">{{ printingBooking.notas }}</div>
+      <div class="section bg-gray-50 p-5 rounded-lg border-l-4 border-[#008c8c] break-inside-avoid print:[print-color-adjust:exact] col-span-2" *ngIf="printingBooking.notas">
+        <div class="section-title text-[#C45438] text-sm uppercase font-bold mb-[15px] tracking-wide">Notas Adicionales</div>
+        <div class="value text-[15px] font-medium text-black whitespace-pre-wrap">{{ printingBooking.notas }}</div>
       </div>
 
     </div>
 
-    <div class="footer">
+    <div class="footer mt-[50px] text-center text-xs text-gray-500 border-t border-gray-100 pt-5">
       <p>Este documento es un comprobante de reserva generado el {{ printData.today | date:'dd/MM/yyyy HH:mm:ss' }}.</p>
       <p>Teléfono de incidencias cita previa: <strong>93 859 42 86</strong> - <strong>93 859 41 00</strong> ext:
         <strong>329</strong></p>
     </div>
   </div>
 
-  <div class="footer-band"></div>
+  <div class="footer-band bg-[#C45438] h-[10px] w-full fixed bottom-0 left-0 print:[print-color-adjust:exact]"></div>
 </div>

@@ -271,17 +271,27 @@
     </div>
 
     <!-- Acciones Finales -->
-    <div class="pt-6 border-t border-gray-100 flex justify-end gap-3">
-      <button type="button" (click)="onCancel()"
-        class="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
-        Cancelar
-      </button>
-      <button type="submit" [disabled]="bookingform.invalid || isLoading" [ngClass]="{
-          'bg-[#004b87] hover:bg-[#003666] text-white shadow-sm': bookingform.valid,
-          'bg-gray-300 text-gray-500 cursor-not-allowed': bookingform.invalid
-        }" class="px-6 py-2.5 rounded-lg text-sm font-medium transition-colors">
-        {{method === 'update'? 'Guardar Cambios' : 'Confirmar Pedido'}}
-      </button>
+    <div class="pt-6 border-t border-gray-100 flex items-center justify-between">
+      <!-- Aviso de campos obligatorios -->
+      <div>
+        <div class="text-sm text-amber-600 font-medium flex items-center gap-1.5" *ngIf="bookingform.invalid">
+          <mat-icon style="font-size: 18px; width: 18px; height: 18px;">warning</mat-icon>
+          <span>Faltan campos obligatorios por completar.</span>
+        </div>
+      </div>
+      <!-- Botones -->
+      <div class="flex gap-3">
+        <button type="button" (click)="onCancel()"
+          class="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
+          Cancelar
+        </button>
+        <button type="submit" [disabled]="bookingform.invalid || isLoading" [ngClass]="{
+            'bg-[#004b87] hover:bg-[#003666] text-white shadow-sm': bookingform.valid,
+            'bg-gray-300 text-gray-500 cursor-not-allowed': bookingform.invalid
+          }" class="px-6 py-2.5 rounded-lg text-sm font-medium transition-colors">
+          {{method === 'update'? 'Guardar Cambios' : 'Confirmar Pedido'}}
+        </button>
+      </div>
     </div>
   </form>
 </div>

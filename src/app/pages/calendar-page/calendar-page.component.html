@@ -35,7 +35,7 @@
 </div>
 
 <div *ngIf="tooltipVisible" [ngStyle]="{'top.px': tooltipPos.y, 'left.px': tooltipPos.x}"
-  class="fixed z-[100] p-3 bg-white border border-gray-200 shadow-xl rounded-lg pointer-events-none min-w-[200px]">
+  class="fixed z-[99999] p-3 bg-white border border-gray-200 shadow-xl rounded-lg pointer-events-none min-w-[200px]">
   <p class="text-xs text-gray-600"><strong>Muelle:</strong> {{ tooltipData.muelle }}</p>
   <p class="text-xs text-gray-600"><strong>Pedido:</strong> {{ tooltipData.pedido }}</p>
   <p class="text-xs text-gray-600"><strong>Proveedor:</strong> {{ tooltipData.proveedor }}</p>

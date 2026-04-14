@@ -19,7 +19,9 @@ export class ReservaService {
     search: string = '',
     statusFilter: string = 'pendientes',
     sortField: string = 'inicio',
-    sortDir: string = 'desc'
+    sortDir: string = 'desc',
+    startDate?: string,
+    endDate?: string
   ): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
@@ -30,6 +32,14 @@ export class ReservaService {
 
     if (search) {
       params = params.set('search', search);
+    }
+
+    if (startDate) {
+      params = params.set('start_date', startDate);
+    }
+
+    if (endDate) {
+      params = params.set('end_date', endDate);
     }
 
     return this.http.get(`${environment.apiBaseUrl}/reserva`, { params });

@@ -65,6 +65,34 @@ import { ToastrService } from 'ngx-toastr';
       border-radius: 50%;
       padding: 1px;
     }
+
+    /* Estilos para No Asistió */
+    ::ng-deep .no-asistio-event {
+      opacity: 0.6 !important;
+      border: 2px dashed #ef4444 !important; /* Rojo descriptivo */
+      background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 5px,
+        rgba(239, 68, 68, 0.1) 5px,
+        rgba(239, 68, 68, 0.1) 10px
+      ) !important;
+    }
+    ::ng-deep .no-asistio-event .fc-event-title {
+      text-decoration: line-through !important;
+      color: #7f1d1d !important;
+    }
+    ::ng-deep .no-asistio-badge {
+      background-color: #ef4444;
+      color: white;
+      font-size: 9px;
+      font-weight: bold;
+      padding: 1px 4px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+      display: inline-block;
+    }
   `,
 })
 export class CalendarPageComponent implements OnInit {
@@ -101,6 +129,19 @@ export class CalendarPageComponent implements OnInit {
   calendarOptions: CalendarOptions = {
     initialView: 'timeGridWeek',
     plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek'
+    },
+    buttonText: {
+      today: 'Hoy',
+      month: 'Mes',
+      week: 'Semana',
+      day: 'Día',
+      list: 'Agenda'
+    },
+    locale: 'es',
     nowIndicator: true,
     firstDay: 1,
     weekends: true,
@@ -114,8 +155,10 @@ export class CalendarPageComponent implements OnInit {
       minute: '2-digit',
       hour12: false,
     },
-    slotDuration: '00:10:00', // Cada slot de 30 minutos (hace que se vea más amplio)
-    eventDurationEditable: false, // Bloquear la redimensión (sólo permite mover)
+    slotDuration: '00:10:00',
+    eventDurationEditable: false,
+    eventDisplay: 'block', // Fuerza que en la vista mes se vea como un recuadro con color de fondo
+    dayMaxEvents: true, // En vista mes, acolapsa los eventos si hay muchos en un solo día con '+X más'
     events: [],
     // eventMouseEnter: this.handleEventMouseEnter.bind(this),
     // eventMouseLeave: this.handleEventMouseLeave.bind(this),
@@ -174,8 +217,28 @@ export class CalendarPageComponent implements OnInit {
       }
 
       // Reconstruimos la estructura base de FullCalendar
-      let html = `<div class="fc-event-main-frame">`;
-      html += `<div class="fc-event-title-container"><div class="fc-event-title fc-sticky">${arg.event.title}</div></div>`;
+      let html = `<div class="fc-event-main-frame" style="padding: 2px 4px;">`;
+      
+      const isNoAsistio = props['estado']?.nombre === 'No asistió';
+
+      if (isNoAsistio) {
+        html += `<div class="no-asistio-badge">NO ASISTIÓ</div>`;
+      }
+
+      // En la vista mensual ('dayGridMonth'), es muy útil ver la hora de inicio y fin porque no hay timeline
+      if (arg.view.type === 'dayGridMonth' && !arg.event.allDay) {
+        let startTime = '';
+        let endTime = '';
+        if (arg.event.start) {
+          startTime = arg.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        if (arg.event.end) {
+           endTime = arg.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        html += `<div style="font-weight: bold; font-size: 10px; margin-bottom: 2px;">${startTime} - ${endTime}</div>`;
+      }
+      
+      html += `<div class="fc-event-title-container"><div class="fc-event-title fc-sticky" style="white-space: normal; line-height: 1.2;">${arg.event.title}</div></div>`;
 
       if (isCompra && !this.isExternalUser) {
         html += `<i class="material-icons purchase-tag-icon">sell</i>`;
@@ -247,6 +310,8 @@ export class CalendarPageComponent implements OnInit {
 
           const proveedorNombre = proveedor?.entidad?.nombre || 'Sin proveedor';
           const titleMat1 = `${proveedorNombre} - ${material1?.nombre || 'Sin material'}`;
+          const isNoAsistio = b.estado?.nombre === 'No asistió';
+          const noAsistioClass = isNoAsistio ? ['no-asistio-event'] : [];
 
           if (!material2) {
             // Reserva normal de 1 material
@@ -257,6 +322,7 @@ export class CalendarPageComponent implements OnInit {
               start: inicio,
               end: fin,
               backgroundColor: muelle?.color,
+              classNames: [...noAsistioClass],
               extendedProps: {
                 ...b,
                 displayMaterial: material1?.nombre,
@@ -276,7 +342,7 @@ export class CalendarPageComponent implements OnInit {
               start: inicio,
               end: fin,
               backgroundColor: muelle?.color,
-              classNames: ['split-event', 'split-event-1'],
+              classNames: ['split-event', 'split-event-1', ...noAsistioClass],
               extendedProps: {
                 ...b,
                 displayMaterial: material1?.nombre,
@@ -293,7 +359,7 @@ export class CalendarPageComponent implements OnInit {
               start: inicio,
               end: fin,
               backgroundColor: muelle?.color,
-              classNames: ['split-event', 'split-event-2'],
+              classNames: ['split-event', 'split-event-2', ...noAsistioClass],
               extendedProps: {
                 ...b,
                 displayMaterial: material2.nombre,
