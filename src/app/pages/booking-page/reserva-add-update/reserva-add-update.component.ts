@@ -450,10 +450,8 @@ export class ReservaAddUpdateComponent implements OnInit {
     formData.append('cantidad1', form.get('cantidad1')?.value);
     formData.append('cantidad2', form.get('cantidad2')?.value || '0');
 
-    const pedidoLF = form.get('pedido2')?.value
-      ? `${form.get('pedido1')?.value} | ${form.get('pedido2')?.value}`
-      : form.get('pedido1')?.value || '';
-    formData.append('pedido1', pedidoLF);
+    formData.append('pedido1', form.get('pedido1')?.value || '');
+    formData.append('pedido2', form.get('pedido2')?.value || '');
 
     formData.append('matricula_camion', form.get('matricula_camion')?.value);
     formData.append(
@@ -559,6 +557,17 @@ export class ReservaAddUpdateComponent implements OnInit {
         muelles: material.muelles,
       };
     }
+    // Limpieza de posibles duplicados por el bug anterior (ej: "A | B" o "A | A")
+    const [p1_from_pipe, p2_from_pipe] = (this.booking.pedido1?.split('|').map(p => p.trim()) ?? ['', '']);
+    const p1 = p1_from_pipe || this.booking.pedido1 || '';
+    let p2 = this.booking.pedido2 || p2_from_pipe || '';
+    
+    // Si pedido2 también tiene un pipe (por el bug del backend), intentamos extraer la segunda parte
+    if (p2.includes('|')) {
+      const parts = p2.split('|').map(p => p.trim());
+      p2 = parts[1] || parts[0];
+    }
+
     this.bookingform.patchValue({
       matricula_camion: this.booking.matricula_camion,
       tipo_camion: this.booking?.tipo_camion?.tipo_camion_id,
@@ -573,10 +582,9 @@ export class ReservaAddUpdateComponent implements OnInit {
       estado: this.booking?.estado_id || this.booking?.estado?.estado_id,
       proveedor: this.booking?.proveedor?.proveedor_id,
       transportista: this.booking?.transportista?.transportista_id,
-      pedido1: this.booking.pedido1 || '',
-      pedido2: this.booking.pedido2 || '',
-      usarMismoCodigo:
-        this.booking.pedido1 && this.booking.pedido2 === this.booking.pedido1,
+      pedido1: p1,
+      pedido2: p2,
+      usarMismoCodigo: p1 === p2 && p1 !== '',
       notas: this.booking.notas,
       aduana: this.booking.aduana ? 'si' : 'no',
     });
