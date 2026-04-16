@@ -22,4 +22,8 @@ export class CalendarPageService {
   updateBookingTime(id: number, payload: { inicio: string, fin: string, muelle_id: number }): Observable<any> {
     return this.http.patch(`${environment.apiBaseUrl}/reserva/${id}`, payload);
   }
+
+  getBloqueosMuelles(): Observable<any> {
+    return this.http.get(`${environment.apiBaseUrl}/muelle/bloqueos`);
+  }
 }

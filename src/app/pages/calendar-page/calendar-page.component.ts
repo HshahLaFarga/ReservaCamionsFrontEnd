@@ -12,6 +12,7 @@ import { Muelle } from '../../core/models/muelle.model';
 import { LoginService } from '../../features/auth/login/login.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { BloqueoMuelle } from '../../core/models/bloqueo_muelle.model';
 
 @Component({
   selector: 'app-calendar-page',
@@ -98,6 +99,7 @@ import { ToastrService } from 'ngx-toastr';
 export class CalendarPageComponent implements OnInit {
   events: EventInput[] = [];
   bookings: Booking[] = [];
+  bloqueos: BloqueoMuelle[] = [];
   isLoading: boolean = false;
   muelles: Muelle[] = [];
   selectedMuelles: number[] = [];
@@ -164,10 +166,16 @@ export class CalendarPageComponent implements OnInit {
     // eventMouseLeave: this.handleEventMouseLeave.bind(this),
     eventClick: (info) => {
       if (this.isExternalUser) return;
-      const bookData = info.event.extendedProps;
+      const props = info.event.extendedProps;
+      
+      if (props['isBloqueo']) {
+        this.toastr.info(`Muelle bloqueado: ${props['asunto']}`, 'Bloqueo');
+        return;
+      }
+
       this.router.navigate(['/bookings/edit'], {
         state: {
-          book: { ...bookData },
+          book: { ...props },
           method: 'update',
         },
       });
@@ -180,12 +188,22 @@ export class CalendarPageComponent implements OnInit {
 
       // 1. Cargamos los datos
       const props = info.event.extendedProps;
-      this.tooltipData = {
-        muelle: props['muelle']?.nombre || 'N/A',
-        pedido: props['displayPedido'] || props['pedido1'] || 'N/A',
-        proveedor: props['proveedor']?.entidad?.nombre || 'N/A',
-        matricula: props['matricula_camion'] || 'S/N',
-      };
+      
+      if (props['isBloqueo']) {
+        this.tooltipData = {
+          muelle: props['muelle']?.nombre || 'N/A',
+          pedido: 'BLOQUEO DE MUELLE',
+          proveedor: props['asunto'] || 'N/A',
+          matricula: 'N/A',
+        };
+      } else {
+        this.tooltipData = {
+          muelle: props['muelle']?.nombre || 'N/A',
+          pedido: props['displayPedido'] || props['pedido1'] || 'N/A',
+          proveedor: props['proveedor']?.entidad?.nombre || 'N/A',
+          matricula: props['matricula_camion'] || 'S/N',
+        };
+      }
 
       // 2. Escuchamos el movimiento del ratón solo mientras estamos sobre el evento
       const moveHandler = (e: MouseEvent) => {
@@ -253,6 +271,7 @@ export class CalendarPageComponent implements OnInit {
   loadDefaultData() {
     this.getMuelles();
     this.getBookings();
+    this.getBloqueos();
   }
 
   getMuelles() {
@@ -282,16 +301,29 @@ export class CalendarPageComponent implements OnInit {
     });
   }
 
+  getBloqueos() {
+    this.isLoading = true;
+    this._calendarPageService.getBloqueosMuelles().subscribe({
+      next: (response) => {
+        this.bloqueos = response;
+        this.filterEventsBySelectedMuelles();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        this.isLoading = false;
+      },
+    });
+  }
+
   filterEventsBySelectedMuelles() {
-    if (!this.bookings.length || !this.selectedMuelles.length) {
+    if (!this.selectedMuelles.length) {
       this.events = [];
     } else {
-      if (this.bookings === null) return;
-
       const newEvents: EventInput[] = [];
 
-      this.bookings
-        .filter((b) => this.selectedMuelles.includes(b.muelle!.muelle_id))
+      if (this.bookings && this.bookings.length) {
+        this.bookings
+          .filter((b) => this.selectedMuelles.includes(b.muelle!.muelle_id))
         .forEach((b) => {
           const { proveedor, material1, material2, inicio, fin, muelle } = b;
 
@@ -369,6 +401,32 @@ export class CalendarPageComponent implements OnInit {
             });
           }
         });
+      }
+
+      // 🔹 Añadir Bloqueos de Muelle
+      if (this.bloqueos && this.bloqueos.length) {
+        this.bloqueos
+          .filter((bloqueo) => this.selectedMuelles.includes(bloqueo.muelle_id || 0))
+        .forEach((bloqueo) => {
+          newEvents.push({
+            id: `bloqueo-${bloqueo.bloqueo_muelle_id}`,
+            title: `BLOQUEADO: ${bloqueo.asunto}`,
+            start: bloqueo.inicio,
+            end: bloqueo.fin,
+            backgroundColor: bloqueo.muelle?.color || '#374151', // Color muelle o gris oscuro
+            borderColor: bloqueo.muelle?.color || '#374151',
+            classNames: [
+              'bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(0,0,0,0.1)_10px,rgba(0,0,0,0.1)_20px)]',
+              'border-2',
+              'opacity-90'
+            ],
+            extendedProps: {
+              ...bloqueo,
+              isBloqueo: true
+            }
+          });
+        });
+      }
 
       this.events = newEvents;
     }
