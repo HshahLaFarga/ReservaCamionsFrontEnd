@@ -19,7 +19,7 @@ export class CalendarPageService {
     return this.http.get(`${environment.apiBaseUrl}/muelles`);
   }
 
-  updateBookingTime(id: number, payload: { inicio: string, fin: string, muelle_id: number }): Observable<any> {
+  updateBookingTime(id: number, payload: { inicio: string, fin: string, muelle_id: number, admin_override?: boolean }): Observable<any> {
     return this.http.patch(`${environment.apiBaseUrl}/reserva/${id}`, payload);
   }
 

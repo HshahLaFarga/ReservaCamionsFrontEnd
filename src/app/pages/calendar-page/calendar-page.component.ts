@@ -553,7 +553,8 @@ export class CalendarPageComponent implements OnInit {
     this._calendarPageService.updateBookingTime(reserva_id, {
       inicio: inicioStr,
       fin: finStr,
-      muelle_id: muelle_id
+      muelle_id: muelle_id,
+      admin_override: true
     }).subscribe({
       next: (res) => {
         this.toastr.success('Reserva reprogramada exitosamente', 'Actualizada');
