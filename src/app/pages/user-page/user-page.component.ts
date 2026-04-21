@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { Profile } from '../../core/models/usuario.model';
 import { CommonModule } from '@angular/common';
+import { LoginService } from '../../features/auth/login/login.service';
 
 @Component({
   selector: 'app-user-page',
@@ -30,7 +31,8 @@ export class UserPageComponent implements OnInit {
   constructor(
     private _userPageService: UserPageService,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
+    public _loginService: LoginService
   ) { }
 
   ngOnInit() {

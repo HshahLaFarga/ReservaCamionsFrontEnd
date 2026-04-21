@@ -30,8 +30,8 @@ export class UserAddUdpateComponent implements OnInit {
     const state = history.state
     if (state.method === 'update') {
       this.method = state.method;
-      const { rol, ...resto } = state.user;
-      this.initialUserData = { ...rol, ...resto };
+      // Pass the user object directly, GenericFormComponent will pick what it needs based on columns
+      this.initialUserData = { ...state.user };
     }
   }
 
@@ -41,9 +41,9 @@ export class UserAddUdpateComponent implements OnInit {
 
     let request: Observable<any>;
     if (this.method === 'post') {
-      request = this._userAddUpdateComponent.storeMuelle(user);
+      request = this._userAddUpdateComponent.storeUser(user);
     } else {
-      request = this._userAddUpdateComponent.updateMuelle(user, history.state.user.id);
+      request = this._userAddUpdateComponent.updateUser(user, history.state.user.id);
     }
 
     request.subscribe({

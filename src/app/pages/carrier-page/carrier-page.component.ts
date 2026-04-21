@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Carrier } from '../../core/models/transportista.model';
 import { CarrierPageService } from './carrier-page.service';
 import { CommonModule } from '@angular/common';
+import { LoginService } from '../../features/auth/login/login.service';
 
 @Component({
   selector: 'app-carrier-page',
@@ -29,7 +30,8 @@ export class CarrierPageComponent implements OnInit {
   constructor(
     private _carrierPageService: CarrierPageService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    public _loginService: LoginService
   ) { }
 
   ngOnInit() {

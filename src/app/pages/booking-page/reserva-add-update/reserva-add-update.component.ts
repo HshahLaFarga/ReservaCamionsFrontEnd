@@ -100,6 +100,10 @@ export class ReservaAddUpdateComponent implements OnInit {
     private _loginService: LoginService,
   ) { }
 
+  get isReadOnly(): boolean {
+    return this._loginService.isReadOnly;
+  }
+
   ngOnInit(): void {
     this.loadDefaultData();
 
@@ -244,6 +248,10 @@ export class ReservaAddUpdateComponent implements OnInit {
           this.changeToUpdateForm();
           this.disableCleanMaterials = true;
           this.existingFiles = this.booking.documentos || [];
+        }
+
+        if (this.isReadOnly) {
+          this.bookingform.disable();
         }
 
         this.isLoading = false;

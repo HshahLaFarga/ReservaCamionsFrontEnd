@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule, NgClass } from '@angular/common';
 import { GenericFormService } from './generic-from.service';
 import { mysqlToDateInput, mysqlToDatetimeInput, formatDateToMySQL } from '../../utils/date.utils';
+import { LoginService } from '../../../features/auth/login/login.service';
 
 @Component({
   selector: 'app-generic-form',
@@ -44,7 +45,12 @@ export class GenericFormComponent implements OnInit {
   form!: FormGroup;
   selectOptions: { [key: string]: any[] } = {};
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private _genericFormService: GenericFormService) { }
+  constructor(
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private _genericFormService: GenericFormService,
+    private _loginService: LoginService
+  ) { }
 
   // Càrrega inicial columnes
   ngOnInit(): void {
@@ -82,6 +88,30 @@ export class GenericFormComponent implements OnInit {
         this.buildForm();
         // Cargar los combobox
         this.loadSelectOptions();
+
+        // Detectar si hay enums y parsearlos
+        this.columns.forEach(col => {
+          if (col.Type.includes('enum')) {
+            const enumMatch = col.Type.match(/enum\((.*)\)/);
+            if (enumMatch) {
+              const values = enumMatch[1].split(',').map((v: string) => v.replace(/'/g, '').trim());
+              this.selectOptions[col.Field] = values.map((v: string) => ({
+                value: v,
+                label: this.getEnumLabel(col.Field, v)
+              }));
+
+              // Si es un enum, necesitamos configurar selectFields para que el HTML sepa que es un select
+              if (!this.selectFields[col.Field]) {
+                this.selectFields[col.Field] = {
+                  api: '', // No api needed for internal enum
+                  labelField: 'label',
+                  valueField: 'value',
+                  label: this.getLabel(col.Field)
+                };
+              }
+            }
+          }
+        });
       },
       error: (err) => {
       },
@@ -103,6 +133,10 @@ export class GenericFormComponent implements OnInit {
       group[col.Field] = [initialValue];
     });
     this.form = this.fb.group(group);
+
+    if (this.isReadOnly) {
+      this.form.disable();
+    }
   }
 
 
@@ -111,7 +145,8 @@ export class GenericFormComponent implements OnInit {
       const config = this.selectFields[field];
       this._genericFormService.getComboboxItems(config.api).subscribe({
         next: (data) => {
-          this.selectOptions[field] = data;
+          // Si el backend retorna { data: [...] } en lloc de [...] directamente, ho gestionem
+          this.selectOptions[field] = Array.isArray(data) ? data : (data?.data || []);
         },
         error: (err) => {
           this.selectOptions[field] = [];
@@ -123,6 +158,7 @@ export class GenericFormComponent implements OnInit {
   // Obtner el tipo de input según el DataType de la BBDD
   getInputType(columnType: string): string {
     if (/^tinyint\(1\)/.test(columnType)) return 'checkbox';
+    if (columnType.includes('enum')) return 'select';
     if (columnType.includes('int')) return 'number';
     if (columnType.includes('varchar') || columnType.includes('text')) return 'text';
     if (columnType.includes('datetime')) return 'datetime-local';
@@ -135,6 +171,19 @@ export class GenericFormComponent implements OnInit {
   // Formateo de cada label pera que sea más legible a la vista
   getLabel(field: string): string {
     return this.selectFields[field]?.label ?? this.fieldLabels[field] ?? field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  }
+
+  getEnumLabel(field: string, value: string): string {
+    if (field === 'idioma') {
+      const mapping: { [key: string]: string } = {
+        'es': 'Español',
+        'en': 'Inglés',
+        'cat': 'Catalán',
+        'fr': 'Francés'
+      };
+      return mapping[value] ?? value;
+    }
+    return value;
   }
 
   onSubmit() {
@@ -176,6 +225,10 @@ export class GenericFormComponent implements OnInit {
 
     // Emetem les dades preparades al component pare
     this.submitForm.emit(preparedValue);
+  }
+
+  get isReadOnly(): boolean {
+    return this._loginService.isReadOnly;
   }
 
 }

@@ -7,6 +7,7 @@ import { MaterialPageService } from './material-page.service';
 import { Material } from '../../core/models/material.model';
 import { TipoCamion } from '../../core/models/tipo_camion.model';
 import { Muelle } from '../../core/models/muelle.model';
+import { LoginService } from '../../features/auth/login/login.service';
 
 @Component({
   selector: 'app-material-page',
@@ -31,7 +32,8 @@ export class MaterialPageComponent implements OnInit {
   constructor(
     private _materialPageService: MaterialPageService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    public _loginService: LoginService
   ) { }
 
   ngOnInit() {

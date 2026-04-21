@@ -70,7 +70,7 @@ export class ReservaComponent implements OnInit, AfterViewInit {
 
   constructor(
     private _bookingService: ReservaService,
-    private _loginService: LoginService,
+    public _loginService: LoginService,
     private router: Router,
     private dialog: MatDialog,
     private toastr: ToastrService,

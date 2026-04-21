@@ -48,4 +48,12 @@ export class LoginService {
   get currentUser(): LoggedUser | null {
     return this._authState.value;
   }
+
+  get isReadOnly(): boolean {
+    const user = this.currentUser;
+    if (user && user.instance === 'usuario') {
+      return user.user.rol_id === 2; // La Farga - View
+    }
+    return false;
+  }
 }

@@ -13,11 +13,11 @@ export class UserAddUdpateService {
     private http: HttpClient
   ) {}
 
-  storeMuelle(profile: Profile): Observable<any> {
+  storeUser(profile: Profile): Observable<any> {
     return this.http.post(`${environment.apiBaseUrl}/users`,profile);
   }
 
-  updateMuelle(profile: Profile, profile_id: number): Observable<any> {
+  updateUser(profile: Profile, profile_id: number): Observable<any> {
     return this.http.put(`${environment.apiBaseUrl}/users/${profile_id}`,profile);
   }
 }

@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { LoginService } from '../../../features/auth/login/login.service';
 
 interface Column {
   key: string;
@@ -43,12 +44,17 @@ export class GenericListComponent implements AfterViewInit, OnChanges {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+  constructor(private _loginService: LoginService) { }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['items']) {
       this.dataSource.data = this.items || [];
     }
     if (changes['columns']) {
-      this.displayedColumns = [...(this.columns || []).map(c => c.key), 'actions'];
+      this.displayedColumns = [...(this.columns || []).map(c => c.key)];
+      if (!this.isReadOnly) {
+        this.displayedColumns.push('actions');
+      }
     }
   }
 
@@ -92,5 +98,9 @@ export class GenericListComponent implements AfterViewInit, OnChanges {
 
   onDelete(item: any) {
     this.delete.emit(item);
+  }
+
+  get isReadOnly(): boolean {
+    return this._loginService.isReadOnly;
   }
 }
