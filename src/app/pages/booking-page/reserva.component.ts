@@ -56,7 +56,7 @@ export class ReservaComponent implements OnInit, AfterViewInit {
   searchControl = new FormControl('');
   statusFilterControl = new FormControl('pendientes');
 
-  sortField: string = 'inicio';
+  sortField: string = 'reserva_id';
   sortDir: string = 'desc';
 
   dateRange = new FormGroup({
