@@ -284,13 +284,17 @@ export class ReservaAddUpdateComponent implements OnInit {
     if (numDescargas == 2 && material2Id) {
       const material2 = this.materials.find(m => m.material_id === Number(material2Id));
       if (material2) {
-        // Intersección de camiones
-        const camiones2Ids = (material2.tipo_camiones || []).map(c => c.tipo_camion_id);
-        camionesCompatibles = camionesCompatibles.filter(c => camiones2Ids.includes(c.tipo_camion_id));
+        // UNIÓN de camiones en lugar de INTERSECCIÓN
+        const camiones2 = material2.tipo_camiones || [];
+        const combinedCamiones = [...camionesCompatibles, ...camiones2];
+        // Eliminar duplicados comparando por tipo_camion_id
+        camionesCompatibles = Array.from(new Map(combinedCamiones.map(c => [c.tipo_camion_id, c])).values());
 
-        // Intersección de muelles
-        const muelles2Ids = (material2.muelles || []).map(m => m.muelle_id);
-        muellesCompatibles = muellesCompatibles.filter(m => muelles2Ids.includes(m.muelle_id));
+        // UNIÓN de muelles en lugar de INTERSECCIÓN
+        const muelles2 = material2.muelles || [];
+        const combinedMuelles = [...muellesCompatibles, ...muelles2];
+        // Eliminar duplicados comparando por muelle_id
+        muellesCompatibles = Array.from(new Map(combinedMuelles.map(m => [m.muelle_id, m])).values());
       }
     }
 
