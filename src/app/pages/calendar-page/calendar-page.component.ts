@@ -13,6 +13,7 @@ import { LoginService } from '../../features/auth/login/login.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { BloqueoMuelle } from '../../core/models/bloqueo_muelle.model';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-calendar-page',
@@ -110,6 +111,9 @@ export class CalendarPageComponent implements OnInit {
   tooltipVisible = false;
   tooltipPos = { x: 0, y: 0 };
   tooltipData: any = {};
+  
+  currentStart: string = '';
+  currentEnd: string = '';
 
   constructor(
     private _calendarPageService: CalendarPageService,
@@ -161,13 +165,38 @@ export class CalendarPageComponent implements OnInit {
     eventDurationEditable: false,
     eventDisplay: 'block', // Fuerza que en la vista mes se vea como un recuadro con color de fondo
     dayMaxEvents: true, // En vista mes, acolapsa los eventos si hay muchos en un solo día con '+X más'
-    events: [],
+    events: (info, successCallback, failureCallback) => {
+      // Skip HTTP request if we already have the bookings for this exact view range
+      if (this.currentStart === info.startStr && this.currentEnd === info.endStr && this.bookings) {
+        successCallback(this.generateEventsArray());
+        return;
+      }
+
+      this.currentStart = info.startStr;
+      this.currentEnd = info.endStr;
+
+      this.isLoading = true;
+      this._calendarPageService.getAllBookings(info.startStr, info.endStr).subscribe({
+        next: (bookings) => {
+          this.bookings = bookings;
+          this.isLoading = false;
+          // Apply local filters (muelles) to the fetched bookings and global bloqueos
+          const filteredEvents = this.generateEventsArray();
+          successCallback(filteredEvents);
+        },
+        error: (err) => {
+          this.isLoading = false;
+          this.toastr.error('Error al cargar datos del calendario', 'Error');
+          failureCallback(err);
+        }
+      });
+    },
     // eventMouseEnter: this.handleEventMouseEnter.bind(this),
     // eventMouseLeave: this.handleEventMouseLeave.bind(this),
     eventClick: (info) => {
       if (this.isExternalUser) return;
       const props = info.event.extendedProps;
-      
+
       if (props['isBloqueo']) {
         this.toastr.info(`Muelle bloqueado: ${props['asunto']}`, 'Bloqueo');
         return;
@@ -188,7 +217,7 @@ export class CalendarPageComponent implements OnInit {
 
       // 1. Cargamos los datos
       const props = info.event.extendedProps;
-      
+
       if (props['isBloqueo']) {
         this.tooltipData = {
           muelle: props['muelle']?.nombre || 'N/A',
@@ -236,7 +265,7 @@ export class CalendarPageComponent implements OnInit {
 
       // Reconstruimos la estructura base de FullCalendar
       let html = `<div class="fc-event-main-frame" style="padding: 2px 4px;">`;
-      
+
       const isNoAsistio = props['estado']?.nombre === 'No asistió';
 
       if (isNoAsistio) {
@@ -251,11 +280,11 @@ export class CalendarPageComponent implements OnInit {
           startTime = arg.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
         if (arg.event.end) {
-           endTime = arg.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          endTime = arg.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
         html += `<div style="font-weight: bold; font-size: 10px; margin-bottom: 2px;">${startTime} - ${endTime}</div>`;
       }
-      
+
       html += `<div class="fc-event-title-container"><div class="fc-event-title fc-sticky" style="white-space: normal; line-height: 1.2;">${arg.event.title}</div></div>`;
 
       if (isCompra && !this.isExternalUser) {
@@ -270,7 +299,6 @@ export class CalendarPageComponent implements OnInit {
 
   loadDefaultData() {
     this.getMuelles();
-    this.getBookings();
     this.getBloqueos();
   }
 
@@ -280,23 +308,9 @@ export class CalendarPageComponent implements OnInit {
         this.muelles = muelles;
         this.selectedMuelles = this.muelles.map((m) => m.muelle_id);
         this.updateBusinessHours();
-        this.filterEventsBySelectedMuelles();
+        this.triggerEventsRefetch();
       },
       error: (err) => {
-      },
-    });
-  }
-
-  getBookings() {
-    this.isLoading = true;
-    this._calendarPageService.getAllBookings().subscribe({
-      next: (response) => {
-        this.bookings = response;
-        this.filterEventsBySelectedMuelles();
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.isLoading = false;
       },
     });
   }
@@ -306,7 +320,7 @@ export class CalendarPageComponent implements OnInit {
     this._calendarPageService.getBloqueosMuelles().subscribe({
       next: (response) => {
         this.bloqueos = response;
-        this.filterEventsBySelectedMuelles();
+        this.triggerEventsRefetch();
         this.isLoading = false;
       },
       error: (err) => {
@@ -315,15 +329,21 @@ export class CalendarPageComponent implements OnInit {
     });
   }
 
-  filterEventsBySelectedMuelles() {
-    if (!this.selectedMuelles.length) {
-      this.events = [];
-    } else {
-      const newEvents: EventInput[] = [];
 
-      if (this.bookings && this.bookings.length) {
-        this.bookings
-          .filter((b) => this.selectedMuelles.includes(b.muelle!.muelle_id))
+  triggerEventsRefetch() {
+    this.calendarOptions = { ...this.calendarOptions };
+  }
+
+  generateEventsArray(): EventInput[] {
+    if (!this.selectedMuelles.length) {
+      return [];
+    }
+    
+    const newEvents: EventInput[] = [];
+
+    if (this.bookings && this.bookings.length) {
+      this.bookings
+        .filter((b) => this.selectedMuelles.includes(b.muelle!.muelle_id))
         .forEach((b) => {
           const { proveedor, material1, material2, inicio, fin, muelle } = b;
 
@@ -401,12 +421,12 @@ export class CalendarPageComponent implements OnInit {
             });
           }
         });
-      }
+    }
 
-      // 🔹 Añadir Bloqueos de Muelle
-      if (this.bloqueos && this.bloqueos.length) {
-        this.bloqueos
-          .filter((bloqueo) => this.selectedMuelles.includes(bloqueo.muelle_id || 0))
+    // 🔹 Añadir Bloqueos de Muelle
+    if (this.bloqueos && this.bloqueos.length) {
+      this.bloqueos
+        .filter((bloqueo) => this.selectedMuelles.includes(bloqueo.muelle_id || 0))
         .forEach((bloqueo) => {
           newEvents.push({
             id: `bloqueo-${bloqueo.bloqueo_muelle_id}`,
@@ -426,14 +446,9 @@ export class CalendarPageComponent implements OnInit {
             }
           });
         });
-      }
-
-      this.events = newEvents;
     }
-    this.calendarOptions = {
-      ...this.calendarOptions,
-      events: this.events,
-    };
+
+    return newEvents;
   }
 
   toggleMuelleSelection(muelleId: number) {
@@ -444,7 +459,7 @@ export class CalendarPageComponent implements OnInit {
     } else {
       this.selectedMuelles.push(muelleId);
     }
-    this.filterEventsBySelectedMuelles();
+    this.triggerEventsRefetch();
     this.updateBusinessHours();
   }
 
@@ -538,10 +553,10 @@ export class CalendarPageComponent implements OnInit {
     const event = info.event;
     const reserva_id = event.extendedProps['reserva_id'];
     const muelle_id = event.extendedProps['muelle']?.muelle_id || event.extendedProps['muelle_id'];
-    
+
     const startObj = event.start;
     const endObj = event.end;
-    
+
     if (!startObj || !endObj) {
       info.revert();
       return;

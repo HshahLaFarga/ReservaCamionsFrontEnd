@@ -11,8 +11,12 @@ export class CalendarPageService {
     private http: HttpClient
   ) { }
 
-  getAllBookings(): Observable<any> {
-    return this.http.get(`${environment.apiBaseUrl}/reservas/calendar`);
+  getAllBookings(start?: string, end?: string): Observable<any> {
+    let url = `${environment.apiBaseUrl}/reservas/calendar`;
+    if (start && end) {
+      url += `?start=${start}&end=${end}`;
+    }
+    return this.http.get(url);
   }
 
   getMuelles(): Observable<any> {
