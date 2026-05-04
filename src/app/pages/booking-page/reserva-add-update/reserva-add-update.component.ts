@@ -573,7 +573,7 @@ export class ReservaAddUpdateComponent implements OnInit {
     const [p1_from_pipe, p2_from_pipe] = (this.booking.pedido1?.split('|').map(p => p.trim()) ?? ['', '']);
     const p1 = p1_from_pipe || this.booking.pedido1 || '';
     let p2 = this.booking.pedido2 || p2_from_pipe || '';
-    
+
     // Si pedido2 también tiene un pipe (por el bug del backend), intentamos extraer la segunda parte
     if (p2.includes('|')) {
       const parts = p2.split('|').map(p => p.trim());

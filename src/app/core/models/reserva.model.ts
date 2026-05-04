@@ -46,6 +46,8 @@ export interface Booking {
   telefono?: string | null;
   aduana: boolean;
   notas?: string | null;
+  es_replanificada?: boolean;
+  is_mine?: boolean;
 
   documentos?: BookingDocument[];
 

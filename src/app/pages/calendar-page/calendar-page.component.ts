@@ -111,7 +111,7 @@ export class CalendarPageComponent implements OnInit {
   tooltipVisible = false;
   tooltipPos = { x: 0, y: 0 };
   tooltipData: any = {};
-  
+
   currentStart: string = '';
   currentEnd: string = '';
 
@@ -194,8 +194,11 @@ export class CalendarPageComponent implements OnInit {
     // eventMouseEnter: this.handleEventMouseEnter.bind(this),
     // eventMouseLeave: this.handleEventMouseLeave.bind(this),
     eventClick: (info) => {
-      if (this.isExternalUser) return;
       const props = info.event.extendedProps;
+      const isMine = props['is_mine'];
+      const isReplanificada = props['es_replanificada'];
+
+      if (this.isExternalUser && !(isMine && isReplanificada)) return;
 
       if (props['isBloqueo']) {
         this.toastr.info(`Muelle bloqueado: ${props['asunto']}`, 'Bloqueo');
@@ -210,13 +213,15 @@ export class CalendarPageComponent implements OnInit {
       });
     },
     eventMouseEnter: (info) => {
-      // Si es externo NO mostramos tooltip con detalles
-      if (this.isExternalUser) return;
+      const props = info.event.extendedProps;
+      const isMine = props['is_mine'];
+
+      // Si es externo y no es su reserva, NO mostramos tooltip con detalles
+      if (this.isExternalUser && !isMine) return;
 
       this.tooltipVisible = true;
 
       // 1. Cargamos los datos
-      const props = info.event.extendedProps;
 
       if (props['isBloqueo']) {
         this.tooltipData = {
@@ -338,7 +343,7 @@ export class CalendarPageComponent implements OnInit {
     if (!this.selectedMuelles.length) {
       return [];
     }
-    
+
     const newEvents: EventInput[] = [];
 
     if (this.bookings && this.bookings.length) {
@@ -348,13 +353,22 @@ export class CalendarPageComponent implements OnInit {
           const { proveedor, material1, material2, inicio, fin, muelle } = b;
 
           if (this.isExternalUser) {
+            const isMine = b.is_mine;
+            const isReplanificada = b.es_replanificada;
+
+            const proveedorNombre = b.proveedor?.entidad?.nombre || 'Sin proveedor';
+            const titleMine = `${b.pedido1 || 'S/P'} - ${b.material1?.nombre || 'Sin material'}`;
+
             newEvents.push({
               groupId: String(b.reserva_id),
               id: `${b.reserva_id}`,
-              title: 'OCUPADO',
+              title: isMine ? titleMine : 'OCUPADO',
               start: inicio,
               end: fin,
               backgroundColor: muelle?.color,
+              editable: false,
+              startEditable: false,
+              durationEditable: false, // No drag and drop para externos
               extendedProps: { ...b, isSplit: false },
             });
             return;
@@ -545,12 +559,15 @@ export class CalendarPageComponent implements OnInit {
   }
 
   handleEventDrop(info: any) {
-    if (this.isExternalUser) {
+    const event = info.event;
+    const isMine = event.extendedProps['is_mine'];
+    const isReplanificada = event.extendedProps['es_replanificada'];
+
+    if (this.isExternalUser && !(isMine && isReplanificada)) {
       info.revert();
       return;
     }
 
-    const event = info.event;
     const reserva_id = event.extendedProps['reserva_id'];
     const muelle_id = event.extendedProps['muelle']?.muelle_id || event.extendedProps['muelle_id'];
 
@@ -569,7 +586,7 @@ export class CalendarPageComponent implements OnInit {
       inicio: inicioStr,
       fin: finStr,
       muelle_id: muelle_id,
-      admin_override: true
+      admin_override: !this.isExternalUser || isReplanificada // Si es admin o ya es replanificada, usamos override
     }).subscribe({
       next: (res) => {
         this.toastr.success('Reserva reprogramada exitosamente', 'Actualizada');
