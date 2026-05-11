@@ -367,7 +367,7 @@ export class CalendarPageComponent implements OnInit {
               end: fin,
               backgroundColor: muelle?.color,
               editable: false,
-              startEditable: false,
+              startEditable: false,      
               durationEditable: false, // No drag and drop para externos
               extendedProps: { ...b, isSplit: false },
             });
